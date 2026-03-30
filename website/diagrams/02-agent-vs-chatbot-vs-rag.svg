@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" font-family="Inter, -apple-system, sans-serif">
+  <defs>
+    <filter id="shadow2" x="-5%" y="-5%" width="115%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#c4825a" flood-opacity="0.15"/>
+    </filter>
+    <linearGradient id="bgGrad2" x1="0" y1="0" x2="800" y2="520" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#f5f0eb"/>
+      <stop offset="100%" stop-color="#ede5db"/>
+    </linearGradient>
+  </defs>
+  
+  <rect width="800" height="520" rx="16" fill="url(#bgGrad2)"/>
+  
+  <!-- Title -->
+  <text x="400" y="42" text-anchor="middle" font-size="24" font-weight="700" fill="#2c2c2c">Agent vs Chatbot vs RAG</text>
+  <text x="400" y="64" text-anchor="middle" font-size="13" fill="#999">Understanding the AI capability spectrum</text>
+  
+  <!-- Spectrum bar -->
+  <rect x="100" y="82" width="600" height="6" rx="3" fill="#e5ddd5"/>
+  <rect x="100" y="82" width="200" height="6" rx="3" fill="#a5d8ff"/>
+  <rect x="300" y="82" width="200" height="6" rx="3" fill="#ffd43b"/>
+  <rect x="500" y="82" width="200" height="6" rx="3" fill="#96f2d7"/>
+  <text x="100" y="76" font-size="11" fill="#999">Simple</text>
+  <text x="700" y="76" text-anchor="end" font-size="11" fill="#999">Powerful</text>
+  
+  <!-- CHATBOT Column -->
+  <rect x="40" y="100" width="230" height="370" rx="14" fill="white" stroke="#1971c2" stroke-width="2" filter="url(#shadow2)"/>
+  <rect x="40" y="100" width="230" height="55" rx="14" fill="#dbeafe"/>
+  <rect x="40" y="141" width="230" height="14" fill="#dbeafe"/>
+  <text x="155" y="125" text-anchor="middle" font-size="28">💬</text>
+  <text x="155" y="148" text-anchor="middle" font-size="18" font-weight="700" fill="#1971c2">CHATBOT</text>
+  
+  <!-- Chatbot flow -->
+  <text x="155" y="180" text-anchor="middle" font-size="12" fill="#888">User → LLM → Answer</text>
+  
+  <!-- Chatbot features -->
+  <text x="60" y="210" font-size="13" fill="#2f9e44">✅</text>
+  <text x="80" y="210" font-size="13" fill="#555">Simple Q&amp;A</text>
+  <text x="60" y="232" font-size="13" fill="#2f9e44">✅</text>
+  <text x="80" y="232" font-size="13" fill="#555">Conversation</text>
+  <text x="60" y="254" font-size="13" fill="#2f9e44">✅</text>
+  <text x="80" y="254" font-size="13" fill="#555">Fast responses</text>
+  
+  <line x1="60" y1="270" x2="250" y2="270" stroke="#e5ddd5" stroke-width="1"/>
+  
+  <text x="60" y="290" font-size="13" fill="#e03131">✗</text>
+  <text x="80" y="290" font-size="13" fill="#999">No tools</text>
+  <text x="60" y="312" font-size="13" fill="#e03131">✗</text>
+  <text x="80" y="312" font-size="13" fill="#999">No long-term memory</text>
+  <text x="60" y="334" font-size="13" fill="#e03131">✗</text>
+  <text x="80" y="334" font-size="13" fill="#999">No planning</text>
+  <text x="60" y="356" font-size="13" fill="#e03131">✗</text>
+  <text x="80" y="356" font-size="13" fill="#999">No autonomy</text>
+  
+  <!-- Chatbot example -->
+  <rect x="55" y="375" width="200" height="36" rx="8" fill="#f0f4f8"/>
+  <text x="155" y="390" text-anchor="middle" font-size="11" fill="#888">Think:</text>
+  <text x="155" y="404" text-anchor="middle" font-size="12" font-weight="600" fill="#1971c2">ChatGPT basic</text>
+  
+  <!-- Complexity indicator -->
+  <rect x="55" y="425" width="200" height="26" rx="13" fill="#dbeafe"/>
+  <text x="155" y="443" text-anchor="middle" font-size="12" font-weight="600" fill="#1971c2">⭐ Basic</text>
+  
+  <!-- RAG Column -->
+  <rect x="285" y="100" width="230" height="370" rx="14" fill="white" stroke="#e67700" stroke-width="2" filter="url(#shadow2)"/>
+  <rect x="285" y="100" width="230" height="55" rx="14" fill="#fff3bf"/>
+  <rect x="285" y="141" width="230" height="14" fill="#fff3bf"/>
+  <text x="400" y="125" text-anchor="middle" font-size="28">📚</text>
+  <text x="400" y="148" text-anchor="middle" font-size="18" font-weight="700" fill="#e67700">RAG</text>
+  
+  <text x="400" y="180" text-anchor="middle" font-size="12" fill="#888">User → Search → LLM → Answer</text>
+  
+  <text x="305" y="210" font-size="13" fill="#2f9e44">✅</text>
+  <text x="325" y="210" font-size="13" fill="#555">Knowledge retrieval</text>
+  <text x="305" y="232" font-size="13" fill="#2f9e44">✅</text>
+  <text x="325" y="232" font-size="13" fill="#555">Grounded answers</text>
+  <text x="305" y="254" font-size="13" fill="#2f9e44">✅</text>
+  <text x="325" y="254" font-size="13" fill="#555">Source citations</text>
+  <text x="305" y="276" font-size="13" fill="#2f9e44">✅</text>
+  <text x="325" y="276" font-size="13" fill="#555">Reduces hallucination</text>
+  
+  <line x1="305" y1="292" x2="495" y2="292" stroke="#e5ddd5" stroke-width="1"/>
+  
+  <text x="305" y="312" font-size="13" fill="#e03131">✗</text>
+  <text x="325" y="312" font-size="13" fill="#999">No multi-step reasoning</text>
+  <text x="305" y="334" font-size="13" fill="#e03131">✗</text>
+  <text x="325" y="334" font-size="13" fill="#999">Reactive only</text>
+  <text x="305" y="356" font-size="13" fill="#e03131">✗</text>
+  <text x="325" y="356" font-size="13" fill="#999">No tool use beyond search</text>
+  
+  <rect x="300" y="375" width="200" height="36" rx="8" fill="#fff8e1"/>
+  <text x="400" y="390" text-anchor="middle" font-size="11" fill="#888">Think:</text>
+  <text x="400" y="404" text-anchor="middle" font-size="12" font-weight="600" fill="#e67700">Perplexity AI</text>
+  
+  <rect x="300" y="425" width="200" height="26" rx="13" fill="#fff3bf"/>
+  <text x="400" y="443" text-anchor="middle" font-size="12" font-weight="600" fill="#e67700">⭐⭐ Intermediate</text>
+  
+  <!-- AGENT Column -->
+  <rect x="530" y="100" width="230" height="370" rx="14" fill="white" stroke="#2f9e44" stroke-width="2" filter="url(#shadow2)"/>
+  <rect x="530" y="100" width="230" height="55" rx="14" fill="#d3f9d8"/>
+  <rect x="530" y="141" width="230" height="14" fill="#d3f9d8"/>
+  <text x="645" y="125" text-anchor="middle" font-size="28">🤖</text>
+  <text x="645" y="148" text-anchor="middle" font-size="18" font-weight="700" fill="#2f9e44">AI AGENT</text>
+  
+  <text x="645" y="180" text-anchor="middle" font-size="12" fill="#888">User → Think → Act → Loop</text>
+  
+  <text x="550" y="210" font-size="13" fill="#2f9e44">✅</text>
+  <text x="570" y="210" font-size="13" fill="#555">Multiple tools</text>
+  <text x="550" y="232" font-size="13" fill="#2f9e44">✅</text>
+  <text x="570" y="232" font-size="13" fill="#555">Planning &amp; reasoning</text>
+  <text x="550" y="254" font-size="13" fill="#2f9e44">✅</text>
+  <text x="570" y="254" font-size="13" fill="#555">Short + long memory</text>
+  <text x="550" y="276" font-size="13" fill="#2f9e44">✅</text>
+  <text x="570" y="276" font-size="13" fill="#555">Autonomous actions</text>
+  <text x="550" y="298" font-size="13" fill="#2f9e44">✅</text>
+  <text x="570" y="298" font-size="13" fill="#555">Multi-step tasks</text>
+  <text x="550" y="320" font-size="13" fill="#2f9e44">✅</text>
+  <text x="570" y="320" font-size="13" fill="#555">Self-correcting</text>
+  
+  <line x1="550" y1="336" x2="740" y2="336" stroke="#e5ddd5" stroke-width="1"/>
+  
+  <text x="550" y="356" font-size="13" fill="#e03131">✗</text>
+  <text x="570" y="356" font-size="13" fill="#999">Complex to build</text>
+  
+  <rect x="545" y="375" width="200" height="36" rx="8" fill="#e8f8ee"/>
+  <text x="645" y="390" text-anchor="middle" font-size="11" fill="#888">Think:</text>
+  <text x="645" y="404" text-anchor="middle" font-size="12" font-weight="600" fill="#2f9e44">Alex, Devin, AutoGPT</text>
+  
+  <rect x="545" y="425" width="200" height="26" rx="13" fill="#d3f9d8"/>
+  <text x="645" y="443" text-anchor="middle" font-size="12" font-weight="600" fill="#2f9e44">⭐⭐⭐ Advanced</text>
+  
+  <!-- Bottom label -->
+  <text x="400" y="498" text-anchor="middle" font-size="12" fill="#c4825a" font-weight="600">Each builds on the capabilities of the previous →</text>
+</svg>

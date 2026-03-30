@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Offline — AI Agent Learning</title>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#c4825a">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #f5f0eb;
+    color: #2c2c2c;
+    text-align: center;
+    padding: 2rem;
+  }
+  .container {
+    max-width: 480px;
+  }
+  .icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+  }
+  h1 {
+    font-family: 'Noto Serif SC', serif;
+    color: #c4825a;
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+  }
+  p {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+  .tip {
+    background: white;
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin: 1.5rem 0;
+    border: 1px solid #e5ddd5;
+    text-align: left;
+  }
+  .tip h3 {
+    color: #c4825a;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+  .tip ul {
+    list-style: none;
+    padding: 0;
+  }
+  .tip li {
+    padding: 0.25rem 0;
+    color: #666;
+    font-size: 0.9rem;
+  }
+  .tip li::before {
+    content: "✓ ";
+    color: #2f9e44;
+  }
+  .retry-btn {
+    background: #c4825a;
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 1rem;
+  }
+  .retry-btn:hover {
+    background: #a06840;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">🤖</div>
+    <h1>You're Offline</h1>
+    <p>No worries — your cached content is still available. Reconnect to load the full course.</p>
+    
+    <div class="tip">
+      <h3>💡 While you're offline:</h3>
+      <ul>
+        <li>Previously viewed pages are cached</li>
+        <li>Videos require an internet connection</li>
+        <li>Your progress is saved locally</li>
+      </ul>
+    </div>
+    
+    <button class="retry-btn" onclick="location.reload()">Try Again</button>
+  </div>
+</body>
+</html>
