@@ -1,3 +1,5 @@
+🌐 English | [中文](README.zh.md)
+
 # Week 3: Advanced Patterns 🚀
 
 > Multi-agent systems, production patterns, and your capstone project.

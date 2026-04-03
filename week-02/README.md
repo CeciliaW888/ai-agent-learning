@@ -1,3 +1,5 @@
+🌐 English | [中文](README.zh.md)
+
 # Week 2: Building 🔨
 
 > Get your hands dirty. Build your first AI agent.

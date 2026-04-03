@@ -1,3 +1,5 @@
+🌐 English | [中文](README.zh.md)
+
 # 🤖 AI Agent Learning — 21-Day Course
 
 > **From AI user → AI agent builder in 3 weeks**
@@ -73,9 +75,6 @@
 - **David Ondrej** — AI news & agent trends
 - **LangChain YouTube** — Official tutorials & walkthroughs
 
-### Community
-- **JZ's 21-Day AI Series** — RedNote 小红书 learning journey
-
 ---
 
 ## 🛠️ Projects
@@ -109,7 +108,7 @@ ai-agent-learning/
 
 ```bash
 # Clone the repo
-git clone https://github.com/YOUR_USERNAME/ai-agent-learning.git
+git clone https://github.com/CeciliaW888/ai-agent-learning.git
 cd ai-agent-learning
 
 # Open the course website
@@ -120,12 +119,22 @@ open website/index.html
 
 ## 📦 Deploy
 
-### GitHub Pages
-1. Go to repo Settings → Pages
+### Step 1: Push to Your Own GitHub
+1. [Create a new repository](https://github.com/new) on GitHub (name it `ai-agent-learning`)
+2. Push the cloned repo to your account:
+```bash
+git remote set-url origin https://github.com/YOUR_USERNAME/ai-agent-learning.git
+git push -u origin main
+```
+
+### Step 2: Deploy
+
+**GitHub Pages**
+1. Go to your repo Settings → Pages
 2. Source: Deploy from a branch → `main` → `/website`
 3. Your site will be live at `https://YOUR_USERNAME.github.io/ai-agent-learning/`
 
-### Vercel
+**Vercel**
 1. Import repo at [vercel.com/new](https://vercel.com/new)
 2. Root Directory: `website`
 3. Framework: Other

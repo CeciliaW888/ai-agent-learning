@@ -1,3 +1,5 @@
+🌐 English | [中文](README.zh.md)
+
 # Week 1: Foundations 🧠
 
 > Understanding what AI agents are, how they work, and why they matter.
