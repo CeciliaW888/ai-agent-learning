@@ -1,0 +1,37 @@
+{
+  "questions": [
+    {
+      "question": "In LangGraph, what is a 'node'?",
+      "options": [
+        "A database record",
+        "A message in the conversation history",
+        "A tool definition",
+        "A step in the agent workflow, typically a function or agent call"
+      ],
+      "answer": 3,
+      "explanation": "LangGraph models workflows as graphs. Each node is a unit of work — a function, an LLM call, or an agent — and edges define the transitions between nodes."
+    },
+    {
+      "question": "How do agents in a pipeline communicate results?",
+      "options": [
+        "Via direct HTTP requests between agent processes",
+        "Through a shared state object or explicit message passing",
+        "By writing to and reading from a shared database only",
+        "Via environment variables set between calls"
+      ],
+      "answer": 1,
+      "explanation": "In LangGraph and similar frameworks, agents typically communicate through a shared state dict that gets passed along the graph, or by explicitly returning structured messages to the next agent."
+    },
+    {
+      "question": "What is the best way to test the full multi-agent pipeline?",
+      "options": [
+        "Test each agent in isolation and assume the pipeline works",
+        "Monitor the production deployment and fix issues as they arise",
+        "Run it end-to-end with a known input and verify the final output",
+        "Check only that the coordinator starts without errors"
+      ],
+      "answer": 2,
+      "explanation": "Integration testing the pipeline end-to-end with a fixed input lets you verify that data flows correctly between agents and the final output meets expectations."
+    }
+  ]
+}

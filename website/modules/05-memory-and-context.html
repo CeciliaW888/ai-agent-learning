@@ -1,0 +1,276 @@
+<section class="module" id="module-5" data-day="5">
+<div class="module-inner">
+
+  <h2>Day 5: Memory &amp; Context</h2>
+
+  <div class="callout-accent">
+    <span class="callout-icon">🧠</span>
+    <div class="callout-content">
+      <strong>The big idea:</strong> Without memory, every conversation with an agent starts from zero. It doesn't know your name, your preferences, or what you worked on yesterday. Memory is what turns a clever tool into a genuine assistant.
+    </div>
+  </div>
+
+  <!-- Learning Objectives -->
+  <h3>🎯 Learning Objectives</h3>
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">1</span>
+      <div class="step-body">
+        <strong>Understand the three types of agent memory</strong>
+        <p>Short-term, long-term, and working memory each solve a different problem — and using the wrong one leads to bugs.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">2</span>
+      <div class="step-body">
+        <strong>Know how vector databases enable long-term memory</strong>
+        <p>Semantic search lets agents find relevant memories by meaning, not just exact keywords.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">3</span>
+      <div class="step-body">
+        <strong>Recognize the difference between stateless and stateful agents</strong>
+        <p>Stateful agents learn and improve across sessions. Stateless agents are always strangers.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Watch -->
+  <h3>📺 Watch First (35 min)</h3>
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">🎥</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://www.youtube.com/watch?v=X05uK0TZozM" target="_blank" rel="noopener">Chatbot Memory for LLMs — James Briggs</a></strong>
+        <p>20 min · Clear, hands-on overview of all three memory types with code examples. Start here.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">🎥</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://www.youtube.com/watch?v=klTvEwg3oJ4" target="_blank" rel="noopener">Vector Databases Explained — Fireship</a></strong>
+        <p>8 min · Fast, visual explanation of how vector DBs store and search by meaning. Essential context.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">🎓</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://www.deeplearning.ai/short-courses/ai-agents-in-langgraph/" target="_blank" rel="noopener">Persistence &amp; Memory — DeepLearning.AI LangGraph Course</a></strong>
+        <p>~10 min for the memory lesson · Practical LangGraph memory patterns from Andrew Ng's team.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core Concepts -->
+  <h3>📚 Core Concepts</h3>
+
+  <h4>🗄️ The Three Types of Agent Memory</h4>
+
+  <p>Think about how <em>you</em> remember things. Right now you're holding this lesson in active focus (short-term). You also know your own name and how to ride a bike — that's long-term. And if you're solving a math problem you might jot intermediate steps on paper — that's working memory. Agents need all three.</p>
+
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">💬</span>
+      <div class="step-body">
+        <strong>Short-Term Memory — Conversation Buffer</strong>
+        <p>The current conversation. Every message exchanged this session is appended to a list and included in the next prompt. Simple and fast — but has a hard ceiling (the context window). Long conversations must be summarized or truncated.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">💾</span>
+      <div class="step-body">
+        <strong>Long-Term Memory — Vector DB or Files</strong>
+        <p>Information that persists between sessions — user preferences, learned facts, past research. Retrieved by semantic search (meaning, not exact match), so the agent can find "Python memories" even when you ask about "preferred programming language."</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">📋</span>
+      <div class="step-body">
+        <strong>Working Memory — Task Scratchpad</strong>
+        <p>Temporary storage for the current task — intermediate search results, a running plan, half-finished sections. Erased when the task is done, like a whiteboard you clear after a meeting.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout-info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-content">
+      <strong>Why can't we just give the LLM everything at once?</strong> LLMs have a context window limit — a maximum amount of text they can process. GPT-4 handles about 128K tokens, which sounds like a lot until you have months of conversation history, tool results, a long system prompt, and the current question all competing for space. Memory systems solve this by choosing what to include.
+    </div>
+  </div>
+
+  <h4>🔍 How Long-Term Memory Works (Vector Databases)</h4>
+
+  <p>Vector databases store memories not as plain text but as <em>embeddings</em> — lists of numbers that capture semantic meaning. When you search, your query is also converted to numbers, and the database finds the most mathematically similar stored memories. This is why you can ask "what programming language does the user prefer?" and retrieve a memory that says "user likes Python for backend" — even though the words are completely different.</p>
+
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">1</span>
+      <div class="step-body">
+        <strong>Store a memory</strong>
+        <p>Text like "User prefers Python for backend development" is converted to a vector (e.g. <code>[0.23, -0.45, 0.87, ...]</code>) and saved alongside the original text.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">2</span>
+      <div class="step-body">
+        <strong>Search by meaning</strong>
+        <p>Your query becomes a vector. The database returns the stored memories whose vectors are closest — the most semantically similar ones, regardless of exact wording.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">3</span>
+      <div class="step-body">
+        <strong>Inject into the prompt</strong>
+        <p>Retrieved memories are added to the system prompt before the LLM sees the new message: "Here's what I know about this user..." — context without repetition.</p>
+      </div>
+    </div>
+  </div>
+
+  <h4>💬 Watching Memory in Action</h4>
+
+  <p>Here's what it looks like when an agent uses long-term memory to recognize a returning user and pick up right where they left off:</p>
+
+  <div class="chat-window" id="chat-memory-demo">
+    <div class="chat-messages">
+      <div class="chat-message" data-msg="1" data-sender="4" style="display:none;">
+        User: Hey, I need help with my project again.
+      </div>
+      <div class="chat-message" data-msg="2" data-sender="2" style="display:none;">
+        Agent [Recalling memories...]: User prefers Python. Last session: building a web scraper. Goal: data pipeline for their startup. Prefers concise answers.
+      </div>
+      <div class="chat-message" data-msg="3" data-sender="1" style="display:none;">
+        Agent: Welcome back! Last time we were building your Python web scraper for the startup data pipeline. Ready to continue, or something new?
+      </div>
+      <div class="chat-message" data-msg="4" data-sender="4" style="display:none;">
+        User: I finished the scraper! Now I need to store the results in a database.
+      </div>
+      <div class="chat-message" data-msg="5" data-sender="2" style="display:none;">
+        Agent [Thought]: They finished the scraper — great progress. I know they use Python and are building for a startup, so I should suggest something practical and lightweight to start.
+      </div>
+      <div class="chat-message" data-msg="6" data-sender="1" style="display:none;">
+        Agent: Perfect next step. Since you're on Python and building a startup pipeline, I'd start with SQLite for local development and PostgreSQL when you're ready to scale. Want a schema that fits the kind of data your scraper collects?
+      </div>
+      <div class="chat-message" data-msg="7" data-sender="4" style="display:none;">
+        User: That's exactly what I needed. You remembered everything from last time!
+      </div>
+      <div class="chat-message" data-msg="8" data-sender="1" style="display:none;">
+        Agent: That's long-term memory at work — I retrieved your preferences and project context from our previous session so you didn't have to re-explain. [REMEMBER: User completed the Python web scraper. Now building database storage layer with SQLite → PostgreSQL path.]
+      </div>
+      <div class="chat-typing typing-indicator" style="display:none;">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="chat-controls">
+      <button class="chat-next-btn">Next →</button>
+      <button class="chat-all-btn">Show All</button>
+      <button class="chat-reset-btn">Reset</button>
+    </div>
+  </div>
+
+  <p><strong>Notice:</strong> The agent didn't ask "who are you?" or "what are you building?" — long-term memory bridged the gap between sessions, making it feel like a real colleague rather than a stranger every time.</p>
+
+  <h4>📬 Stateless vs Stateful</h4>
+
+  <div class="flashcard">
+    <div class="flashcard-inner">
+      <div class="flashcard-front">
+        <h4>📭 Stateless Agent (No Memory)</h4>
+        <p>Starts completely fresh with every conversation. No idea who you are, what you've worked on, or what you prefer. Every session is a first meeting — forever.</p>
+        <p><em>You: "Help me with my Python project."</em></p>
+        <p><em>Agent: "Sure! What's your project about? What language are you using?"</em> — every single time.</p>
+        <p style="font-size:2em;margin-top:12px">📭</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted)">← Tap to flip →</p>
+      </div>
+      <div class="flashcard-back">
+        <h4>📬 Stateful Agent (With Memory)</h4>
+        <p>Remembers you across sessions. Builds context over time. Gets <em>better</em> the more you use it — learning your preferences, your projects, your working style.</p>
+        <p><em>You: "Help me with my Python project."</em></p>
+        <p><em>Agent: "Welcome back! Continuing on the data pipeline — shall we pick up at the database layer?"</em></p>
+        <p style="font-size:2em;margin-top:12px">📬</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted)">← Tap to flip →</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout-warning">
+    <span class="callout-icon">⚠️</span>
+    <div class="callout-content">
+      <strong>Memory pitfalls to watch out for:</strong> Storing too much slows retrieval and confuses the agent with noise. Stale memories ("user lives in Melbourne") can mislead — add timestamps and expiry. Conflicting memories ("user likes Python" vs "user switched to Rust") need a recency strategy. And long-term memory means storing personal data — be thoughtful about privacy and what you actually need to retain.
+    </div>
+  </div>
+
+  <!-- Key Terms -->
+  <h3>📖 Key Terms</h3>
+  <div class="term-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Short-Term Memory</strong><br>
+      The current conversation history, included in every prompt. Resets when the session ends.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Long-Term Memory</strong><br>
+      Persistent storage across sessions — vector DB, files, or key-value stores. Retrieved by semantic search when relevant.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Working Memory</strong><br>
+      Temporary scratchpad for the current task. Intermediate results, running plans, notes. Cleared when the task is done.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Vector Database</strong><br>
+      A database that stores and retrieves text by semantic similarity — finding memories by meaning, not exact keyword match. Examples: Chroma, Pinecone, Qdrant.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Embedding</strong><br>
+      A numerical vector representation of text that captures its semantic meaning. The foundation of how long-term memory retrieval works.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Context Window</strong><br>
+      The maximum amount of text an LLM can process at once. Memory systems choose carefully what fits inside this limit.
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <h3>📝 Quick Check</h3>
+
+  <div class="quiz-card">
+    <p class="quiz-question"><strong>Q1:</strong> An agent remembers your name and project preferences from yesterday's session. Which type of memory made that possible?</p>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Short-term memory only lasts within a single session — it resets when the conversation ends. Yesterday's session is gone from short-term memory.">Short-term memory (conversation buffer)</button>
+      <button class="quiz-option" data-correct="true" data-explanation-correct="Correct! Long-term memory persists between sessions by storing information in a vector DB or files. That's how the agent knows you from yesterday.">Long-term memory (vector DB or files)</button>
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Working memory is a temporary scratchpad for the current task — it doesn't persist between sessions either.">Working memory (task scratchpad)</button>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <p class="quiz-question"><strong>Q2:</strong> Why do vector databases find memories more effectively than plain keyword search?</p>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Speed isn't the advantage — the key benefit is what vector databases can find, not how quickly they find it.">They search faster than keyword databases</button>
+      <button class="quiz-option" data-correct="true" data-explanation-correct="Exactly right. Semantic search finds memories by meaning — so 'what programming language does the user prefer?' can retrieve 'user likes Python for backend work', even though those phrases share no keywords.">They find memories by semantic meaning, not exact word match</button>
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Larger storage isn't the advantage — regular databases can also store a lot. The advantage is how retrieval works.">They can store more data than regular databases</button>
+    </div>
+  </div>
+
+  <!-- Reflection -->
+  <h3>🤔 Reflection</h3>
+  <div class="reflection-card">
+    <p>Design a memory system for a personal AI assistant. What should go in short-term memory? What in long-term? What should it <em>never</em> store? Think through the privacy implications — if the agent remembers everything, what could go wrong?</p>
+    <textarea class="reflection-input" placeholder="Short-term: ...\nLong-term: ...\nShould never store: ..."></textarea>
+    <button class="save-reflection">Save</button>
+  </div>
+
+  <!-- Next Steps -->
+  <h3>✅ Before You Move On</h3>
+  <div class="checklist" style="margin-top:16px;">
+    <label><input type="checkbox"> I can explain the three memory types and name a use case for each</label>
+    <label><input type="checkbox"> I understand what a vector database does and why it matters for long-term memory</label>
+    <label><input type="checkbox"> I can explain the difference between a stateless and stateful agent</label>
+    <label><input type="checkbox"> I've thought through at least one memory privacy concern</label>
+  </div>
+
+  <p style="margin-top:24px;"><strong>Tomorrow:</strong> Day 6 — Explore Existing Agents. We'll look at AutoGPT, BabyAGI, and Claude Code to see how real-world agent systems implement memory, planning, and tool use — and what lessons we can take from them.</p>
+
+  <p><a class="day-link" href="https://github.com/CeciliaW888/ai-agent-learning/blob/main/week-01/day-05-memory-state.md" target="_blank" rel="noopener">📖 Read the full Day 5 study guide →</a></p>
+
+</div>
+</section>

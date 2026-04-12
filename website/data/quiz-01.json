@@ -1,0 +1,37 @@
+{
+  "questions": [
+    {
+      "question": "What distinguishes an AI agent from a regular chatbot?",
+      "options": [
+        "Agents use a different programming language",
+        "Agents can use tools, plan multi-step tasks, and take actions autonomously",
+        "Agents are always connected to the internet",
+        "Agents only work with voice input"
+      ],
+      "answer": 1,
+      "explanation": "Unlike chatbots that simply respond to messages, agents can invoke tools, break goals into steps, and act autonomously to complete complex tasks."
+    },
+    {
+      "question": "Which component serves as the \"brain\" of an AI agent?",
+      "options": [
+        "A database",
+        "A search engine",
+        "A Large Language Model (LLM)",
+        "A rule-based decision tree"
+      ],
+      "answer": 2,
+      "explanation": "The LLM is the reasoning core of an agent — it interprets inputs, decides what actions to take, and formulates responses."
+    },
+    {
+      "question": "Which of these is NOT a characteristic of AI agents?",
+      "options": [
+        "They can only respond to single-turn queries",
+        "They can plan across multiple steps",
+        "They can use external tools",
+        "They can maintain context over a task"
+      ],
+      "answer": 0,
+      "explanation": "Being limited to single-turn queries is a chatbot limitation, not an agent characteristic. Agents are designed for multi-step, multi-turn tasks."
+    }
+  ]
+}

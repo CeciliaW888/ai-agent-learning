@@ -1,0 +1,308 @@
+<section class="module" id="module-10" data-day="10">
+<div class="module-inner">
+
+  <h2>Day 10: Tool Calling Deep Dive</h2>
+
+  <div class="callout-accent">
+    <span class="callout-icon">🔧</span>
+    <div class="callout-content">
+      <strong>Tools are the hands of the agent.</strong> The LLM reasons and decides — but without tools it can only generate text. Tools give agents real-world reach: search the web, run calculations, read files, call APIs. Today you learn to build them the right way.
+    </div>
+  </div>
+
+  <!-- Learning Objectives -->
+  <h3>🎯 Learning Objectives</h3>
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">1</span>
+      <div class="step-body">
+        <strong>Understand how JSON schema defines a tool</strong>
+        <p>The LLM never sees your Python code — it reads a schema: name, description, parameters. That schema determines everything.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">2</span>
+      <div class="step-body">
+        <strong>Write the <code>@tool</code> decorator correctly</strong>
+        <p>LangChain's decorator turns any Python function into a tool. The docstring becomes the LLM-readable description — make it count.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">3</span>
+      <div class="step-body">
+        <strong>Chain multiple tools to complete complex tasks</strong>
+        <p>Real agent work requires sequences of tools — search, then calculate, then save. Watch how the LLM orchestrates this automatically.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Watch -->
+  <h3>📺 Watch &amp; Code (45 min)</h3>
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">🎥</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://www.deeplearning.ai/short-courses/functions-tools-agents-langchain/" target="_blank" rel="noopener">Functions, Tools &amp; Agents — DeepLearning.AI (Lessons 4–5)</a></strong>
+        <p>~30 min · Harrison Chase walks through tool design hands-on. Follow along with code.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">🎥</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://www.youtube.com/watch?v=bTMPwUgLZf0" target="_blank" rel="noopener">Build an AI Agent From Scratch — Tech With Tim</a></strong>
+        <p>~15 min · Builds a tool-using agent end-to-end in Python. Good visual walkthrough of the tool selection loop.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core Concepts -->
+  <h3>📚 Core Concepts</h3>
+
+  <h4>🏗️ How Tool Calling Works</h4>
+
+  <p>When you give an LLM a list of tools, it doesn't see the Python code — it sees a <strong>JSON schema</strong> for each tool: name, description, and parameter types. The LLM reads this schema and decides which tool to call and with what arguments. The framework runs the actual Python function, returns the result as an observation, and the LLM continues reasoning from there.</p>
+
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">1</span>
+      <div class="step-body">
+        <strong>LLM reads the schema</strong>
+        <p>Tool descriptions are injected into the system prompt. The LLM learns what tools exist, what they do, and what arguments they need.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">2</span>
+      <div class="step-body">
+        <strong>LLM decides: which tool + what args</strong>
+        <p>Based on the request and descriptions, the LLM outputs a structured tool call — e.g. <code>search_web("AI agent frameworks 2024")</code>.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">3</span>
+      <div class="step-body">
+        <strong>Framework executes, returns observation</strong>
+        <p>The framework calls your Python function and passes the result back to the LLM as an "observation." The agent reads it and decides what to do next.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">4</span>
+      <div class="step-body">
+        <strong>Loop until done</strong>
+        <p>The agent keeps calling tools and reading observations until it has enough to give a final answer. This is the ReAct loop you learned in Week 1.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout-info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-content">
+      <strong>The description field is the most important part.</strong> The LLM reads your tool's docstring to decide <em>when</em> to use it. A vague description like "find information" leads to wrong tool selection. A specific description like "Search the web for current facts. Use ONLY for real-time information. Do NOT use for math calculations." guides the LLM precisely — every time.
+    </div>
+  </div>
+
+  <h4>📝 Defining Two Tools with <code>@tool</code></h4>
+
+  <p>Here's how to define a search tool and a calculator in LangChain. Notice how the docstrings are written <em>for the LLM</em> — they explicitly say when to use each tool and what to avoid:</p>
+
+  <pre><code>from langchain_core.tools import tool
+import os
+
+@tool
+def search_web(query: str) -> str:
+    """Search the internet for current, real-world information.
+
+    Use this for: facts, news, recent events, statistics,
+    anything that requires up-to-date data from the web.
+    Do NOT use for: math, arithmetic, or calculations —
+    use the calculate tool instead.
+
+    Args:
+        query: A specific search query. More specific = better results.
+               Example: "AI agent frameworks Python 2024 comparison"
+    """
+    try:
+        from tavily import TavilyClient
+        client = TavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
+        results = client.search(query, max_results=3)
+
+        if not results.get("results"):
+            return f"No results found for '{query}'. Try rephrasing."
+
+        formatted = []
+        for r in results["results"]:
+            formatted.append(
+                f"**{r['title']}**\n"
+                f"{r['content'][:300]}\n"
+                f"Source: {r['url']}"
+            )
+        return "\n\n---\n\n".join(formatted)
+    except Exception as e:
+        return f"Search error: {str(e)}"
+
+
+@tool
+def calculate(expression: str) -> str:
+    """Evaluate a math expression. Use for ANY arithmetic,
+    percentages, ratios, or numeric calculations.
+
+    Never estimate — always use this tool when math is involved.
+    Do NOT use for looking up facts or searching the web.
+
+    Args:
+        expression: A valid math expression using numbers and +-*/()
+                    Example: "100 * 0.15" to get 15% of 100
+                    Example: "(50 + 30) / 2" for an average
+    """
+    safe_chars = set("0123456789+-*/.() ")
+    if not all(c in safe_chars for c in expression):
+        return "Error: Use only numbers and +-*/(). No variables or text."
+    try:
+        result = eval(expression)
+        return f"{expression} = {result}"
+    except ZeroDivisionError:
+        return "Error: Division by zero."
+    except Exception:
+        return f"Error: Could not evaluate '{expression}'. Check syntax."</code></pre>
+
+  <h4>💬 Watching the Agent Choose</h4>
+
+  <p>Here's an agent deciding which tool to use — notice how the descriptions drive the decision:</p>
+
+  <div class="chat-window" id="chat-tool-choice">
+    <div class="chat-messages">
+      <div class="chat-message" data-msg="1" data-sender="4" style="display:none;">
+        User: What's the current market cap of Nvidia?
+      </div>
+      <div class="chat-message" data-msg="2" data-sender="2" style="display:none;">
+        Agent [Thought]: This is a real-time fact — I need current data from the web. The search_web tool is for exactly this. I should not estimate or calculate this.
+      </div>
+      <div class="chat-message" data-msg="3" data-sender="3" style="display:none;">
+        Agent [Action]: search_web("Nvidia market cap current 2024")
+      </div>
+      <div class="chat-message" data-msg="4" data-sender="4" style="display:none;">
+        Tool Result: Nvidia's market cap reached approximately $3.3 trillion in late 2024, making it one of the most valuable companies in history. Source: Reuters
+      </div>
+      <div class="chat-message" data-msg="5" data-sender="1" style="display:none;">
+        Agent: Nvidia's market cap is approximately $3.3 trillion as of late 2024.
+      </div>
+      <div class="chat-message" data-msg="6" data-sender="4" style="display:none;">
+        User: If I'd invested $5,000 when it was at $1 trillion, what would it be worth now?
+      </div>
+      <div class="chat-message" data-msg="7" data-sender="2" style="display:none;">
+        Agent [Thought]: This is pure arithmetic — $1T to $3.3T is a 3.3x multiplier. I should use the calculate tool, not search. The description says to never estimate math.
+      </div>
+      <div class="chat-message" data-msg="8" data-sender="3" style="display:none;">
+        Agent [Action]: calculate("5000 * 3.3")
+      </div>
+      <div class="chat-message" data-msg="9" data-sender="1" style="display:none;">
+        Agent: Your $5,000 would be worth approximately $16,500 today — a 3.3x return based on Nvidia's growth from $1T to $3.3T market cap.
+      </div>
+      <div class="chat-typing typing-indicator" style="display:none;">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="chat-controls">
+      <button class="chat-next-btn">Next →</button>
+      <button class="chat-all-btn">Show All</button>
+      <button class="chat-reset-btn">Reset</button>
+    </div>
+  </div>
+
+  <p><strong>The key:</strong> The agent used <code>search_web</code> for a real-time fact and <code>calculate</code> for arithmetic — because the descriptions made those boundaries unambiguous. This is why description quality matters more than almost anything else.</p>
+
+  <h4>📄 Schema vs Execution</h4>
+
+  <div class="flashcard">
+    <div class="flashcard-inner">
+      <div class="flashcard-front">
+        <h4>📄 Tool Definition (Schema)</h4>
+        <p>What the LLM sees — the name, description, and parameter types injected into the system prompt. This is what determines whether the agent picks the right tool.</p>
+        <p><em>"search_web: Search the internet for current, real-world information. Use for facts and news. Do NOT use for math."</em></p>
+        <p>The description is the instruction manual — written for the model, not for Python.</p>
+        <p style="font-size:2em;margin-top:12px">📄</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted)">← Tap to flip →</p>
+      </div>
+      <div class="flashcard-back">
+        <h4>⚙️ Tool Execution (Runtime)</h4>
+        <p>What actually runs when the tool is called — the Python function, API calls, error handling, and return value. The LLM never sees this code; it only reads the string result that comes back.</p>
+        <p><em>TavilyClient().search(query) → formatted string → returned as "observation"</em></p>
+        <p>The engine under the hood — must be reliable and always return a clear, readable string.</p>
+        <p style="font-size:2em;margin-top:12px">⚙️</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted)">← Tap to flip →</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Terms -->
+  <h3>📖 Key Terms</h3>
+  <div class="term-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">@tool decorator</strong><br>
+      LangChain decorator that turns a Python function into an agent tool. The function's docstring becomes the description the LLM reads to decide when to use it.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">JSON Schema</strong><br>
+      The structured description of a tool — name, description, parameters, and types. This is what gets injected into the LLM's context window.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Observation</strong><br>
+      The result the LLM receives after a tool call. The agent reads this to decide its next action — search again, calculate, or give a final answer.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Single Responsibility</strong><br>
+      Each tool should do exactly one thing well. "Search + summarize + save" should be three separate tools — cleaner descriptions, better selection accuracy.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Tool Chaining</strong><br>
+      When an agent calls multiple tools in sequence — search → calculate → save — to complete a task that no single tool could handle alone.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Tavily</strong><br>
+      A search API purpose-built for AI agents — returns clean, structured results optimized for LLM consumption, not rendered HTML.
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <h3>📝 Quick Check</h3>
+
+  <div class="quiz-card">
+    <p class="quiz-question"><strong>Q1:</strong> Your agent keeps using <code>search_web</code> when it should use <code>calculate</code> for percentage questions. What's the most likely cause?</p>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="The LLM never sees your Python code — it reads the description. The code logic isn't what drives tool selection.">There's a bug in the Python code for the calculate tool</button>
+      <button class="quiz-option" data-correct="true" data-explanation-correct="Exactly. The LLM picks tools based on their descriptions. If 'search_web' and 'calculate' have overlapping or vague descriptions, the agent can't tell which to use. Make descriptions mutually exclusive — explicitly say what NOT to use each tool for.">The tool descriptions overlap or are too vague</button>
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Model version rarely causes wrong tool selection — it's almost always a description quality issue.">The LLM model version is too old</button>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <p class="quiz-question"><strong>Q2:</strong> Why should tools return strings instead of Python dictionaries or objects?</p>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="true" data-explanation-correct="Correct. The LLM reads the tool result as text in its context window. When you return a string, you control exactly what the LLM sees. A dict gets auto-converted to a potentially messy string representation — and you lose that control.">The LLM reads the result as text — returning a clean string gives you full control over what the model sees</button>
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Python handles both just fine — this isn't about performance.">Python processes strings faster than dictionaries</button>
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="LangChain can handle other types, but that's not the reason to prefer strings.">LangChain doesn't support returning complex types from tools</button>
+    </div>
+  </div>
+
+  <!-- Reflection -->
+  <h3>🤔 Reflection</h3>
+  <div class="reflection-card">
+    <p>Think of a task you do regularly — research, writing, data work, scheduling. Design 3 tools an agent would need to help with it. For each, write the name and a one-sentence description specific enough that an LLM would never confuse them with each other.</p>
+    <textarea class="reflection-input" placeholder="Task: ...\nTool 1 — name: ... description: ...\nTool 2 — name: ... description: ...\nTool 3 — name: ... description: ..."></textarea>
+    <button class="save-reflection">Save</button>
+  </div>
+
+  <!-- Next Steps -->
+  <h3>✅ Before You Move On</h3>
+  <div class="checklist" style="margin-top:16px;">
+    <label><input type="checkbox"> I understand how the @tool decorator exposes a Python function to an LLM via JSON schema</label>
+    <label><input type="checkbox"> I know why tool descriptions must be specific and mutually exclusive</label>
+    <label><input type="checkbox"> I can trace a multi-tool agent interaction: thought → action → observation → next thought</label>
+    <label><input type="checkbox"> I understand the difference between the tool schema (what the LLM sees) and the tool execution (what actually runs)</label>
+  </div>
+
+  <p style="margin-top:24px;"><strong>Tomorrow:</strong> Day 11 — Building a Search Agent. Your first complete project begins! You'll combine LangChain, prompt engineering, and the tools from today into a working research agent that can actually find, synthesize, and save information.</p>
+
+  <p><a class="day-link" href="https://github.com/CeciliaW888/ai-agent-learning/blob/main/week-02/day-10-tool-calling-practice.md" target="_blank" rel="noopener">📖 Read the full Day 10 study guide →</a></p>
+
+</div>
+</section>

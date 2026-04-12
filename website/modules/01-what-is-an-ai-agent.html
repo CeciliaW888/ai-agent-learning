@@ -1,0 +1,248 @@
+<section class="module" id="module-1" data-day="1">
+<div class="module-inner">
+
+  <h2>Day 1: What is an AI Agent?</h2>
+
+  <div class="callout-accent">
+    <span class="callout-icon">🤖</span>
+    <div class="callout-content">
+      <strong>The big shift:</strong> Most people use AI like a calculator — ask a question, get an answer. An AI Agent is different. It <em>decides</em> what to do next, uses tools to get things done, and keeps going until the job is finished.
+    </div>
+  </div>
+
+  <!-- Learning Objectives -->
+  <h3>🎯 Learning Objectives</h3>
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">1</span>
+      <div class="step-body">
+        <strong>Define an AI Agent in your own words</strong>
+        <p>Explain what makes something an "agent" vs a plain chatbot — and why the difference matters.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">2</span>
+      <div class="step-body">
+        <strong>Understand the role of the LLM</strong>
+        <p>See how a large language model acts as the "brain" while tools, memory, and planning act as the "body".</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">3</span>
+      <div class="step-body">
+        <strong>Spot agents you already use</strong>
+        <p>Identify at least 3 AI agents in the wild — email assistants, coding tools, customer support bots.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Watch -->
+  <h3>📺 Watch First (40 min)</h3>
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">🎥</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://www.youtube.com/watch?v=F8NKVhkZZWI" target="_blank" rel="noopener">What are AI Agents? — IBM Technology</a></strong>
+        <p>15 min · Great overview of what agents are and why they matter. Start here.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">🎥</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://www.youtube.com/watch?v=g24tJk8Flsk" target="_blank" rel="noopener">AI Agents Explained — LearnThatStack</a></strong>
+        <p>12 min · Walks through the reasoning loop with clear visuals.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">🎓</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://www.deeplearning.ai/short-courses/ai-agents-in-langgraph/" target="_blank" rel="noopener">AI Agents in LangGraph — DeepLearning.AI</a></strong>
+        <p>~15 min for Lesson 1 · Andrew Ng's team explains agents in depth. Free course.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core Concepts -->
+  <h3>📚 Core Concepts</h3>
+
+  <h4>🧠 What Makes Something an "Agent"?</h4>
+
+  <p>An <span class="term" data-definition="An AI system that can perceive its environment, make decisions, and take actions autonomously to complete a goal">AI Agent</span> is a system that can <strong>perceive</strong> its environment, <strong>decide</strong> what to do, and <strong>act</strong> — repeatedly, until a goal is achieved.</p>
+
+  <p>The key word is <em>autonomous</em>. A chatbot waits for you to ask questions. An agent keeps going on its own — searching the web, running code, calling APIs, writing files — whatever it takes to finish the job.</p>
+
+  <div class="callout-info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-content">
+      <strong>Simple test:</strong> If you give it a goal and walk away, does it figure out the steps itself? If yes — it's an agent. If it needs you to guide every step — it's a chatbot.
+    </div>
+  </div>
+
+  <h4>🏗️ The LLM is Just the Brain</h4>
+
+  <p>An LLM (like GPT-4 or Claude) by itself is just a very smart text predictor. It becomes an agent when you wrap it with:</p>
+
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">🔧</span>
+      <div class="step-body">
+        <strong>Tools</strong>
+        <p>Functions the agent can call — web search, code execution, database queries, sending emails.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">🧠</span>
+      <div class="step-body">
+        <strong>Memory</strong>
+        <p>Short-term (current conversation) and long-term (facts stored across sessions).</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">📋</span>
+      <div class="step-body">
+        <strong>Planning</strong>
+        <p>The ability to break a big goal into steps and decide what to do next at each stage.</p>
+      </div>
+    </div>
+  </div>
+
+  <h4>💬 Watching an Agent Think</h4>
+
+  <p>Here's what it looks like when an agent processes a real request:</p>
+
+  <div class="chat-window" id="chat-agent-thinking">
+    <div class="chat-messages">
+      <div class="chat-message" data-msg="1" data-sender="1" style="display:none;">
+        User: "Research the top 3 AI frameworks for building agents in 2024 and summarize the pros and cons."
+      </div>
+      <div class="chat-message" data-msg="2" data-sender="2" style="display:none;">
+        Agent [Thought]: I need to search for current information. Let me use the web search tool.
+      </div>
+      <div class="chat-message" data-msg="3" data-sender="3" style="display:none;">
+        Agent [Action]: search_web("best AI agent frameworks 2024")
+      </div>
+      <div class="chat-message" data-msg="4" data-sender="4" style="display:none;">
+        Tool Result: [Returns results about LangChain, LlamaIndex, AutoGen...]
+      </div>
+      <div class="chat-message" data-msg="5" data-sender="2" style="display:none;">
+        Agent [Thought]: Good results. Now I'll search for comparison articles to get the pros/cons.
+      </div>
+      <div class="chat-message" data-msg="6" data-sender="3" style="display:none;">
+        Agent [Action]: search_web("LangChain vs LlamaIndex vs AutoGen comparison")
+      </div>
+      <div class="chat-message" data-msg="7" data-sender="2" style="display:none;">
+        Agent [Thought]: I have enough information. Now I'll synthesize this into a clear summary.
+      </div>
+      <div class="chat-message" data-msg="8" data-sender="1" style="display:none;">
+        Agent [Answer]: Here are the top 3 AI agent frameworks in 2024...
+      </div>
+      <div class="chat-typing typing-indicator" style="display:none;">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="chat-controls">
+      <button class="chat-next-btn">Next →</button>
+      <button class="chat-all-btn">Show All</button>
+      <button class="chat-reset-btn">Reset</button>
+    </div>
+  </div>
+
+  <p><strong>Notice the loop:</strong> Think → Act → Observe → Think again. This is the core of every agent system you'll build in this course.</p>
+
+  <h4>🤖 Agent vs Chatbot — The Key Difference</h4>
+
+  <div class="flashcard">
+    <div class="flashcard-inner">
+      <div class="flashcard-front">
+        <h4>💬 Chatbot</h4>
+        <p>Responds to one message at a time. Waits for you to tell it what to do next. Can't use external tools or take actions in the real world.</p>
+        <p><em>"What's the weather today?"</em> → gives an answer (from training data, often outdated)</p>
+        <p style="font-size:2em;margin-top:12px">💬</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted)">← Tap to flip →</p>
+      </div>
+      <div class="flashcard-back">
+        <h4>🤖 AI Agent</h4>
+        <p>Given a goal, figures out the steps itself. Calls tools, searches the web, writes code, loops until done.</p>
+        <p><em>"Book me the cheapest flight to Tokyo next month"</em> → searches flights, compares prices, drafts the booking</p>
+        <p style="font-size:2em;margin-top:12px">🤖</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted)">← Tap to flip →</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout-warning">
+    <span class="callout-icon">⚠️</span>
+    <div class="callout-content">
+      <strong>Common misconception:</strong> "Isn't ChatGPT an agent?" — Not exactly. ChatGPT (without plugins) is a very capable chatbot. ChatGPT with web browsing + code interpreter + file access starts to become an agent. The tools are what make the difference.
+    </div>
+  </div>
+
+  <!-- Key Terminology -->
+  <h3>📖 Key Terms</h3>
+  <div class="term-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">AI Agent</strong><br>
+      An autonomous AI system that perceives, decides, and acts repeatedly to achieve a goal — without needing a human to guide every step.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">LLM (Large Language Model)</strong><br>
+      The "brain" of an agent — e.g. GPT-4, Claude, Gemini. Handles reasoning and language. Needs tools + memory to become an agent.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Tool / Function Call</strong><br>
+      A capability the agent can use: search the web, run Python, query a database, send an email. Tools are what give agents real-world reach.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Autonomy</strong><br>
+      The ability to take initiative — deciding what steps to take without being told explicitly. The defining trait of an agent vs a chatbot.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">ReAct Pattern</strong><br>
+      Reason + Act — the loop where the agent thinks about what to do, does it, observes the result, and thinks again. You'll build this in Week 2.
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <h3>📝 Quick Check</h3>
+
+  <div class="quiz-card">
+    <p class="quiz-question"><strong>Q1:</strong> What is the key difference between an AI chatbot and an AI agent?</p>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Intelligence isn't the main difference — both use LLMs. The key is autonomy and tool use.">Agents use smarter AI models</button>
+      <button class="quiz-option" data-correct="true" data-explanation-correct="Correct! Agents take multiple actions autonomously using tools to complete a goal, while chatbots respond one message at a time.">Agents take autonomous actions with tools; chatbots respond one message at a time</button>
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Some chatbots are free too. This isn't the defining difference.">Agents cost more to use</button>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <p class="quiz-question"><strong>Q2:</strong> What three things turn a plain LLM into an agent?</p>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Speed helps, but it's not what defines an agent.">Faster response time, larger context, better training data</button>
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="These are outputs, not the components that make an agent.">Text, images, and audio generation</button>
+      <button class="quiz-option" data-correct="true" data-explanation-correct="Exactly! Tools give it real-world reach, memory lets it learn across steps, and planning lets it break goals into actions.">Tools, memory, and planning</button>
+    </div>
+  </div>
+
+  <!-- Reflection -->
+  <h3>🤔 Reflection</h3>
+  <div class="reflection-card">
+    <p>Think of an AI tool you've used recently (ChatGPT, Copilot, Siri, etc.). Based on today's lesson — was it a chatbot or an agent? What would need to change to make it a true agent?</p>
+    <textarea class="reflection-input" placeholder="Write your thoughts here..."></textarea>
+    <button class="save-reflection">Save</button>
+  </div>
+
+  <!-- Next Steps -->
+  <h3>✅ Before You Move On</h3>
+  <div class="checklist" style="margin-top:16px;">
+    <label><input type="checkbox"> I can explain what an AI agent is in one sentence</label>
+    <label><input type="checkbox"> I understand why tools + memory + planning matter</label>
+    <label><input type="checkbox"> I identified 3 agents I already interact with</label>
+    <label><input type="checkbox"> I completed the reflection above</label>
+  </div>
+
+  <p style="margin-top:24px;"><strong>Tomorrow:</strong> Day 2 — The PDA Loop. We'll go deep on <em>how</em> agents think: Perceive → Decide → Act, and why this loop is the heartbeat of every agent system.</p>
+
+  <p><a class="day-link" href="https://github.com/CeciliaW888/ai-agent-learning/blob/main/week-01/day-01-what-is-ai-agent.md" target="_blank" rel="noopener">📖 Read the full Day 1 study guide →</a></p>
+
+</div>
+</section>

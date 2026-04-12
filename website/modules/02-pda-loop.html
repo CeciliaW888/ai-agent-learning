@@ -1,0 +1,274 @@
+<section class="module" id="module-2" data-day="2">
+<div class="module-inner">
+
+  <h2>Day 2: The PDA Loop — How Agents Think</h2>
+
+  <div class="callout-accent">
+    <span class="callout-icon">🔄</span>
+    <div class="callout-content">
+      <strong>The heartbeat of every agent:</strong> Perceive → Decide → Act. This loop repeats — sometimes dozens of times — until the agent finishes a task. Understanding it deeply will help you build, debug, and improve any agent system.
+    </div>
+  </div>
+
+  <!-- Learning Objectives -->
+  <h3>🎯 Learning Objectives</h3>
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">1</span>
+      <div class="step-body">
+        <strong>Name and explain all three phases</strong>
+        <p>Describe what happens in Perceive, Decide, and Act — and give a concrete example for each.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">2</span>
+      <div class="step-body">
+        <strong>Trace a loop end-to-end</strong>
+        <p>Follow a real agent task through multiple PDA cycles and explain what changes at each iteration.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">3</span>
+      <div class="step-body">
+        <strong>Understand the ReAct pattern</strong>
+        <p>Connect the PDA loop to ReAct (Reason + Act) — the prompting strategy you'll use in Week 2.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Watch -->
+  <h3>📺 Watch First (30 min)</h3>
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">🎥</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://www.youtube.com/watch?v=g24tJk8Flsk" target="_blank" rel="noopener">AI Agents Explained — LearnThatStack</a></strong>
+        <p>12 min · Rewatch from Day 1, this time focus on the reasoning loop section (~3:00). See it differently now that you know the PDA framework.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">🎥</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://www.youtube.com/watch?v=Eug2clsLtFs" target="_blank" rel="noopener">ReAct Pattern Explained — Sam Witteveen</a></strong>
+        <p>20 min · Deep dive into how Reason + Act drives agent behavior in practice. Essential viewing.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core Concepts -->
+  <h3>📚 Core Concepts</h3>
+
+  <h4>🔍 Phase 1: Perceive</h4>
+
+  <p>Before an agent can do anything, it needs to understand its situation. The <span class="term" data-definition="The Perceive phase is when the agent receives and processes all inputs — user messages, tool results, memory contents, and environment state">Perceive phase</span> is when the agent takes in everything available to it:</p>
+
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">📥</span>
+      <div class="step-body">
+        <strong>User input</strong>
+        <p>The initial request or follow-up message. E.g. "Find me the best Python course under $50."</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">🔧</span>
+      <div class="step-body">
+        <strong>Tool results</strong>
+        <p>Output from the last action — search results, code output, database records.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">🧠</span>
+      <div class="step-body">
+        <strong>Memory</strong>
+        <p>What the agent already knows — past conversation, saved notes, retrieved documents.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout-info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-content">
+      <strong>Key insight:</strong> Everything an agent "sees" fits inside its context window — the LLM's working memory. The art of agent design is deciding <em>what</em> to put in that window at each step.
+    </div>
+  </div>
+
+  <h4>🤔 Phase 2: Decide</h4>
+
+  <p>This is where the LLM does its work. Given everything it perceives, it reasons about what to do next:</p>
+
+  <p><em>Should I search the web? Run some code? Ask the user for clarification? Or do I have enough to give a final answer?</em></p>
+
+  <p>The <span class="term" data-definition="ReAct stands for Reason + Act. A prompting technique that tells the agent to write out its Thought before choosing an Action — making reasoning explicit and debuggable.">ReAct pattern</span> makes this explicit by prompting the agent to write out its reasoning (<strong>Thought:</strong>) before choosing an action (<strong>Action:</strong>). You'll implement this in Week 2.</p>
+
+  <h4>⚡ Phase 3: Act</h4>
+
+  <p>The agent executes whatever it decided — then the result feeds back into the next Perceive phase. Common actions:</p>
+
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">🌐</span>
+      <div class="step-body">
+        <strong>Tool call</strong>
+        <p>search_web(), run_python(), query_database(), send_email()...</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">💬</span>
+      <div class="step-body">
+        <strong>Final answer</strong>
+        <p>The agent decides it has enough information and responds. The loop ends.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">❓</span>
+      <div class="step-body">
+        <strong>Clarification request</strong>
+        <p>Asks the user for more information before continuing.</p>
+      </div>
+    </div>
+  </div>
+
+  <h4>🔄 Watching the Full Loop in Action</h4>
+
+  <p>Here's a real PDA loop traced step by step: <em>"What's Apple's stock price and is it higher than last week?"</em></p>
+
+  <div class="chat-window" id="chat-pda-loop">
+    <div class="chat-messages">
+      <div class="chat-message" data-msg="1" data-sender="1" style="display:none;">
+        <strong>[Loop 1 — Perceive]</strong> Input: "What's Apple's stock price and is it higher than last week?"
+      </div>
+      <div class="chat-message" data-msg="2" data-sender="2" style="display:none;">
+        <strong>[Loop 1 — Decide]</strong> Thought: I need live data. I'll call the stock tool for today's price.
+      </div>
+      <div class="chat-message" data-msg="3" data-sender="3" style="display:none;">
+        <strong>[Loop 1 — Act]</strong> Action: get_stock_price("AAPL", period="today")
+      </div>
+      <div class="chat-message" data-msg="4" data-sender="4" style="display:none;">
+        <strong>[Loop 2 — Perceive]</strong> Observation: AAPL today = $213.45
+      </div>
+      <div class="chat-message" data-msg="5" data-sender="2" style="display:none;">
+        <strong>[Loop 2 — Decide]</strong> Thought: I have today's price but still need last week's. One more call.
+      </div>
+      <div class="chat-message" data-msg="6" data-sender="3" style="display:none;">
+        <strong>[Loop 2 — Act]</strong> Action: get_stock_price("AAPL", period="7d_ago")
+      </div>
+      <div class="chat-message" data-msg="7" data-sender="4" style="display:none;">
+        <strong>[Loop 3 — Perceive]</strong> Observation: AAPL last week = $208.12
+      </div>
+      <div class="chat-message" data-msg="8" data-sender="2" style="display:none;">
+        <strong>[Loop 3 — Decide]</strong> Thought: $213.45 > $208.12. I have enough to answer now.
+      </div>
+      <div class="chat-message" data-msg="9" data-sender="1" style="display:none;">
+        <strong>[Loop 3 — Act]</strong> Answer: "Apple is $213.45 today, up 2.6% from $208.12 last week."
+      </div>
+      <div class="chat-typing typing-indicator" style="display:none;">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="chat-controls">
+      <button class="chat-next-btn">Next →</button>
+      <button class="chat-all-btn">Show All</button>
+      <button class="chat-reset-btn">Reset</button>
+    </div>
+  </div>
+
+  <p><strong>Three loops, two tool calls, one answer.</strong> The agent only stopped when it had everything it needed.</p>
+
+  <h4>📊 PDA vs ReAct — Same Thing, Different View</h4>
+
+  <div class="flashcard">
+    <div class="flashcard-inner">
+      <div class="flashcard-front">
+        <h4>🔄 PDA Loop</h4>
+        <p><strong>Perceive → Decide → Act</strong></p>
+        <p>The <em>architectural</em> view of how an agent works. Describes what's happening at a system level on each cycle.</p>
+        <p style="font-size:0.85em;color:var(--color-text-secondary)">The theory — what's happening inside the agent.</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted);margin-top:12px">← Tap to flip →</p>
+      </div>
+      <div class="flashcard-back">
+        <h4>⚡ ReAct Pattern</h4>
+        <p><strong>Thought → Action → Observation</strong></p>
+        <p>The <em>prompting technique</em> that implements the Decide phase. You write: "Always write your Thought before taking an Action."</p>
+        <p style="font-size:0.85em;color:var(--color-text-secondary)">The practice — how you engineer the agent's reasoning.</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted);margin-top:12px">← Tap to flip →</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout-warning">
+    <span class="callout-icon">⚠️</span>
+    <div class="callout-content">
+      <strong>Infinite loops are real:</strong> An agent that never decides "I have enough to answer" will loop forever — burning tokens and money. Good agent design always includes a clear stopping condition. You'll handle this in Week 2.
+    </div>
+  </div>
+
+  <!-- Key Terminology -->
+  <h3>📖 Key Terms</h3>
+  <div class="term-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">PDA Loop</strong><br>
+      Perceive → Decide → Act. The three-phase cycle every agent runs repeatedly until a task is complete.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">ReAct (Reason + Act)</strong><br>
+      A prompting pattern where the agent writes explicit Thought → Action → Observation steps. Makes reasoning transparent and debuggable.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Context Window</strong><br>
+      The agent's working memory — everything it can "see" at once. The Perceive phase is about deciding what goes in here.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Observation</strong><br>
+      The result of an action — search results, code output, API responses. Feeds directly into the next Perceive phase.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Stopping Condition</strong><br>
+      The rule that ends the loop — "I have enough to answer" or "max steps reached." Critical for preventing infinite loops.
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <h3>📝 Quick Check</h3>
+
+  <div class="quiz-card">
+    <p class="quiz-question"><strong>Q1:</strong> In the Perceive phase, what three types of input does an agent take in?</p>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="These describe output types, not what an agent perceives each loop.">Text, images, and audio</button>
+      <button class="quiz-option" data-correct="true" data-explanation-correct="Correct! User input, tool results from the last action, and memory are combined into the context window each loop.">User input, tool results, and memory</button>
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="These are design-time choices, not per-loop inputs.">Goals, tools, and training data</button>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <p class="quiz-question"><strong>Q2:</strong> Why might an agent run multiple PDA loops for a single user request?</p>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Loops aren't about slowness — they exist because complex tasks need multiple steps.">Agents are slower than chatbots and need more time</button>
+      <button class="quiz-option" data-correct="true" data-explanation-correct="Exactly! Complex goals require multiple tool calls and observations before the agent has enough to answer.">Complex tasks require multiple tool calls before enough information is gathered</button>
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Each loop adds new information — it's not redundant repetition.">To double-check answers by running the same steps twice</button>
+    </div>
+  </div>
+
+  <!-- Reflection -->
+  <h3>🤔 Reflection</h3>
+  <div class="reflection-card">
+    <p>Think of a complex task you do regularly that requires multiple steps. Map it to the PDA loop: What do you "perceive" at each step? What decisions do you make? What actions do you take? How many loops does it take before you have a final answer?</p>
+    <textarea class="reflection-input" placeholder="Write your thoughts here..."></textarea>
+    <button class="save-reflection">Save</button>
+  </div>
+
+  <!-- Next Steps -->
+  <h3>✅ Before You Move On</h3>
+  <div class="checklist" style="margin-top:16px;">
+    <label><input type="checkbox"> I can explain all three PDA phases with examples</label>
+    <label><input type="checkbox"> I understand why agents run multiple loops</label>
+    <label><input type="checkbox"> I know the difference between PDA (architecture) and ReAct (technique)</label>
+    <label><input type="checkbox"> I completed the reflection above</label>
+  </div>
+
+  <p style="margin-top:24px;"><strong>Tomorrow:</strong> Day 3 — Agent vs Chatbot vs RAG. We'll map the full landscape and understand when to use each — and why picking the right tool matters more than you think.</p>
+
+  <p><a class="day-link" href="https://github.com/CeciliaW888/ai-agent-learning/blob/main/week-01/day-02-pda-loop.md" target="_blank" rel="noopener">📖 Read the full Day 2 study guide →</a></p>
+
+</div>
+</section>

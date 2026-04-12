@@ -1,1635 +1,657 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Agent Learning — 21-Day Course</title>
-
-<!-- PWA Meta Tags -->
-<meta name="theme-color" content="#c4825a">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="AI Agents">
-<meta name="description" content="21-Day AI Agent Course — Learn to build AI agents from scratch">
-<meta name="mobile-web-app-capable" content="yes">
-
-<!-- PWA Manifest & Icons -->
-<link rel="manifest" href="./manifest.json">
-<link rel="apple-touch-icon" href="./apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png">
-
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --cream: #f5f0eb;
-    --white: #ffffff;
-    --terracotta: #c4825a;
-    --terracotta-light: #d4a07a;
-    --terracotta-dark: #a06840;
-    --text-primary: #2c2c2c;
-    --text-secondary: #666666;
-    --text-muted: #999999;
-    --blue: #a5d8ff;
-    --blue-strong: #1971c2;
-    --green: #96f2d7;
-    --green-strong: #2f9e44;
-    --yellow: #ffd43b;
-    --yellow-strong: #e67700;
-    --purple: #f3d9fa;
-    --purple-strong: #862e9c;
-    --border: #e5ddd5;
-    --shadow: rgba(196, 130, 90, 0.1);
-    --radius: 16px;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    font-family: 'Inter', -apple-system, sans-serif;
-    background: var(--cream);
-    color: var(--text-primary);
-    line-height: 1.7;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  /* === HEADER === */
-  .hero {
-    background: linear-gradient(135deg, var(--cream) 0%, #ede5db 100%);
-    padding: 60px 24px 50px;
-    text-align: center;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .hero-emoji { font-size: 64px; margin-bottom: 16px; }
-
-  .hero h1 {
-    font-family: 'Noto Serif SC', serif;
-    font-size: clamp(28px, 5vw, 42px);
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 12px;
-    letter-spacing: -0.5px;
-  }
-
-  .hero .subtitle {
-    font-size: 18px;
-    color: var(--text-secondary);
-    margin-bottom: 24px;
-  }
-
-  .hero-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    justify-content: center;
-  }
-
-  /* === INSTALL BUTTON (permanent, in hero) === */
-  .install-btn-permanent {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 16px;
-    padding: 12px 24px;
-    background: var(--terracotta);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-family: 'Inter', -apple-system, sans-serif;
-  }
-  .install-btn-permanent:hover {
-    background: var(--terracotta-dark);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(196, 130, 90, 0.3);
-  }
-  .install-btn-permanent.hidden { display: none; }
-
-  .tag {
-    background: var(--white);
-    border: 1px solid var(--border);
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 14px;
-    color: var(--text-secondary);
-  }
-
-  /* === PROGRESS BAR === */
-  .progress-section {
-    background: var(--white);
-    margin: 24px auto;
-    max-width: 800px;
-    padding: 24px 28px;
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    box-shadow: 0 2px 12px var(--shadow);
-  }
-
-  .progress-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-  }
-
-  .progress-header h3 {
-    font-size: 18px;
-    font-weight: 600;
-  }
-
-  .progress-count {
-    font-size: 14px;
-    color: var(--terracotta);
-    font-weight: 600;
-  }
-
-  .progress-bar-track {
-    background: var(--cream);
-    border-radius: 12px;
-    height: 16px;
-    overflow: hidden;
-    margin-bottom: 20px;
-  }
-
-  .progress-bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--terracotta), var(--terracotta-light));
-    border-radius: 12px;
-    transition: width 0.5s ease;
-    width: 0%;
-  }
-
-  .day-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 6px;
-  }
-
-  .day-dot {
-    aspect-ratio: 1;
-    border-radius: 8px;
-    background: var(--cream);
-    border: 2px solid var(--border);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text-muted);
-    transition: all 0.2s;
-    position: relative;
-  }
-
-  .day-dot:hover { transform: scale(1.1); border-color: var(--terracotta); }
-  .day-dot.completed {
-    background: var(--terracotta);
-    border-color: var(--terracotta);
-    color: white;
-  }
-  .day-dot.completed::after {
-    content: '✓';
-    font-size: 14px;
-    position: absolute;
-  }
-  .day-dot.completed > span { visibility: hidden; }
-
-  .week-labels {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-top: 12px;
-    font-size: 12px;
-    color: var(--text-muted);
-    text-align: center;
-  }
-
-  /* === NAV === */
-  .nav {
-    background: var(--white);
-    border-bottom: 1px solid var(--border);
-    padding: 0 24px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .nav-inner {
-    display: flex;
-    gap: 0;
-    max-width: 800px;
-    margin: 0 auto;
-  }
-
-  .nav-tab {
-    padding: 14px 20px;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-muted);
-    cursor: pointer;
-    border-bottom: 3px solid transparent;
-    white-space: nowrap;
-    transition: all 0.2s;
-  }
-
-  .nav-tab:hover { color: var(--text-secondary); }
-  .nav-tab.active {
-    color: var(--terracotta);
-    border-bottom-color: var(--terracotta);
-    font-weight: 600;
-  }
-
-  /* === CONTENT === */
-  .container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 24px;
-  }
-
-  .section { display: none; }
-  .section.active { display: block; }
-
-  /* === WEEK CARDS === */
-  .week-card {
-    background: var(--white);
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    margin-bottom: 16px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px var(--shadow);
-  }
-
-  .week-card-header {
-    padding: 20px 24px;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: background 0.2s;
-  }
-
-  .week-card-header:hover { background: var(--cream); }
-
-  .week-card-title {
-    font-size: 16px;
-    font-weight: 600;
-  }
-
-  .week-card-meta {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-  }
-
-  .week-card-type {
-    font-size: 12px;
-    padding: 3px 10px;
-    border-radius: 12px;
-    font-weight: 500;
-  }
-
-  .type-video { background: #fff3bf; color: var(--yellow-strong); }
-  .type-hands-on { background: #d3f9d8; color: var(--green-strong); }
-  .type-reflect { background: var(--purple); color: var(--purple-strong); }
-
-  .chevron {
-    font-size: 18px;
-    color: var(--text-muted);
-    transition: transform 0.3s;
-  }
-
-  .week-card.open .chevron { transform: rotate(180deg); }
-
-  .week-card-body {
-    display: none;
-    padding: 0 24px 24px;
-    border-top: 1px solid var(--border);
-  }
-
-  .week-card.open .week-card-body { display: block; }
-
-  .week-card-body h4 {
-    margin: 16px 0 8px;
-    font-size: 15px;
-    color: var(--terracotta);
-  }
-
-  .week-card-body ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  .week-card-body li {
-    padding: 6px 0;
-    font-size: 14px;
-    color: var(--text-secondary);
-  }
-
-  .week-card-body li::before {
-    content: '→ ';
-    color: var(--terracotta);
-  }
-
-  .video-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    color: var(--terracotta);
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 14px;
-  }
-
-  .video-link:hover { text-decoration: underline; }
-
-  /* === DIAGRAMS === */
-  .diagram-card {
-    background: var(--white);
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    margin-bottom: 20px;
-    padding: 24px;
-    box-shadow: 0 2px 8px var(--shadow);
-  }
-
-  .diagram-card h3 {
-    font-size: 18px;
-    margin-bottom: 8px;
-  }
-
-  .diagram-card p {
-    font-size: 14px;
-    color: var(--text-secondary);
-    margin-bottom: 16px;
-  }
-
-  .diagram-preview {
-    background: var(--cream);
-    border-radius: 12px;
-    padding: 12px;
-    text-align: center;
-    overflow-x: auto;
-  }
-
-  .diagram-preview img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-  }
-
-  .diagram-actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 16px;
-  }
-
-  .btn {
-    padding: 8px 20px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    border: none;
-    transition: all 0.2s;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .btn-primary {
-    background: var(--terracotta);
-    color: white;
-  }
-  .btn-primary:hover { background: var(--terracotta-dark); }
-
-  .btn-outline {
-    background: transparent;
-    color: var(--terracotta);
-    border: 1px solid var(--terracotta);
-  }
-  .btn-outline:hover { background: var(--terracotta); color: white; }
-
-  /* === VIDEO SECTION === */
-  .video-card {
-    background: var(--white);
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    margin-bottom: 16px;
-    padding: 20px 24px;
-    box-shadow: 0 2px 8px var(--shadow);
-  }
-
-  .video-card h4 {
-    font-size: 16px;
-    margin-bottom: 4px;
-  }
-
-  .video-card .source {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-bottom: 8px;
-  }
-
-  .video-card .desc {
-    font-size: 14px;
-    color: var(--text-secondary);
-  }
-
-  /* === BUILD IN PUBLIC === */
-  .bip-card {
-    background: var(--white);
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    margin-bottom: 16px;
-    padding: 24px;
-    box-shadow: 0 2px 8px var(--shadow);
-  }
-
-  .bip-card h3 { margin-bottom: 12px; }
-
-  .template-block {
-    background: var(--cream);
-    border-radius: 12px;
-    padding: 20px;
-    margin: 12px 0;
-    font-size: 14px;
-    line-height: 1.8;
-    white-space: pre-wrap;
-  }
-
-  .hashtags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 12px;
-  }
-
-  .hashtag {
-    background: var(--terracotta);
-    color: white;
-    padding: 4px 14px;
-    border-radius: 16px;
-    font-size: 13px;
-    font-weight: 500;
-  }
-
-  /* === SECTION HEADERS === */
-  .section-header {
-    margin-bottom: 24px;
-  }
-
-  .section-header h2 {
-    font-family: 'Noto Serif SC', serif;
-    font-size: 26px;
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
-
-  .section-header p {
-    color: var(--text-secondary);
-    font-size: 15px;
-  }
-
-  /* === SHARE BUTTONS === */
-  .share-bar {
-    display: flex;
-    gap: 10px;
-    margin: 20px 0;
-    flex-wrap: wrap;
-  }
-
-  .share-btn {
-    padding: 8px 16px;
-    border-radius: 10px;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    border: 1px solid var(--border);
-    background: var(--white);
-    color: var(--text-secondary);
-    transition: all 0.2s;
-    text-decoration: none;
-  }
-
-  .share-btn:hover {
-    border-color: var(--terracotta);
-    color: var(--terracotta);
-  }
-
-  /* === WEEK COLOR BARS === */
-  .week-1 .week-card-header { border-left: 4px solid var(--blue-strong); }
-  .week-2 .week-card-header { border-left: 4px solid var(--green-strong); }
-  .week-3 .week-card-header { border-left: 4px solid var(--purple-strong); }
-
-  /* === FOOTER === */
-  footer {
-    text-align: center;
-    padding: 40px 24px;
-    color: var(--text-muted);
-    font-size: 14px;
-    border-top: 1px solid var(--border);
-    margin-top: 40px;
-  }
-
-  footer a { color: var(--terracotta); text-decoration: none; }
-  footer a:hover { text-decoration: underline; }
-
-  /* === RESPONSIVE === */
-  @media (max-width: 600px) {
-    .hero { padding: 40px 20px 36px; }
-    .hero-emoji { font-size: 48px; }
-    .container { padding: 16px; }
-    .nav-tab { padding: 12px 14px; font-size: 13px; }
-    .day-grid { gap: 4px; }
-    .day-dot { font-size: 10px; }
-    .diagram-preview { padding: 8px; }
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Agent Learning — 21-Day Course</title>
+  <meta name="description" content="21-Day AI Agent Course — Learn to build AI agents from scratch">
+  <meta name="theme-color" content="#c4825a">
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="./icons/icon-512.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="AI Agents">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Framework CSS (for interactive module elements) -->
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    :root {
+      --accent:       #c4825a;
+      --accent-hover: #a06840;
+      --accent-light: rgba(196,130,90,0.12);
+      --accent-muted: rgba(196,130,90,0.06);
+      --color-accent:       #c4825a;
+      --color-accent-hover: #a06840;
+      --color-accent-light: rgba(196,130,90,0.12);
+      --color-accent-muted: rgba(196,130,90,0.06);
+      --color-text-secondary: #6b5c52;
+      --color-text-muted: #9e8e84;
+      --color-surface: #ffffff;
+      --color-border: #e8e0d8;
+
+      --cream: #f5f0eb; --white: #ffffff; --border: #e8e0d8;
+      --shadow: rgba(0,0,0,0.08); --text-primary: #2c2420;
+      --text-secondary: #6b5c52; --text-muted: #9e8e84;
+      --radius: 12px; --max-w: 860px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --cream: #1a1614; --white: #242220; --border: #3a3430;
+        --shadow: rgba(0,0,0,0.3); --text-primary: #e8e0d8;
+        --text-secondary: #a09890; --text-muted: #706860;
+      }
+      .hero { background: linear-gradient(135deg, var(--cream) 0%, #221e1a 100%) !important; }
+    }
+
+    body { font-family: 'Inter', -apple-system, sans-serif; } h1, h2, .hero h1 { font-family: 'Noto Serif SC', serif; }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--cream); color: var(--text-primary); line-height: 1.6; }
+
+    /* ── Tab Nav ── */
+    .tab-nav { position: sticky; top: 0; z-index: 100; background: var(--white); border-bottom: 1px solid var(--border); box-shadow: 0 1px 4px var(--shadow); }
+    .tab-nav-inner { max-width: var(--max-w); margin: 0 auto; display: flex; overflow-x: auto; scrollbar-width: none; }
+    .tab-nav-inner::-webkit-scrollbar { display: none; }
+    .tab-btn { flex-shrink: 0; padding: 14px 20px; border: none; background: none; color: var(--text-secondary); font-size: 0.9rem; font-weight: 500; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; white-space: nowrap; }
+    .tab-btn:hover { color: var(--text-primary); }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+
+    /* ── Layout ── */
+    .container { max-width: var(--max-w); margin: 0 auto; padding: 0 20px; }
+    main > .section { display: none; padding: 32px 0 64px; }
+    main > .section.active { display: block; }
+    .section-heading { font-family: 'Noto Serif SC', serif; font-size: 1.6rem; font-weight: 700; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid var(--border); }
+
+    /* ── Hero ── */
+    .hero { background: linear-gradient(135deg, var(--cream) 0%, color-mix(in srgb, var(--accent) 8%, var(--cream)) 100%); padding: 48px 20px 40px; text-align: center; }
+    .hero-emoji { font-size: 3.5rem; margin-bottom: 16px; }
+    .hero h1 { font-family: 'Noto Serif SC', serif; font-size: clamp(1.8rem, 5vw, 2.8rem); font-weight: 700; margin-bottom: 12px; }
+    .hero-subtitle { color: var(--text-secondary); font-size: 1.05rem; margin-bottom: 20px; }
+    .hero-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 24px; }
+    .hero-tag { background: var(--accent-light); color: var(--accent); border: 1px solid var(--accent-light); border-radius: 20px; padding: 4px 14px; font-size: 0.85rem; font-weight: 500; }
+    .install-btn-hero { background: var(--accent); color: white; border: none; border-radius: 8px; padding: 10px 24px; font-size: 0.95rem; font-weight: 600; cursor: pointer; display: none; transition: background 0.2s; }
+    .install-btn-hero:hover { background: var(--accent-hover); }
+    .install-btn-hero.visible { display: inline-block; }
+
+    /* ── Progress Card (ring + streak combo) ── */
+    .progress-card { background: var(--white); border-radius: 8px; border: 1px solid var(--border); padding: 14px 18px; margin: 12px 20px 0; max-width: var(--max-w); margin-inline: auto; }
+    .progress-layout { display: flex; align-items: center; gap: 18px; }
+    @media (max-width: 520px) { .progress-layout { flex-direction: column; gap: 12px; } }
+    /* Ring */
+    .progress-ring { position: relative; flex-shrink: 0; width: 90px; height: 90px; }
+    .progress-ring svg { transform: rotate(-90deg); }
+    .progress-ring .ring-bg { fill: none; stroke: var(--border); stroke-width: 8; }
+    .progress-ring .ring-fg { fill: none; stroke: var(--accent); stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 0.6s ease; }
+    .progress-ring-text { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .progress-ring-pct { font-size: 20px; font-weight: 700; color: var(--accent); line-height: 1; }
+    .progress-ring-sub { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
+    /* Streak grid */
+    .progress-right { flex: 1; min-width: 0; }
+    .progress-right-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .progress-right-header h3 { font-size: 0.8rem; font-weight: 600; }
+    .progress-right-header span { font-size: 0.75rem; color: var(--text-muted); }
+    .streak-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+    .streak-cell { height: 23px; border-radius: 3px; background: var(--cream); cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--text-muted); border: none; padding: 0; }
+    .streak-cell:hover { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .streak-cell.done { background: var(--accent); color: #fff; }
+
+    /* ── Curriculum Cards ── */
+    .week-section { margin-bottom: 32px; }
+    .week-section h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid var(--accent); color: var(--accent); }
+    .day-card { background: var(--white); border-radius: 10px; border: 1px solid var(--border); margin-bottom: 8px; overflow: hidden; }
+    .day-card-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; cursor: pointer; user-select: none; transition: background 0.15s; }
+    .day-card-header:hover { background: var(--accent-muted); }
+    .day-card-title { font-weight: 600; font-size: 0.95rem; }
+    .day-card-meta { display: flex; align-items: center; gap: 10px; }
+    .day-type { font-size: 0.75rem; padding: 2px 8px; border-radius: 10px; font-weight: 500; }
+    .type-foundations { background: #d1fae5; color: #065f46; }
+    .type-concepts   { background: #fef3c7; color: #92400e; }
+    .type-advanced   { background: #ffe4e6; color: #9f1239; }
+    .type-project    { background: #ede9fe; color: #5b21b6; }
+    .type-review     { background: #e0f2fe; color: #075985; }
+    .chevron { font-size: 0.8rem; color: var(--text-muted); transition: transform 0.2s; }
+    .day-card.open .chevron { transform: rotate(180deg); }
+    .day-card-body { display: none; padding: 0 18px 16px; border-top: 1px solid var(--border); }
+    .day-card.open .day-card-body { display: block; }
+    .day-card-body ul { margin: 12px 0 12px 18px; color: var(--text-secondary); font-size: 0.9rem; line-height: 1.8; }
+    .day-link { display: inline-flex; align-items: center; gap: 6px; color: var(--accent); font-size: 0.875rem; font-weight: 600; text-decoration: none; padding: 6px 0; }
+    .day-link:hover { text-decoration: underline; }
+
+    /* ── Module overrides (embedded in tab, not full-viewport) ── */
+    .module { min-height: auto !important; padding: 32px 0; border-bottom: 1px solid var(--border); display: block !important; }
+    .module-inner { max-width: 100%; }
+    pre { color: #e0def4; }
+    code { color: inherit; }
+
+    /* ── Flashcards ── */
+    .flashcard-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .fc { perspective: 800px; height: 180px; cursor: pointer; }
+    .fc-inner { position: relative; width: 100%; height: 100%; transition: transform 0.5s; transform-style: preserve-3d; }
+    .fc.flipped .fc-inner { transform: rotateY(180deg); }
+    .fc-front, .fc-back { position: absolute; inset: 0; border-radius: var(--radius); border: 1px solid var(--border); padding: 20px; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; }
+    .fc-front { background: var(--white); }
+    .fc-back { background: var(--accent); color: white; transform: rotateY(180deg); }
+    .fc-term { font-weight: 700; font-size: 1.05rem; margin-bottom: 8px; }
+    .fc-hint { font-size: 0.8rem; color: var(--text-muted); margin-top: auto; }
+
+    /* ── Quiz ── */
+    .quiz-block { background: var(--white); border-radius: var(--radius); border: 1px solid var(--border); padding: 24px; margin-bottom: 20px; }
+    .quiz-q { font-weight: 600; margin-bottom: 16px; line-height: 1.5; }
+    .quiz-opts { display: flex; flex-direction: column; gap: 8px; }
+    .quiz-opt { background: var(--cream); border: 2px solid var(--border); border-radius: 8px; padding: 10px 16px; text-align: left; cursor: pointer; transition: all 0.15s; font-size: 0.9rem; }
+    .quiz-opt:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-muted); }
+    .quiz-opt.correct { border-color: #10b981; background: #d1fae5; color: #065f46; }
+    .quiz-opt.wrong   { border-color: #ef4444; background: #fee2e2; color: #991b1b; }
+    .quiz-explanation { margin-top: 12px; padding: 12px; background: var(--accent-muted); border-radius: 8px; font-size: 0.875rem; display: none; }
+    .quiz-explanation.visible { display: block; }
+
+    /* ── Diagrams ── */
+    .diagram-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+    .diagram-card { background: var(--white); border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden; }
+    .diagram-card img { width: 100%; height: 200px; object-fit: contain; background: white; padding: 12px; }
+    .diagram-label { padding: 12px 16px; font-weight: 600; font-size: 0.9rem; border-top: 1px solid var(--border); }
+
+    /* ── Resources ── */
+    .resource-group { margin-bottom: 32px; }
+    .resource-group h3 { font-size: 1rem; font-weight: 700; margin-bottom: 12px; color: var(--accent); }
+    .resource-link { display: flex; align-items: flex-start; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border); text-decoration: none; color: inherit; transition: opacity 0.15s; }
+    .resource-link:hover { opacity: 0.75; }
+    .resource-link:last-child { border-bottom: none; }
+    .resource-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+    .resource-text strong { display: block; font-weight: 600; font-size: 0.95rem; margin-bottom: 2px; }
+    .resource-text span { font-size: 0.85rem; color: var(--text-secondary); }
+
+    /* ── Utility ── */
+    .empty-state { text-align: center; padding: 48px 20px; color: var(--text-muted); }
+  </style>
+
+  <script src="main.js" defer></script>
 </head>
 <body>
 
-<!-- HERO -->
+<!-- ── Tab Nav ── -->
+<nav class="tab-nav" aria-label="Course sections">
+  <div class="tab-nav-inner">
+    <button class="tab-btn active" data-tab="modules"     id="tab-modules">📖 Learning Content</button>
+    <button class="tab-btn"        data-tab="diagrams"    id="tab-diagrams">🗺 Diagrams</button>
+    <button class="tab-btn"        data-tab="flashcards"  id="tab-flashcards">🃏 Flashcards</button>
+    <button class="tab-btn"        data-tab="quiz"        id="tab-quiz">✅ Quiz</button>
+    <button class="tab-btn"        data-tab="resources"   id="tab-resources">🔗 Resources</button>
+  </div>
+</nav>
+
+<!-- ── Hero ── -->
 <div class="hero">
   <div class="hero-emoji">🤖</div>
-  <h1>AI Agent Learning</h1>
-  <p class="subtitle">From AI user → agent builder in 21 days · 1 hour/day</p>
+  <h1>AI Agent Learning — 21-Day Course</h1>
+  <p class="hero-subtitle">From AI user → agent builder in 3 weeks · 1 hour/day</p>
   <div class="hero-tags">
-    <span class="tag">🎥 Video-heavy</span>
-    <span class="tag">💻 Hands-on projects</span>
-    <span class="tag">📱 Build in public</span>
-    <span class="tag">⏱️ 1hr/day</span>
+    <span class="hero-tag">🎥 Video-heavy</span>
+    <span class="hero-tag">💻 Hands-on projects</span>
+<span class="hero-tag">⏱️ 1hr/day</span>
   </div>
-  <button class="install-btn-permanent hidden" id="install-btn-hero" onclick="handleInstallClick()">
-    📲 Install App
-  </button>
+  <button class="install-btn-hero" id="install-btn-hero">📲 Install App</button>
 </div>
 
-<!-- PROGRESS -->
-<div class="progress-section">
-  <div class="progress-header">
-    <h3>📊 Progress</h3>
-    <span class="progress-count" id="progress-text">0 / 21 days</span>
-  </div>
-  <div class="progress-bar-track">
-    <div class="progress-bar-fill" id="progress-bar"></div>
-  </div>
-  <div class="day-grid" id="day-grid"></div>
-  <div class="week-labels">
-    <span>Week 1: Foundations</span>
-    <span>Week 2: Building</span>
-    <span>Week 3: Advanced</span>
-  </div>
-</div>
-
-<!-- NAV -->
-<div class="nav">
-  <div class="nav-inner">
-    <div class="nav-tab active" data-section="curriculum">📚 Curriculum</div>
-    <div class="nav-tab" data-section="diagrams">🖼️ Diagrams</div>
-    <div class="nav-tab" data-section="videos">🎥 Videos</div>
-    <div class="nav-tab" data-section="projects">💻 Projects</div>
-    <div class="nav-tab" data-section="share">📱 Build in Public</div>
+<!-- ── Progress Card ── -->
+<div class="progress-card">
+  <div class="progress-layout">
+    <div class="progress-ring">
+      <svg width="90" height="90">
+        <circle class="ring-bg" cx="45" cy="45" r="37"/>
+        <circle class="ring-fg" id="progress-ring-fg" cx="45" cy="45" r="37" stroke-dasharray="232.5" stroke-dashoffset="232.5"/>
+      </svg>
+      <div class="progress-ring-text">
+        <span class="progress-ring-pct" id="progress-pct">0%</span>
+        <span class="progress-ring-sub" id="progress-text">0/21</span>
+      </div>
+    </div>
+    <div class="progress-right">
+      <div class="progress-right-header">
+        <h3>Your Progress</h3>
+        <span id="progress-remaining">21 days left</span>
+      </div>
+      <div class="streak-grid" id="day-grid"></div>
+    </div>
   </div>
 </div>
 
-<!-- CONTENT -->
-<div class="container">
-
-  <!-- CURRICULUM SECTION -->
-  <div class="section active" id="curriculum">
-    <div class="section-header">
-      <h2>📚 3-Week Curriculum</h2>
-      <p>Click any day to expand details. Check off days as you complete them.</p>
-    </div>
-
-    <h3 style="color: var(--blue-strong); margin: 20px 0 12px;">🧠 Week 1: Foundations</h3>
-
-    <div class="week-card week-1">
-      <div class="week-card-header" onclick="toggleCard(this)">
-        <span class="week-card-title">Day 1: What is an AI Agent?</span>
-        <div class="week-card-meta">
-          <span class="week-card-type type-video">🎥 Video</span>
-          <span class="chevron">▼</span>
-        </div>
-      </div>
-      <div class="week-card-body">
-        <h4>Watch (40 min)</h4>
-        <ul>
-          <li><a class="video-link" href="https://www.youtube.com/watch?v=F8NKVhkZZWI" target="_blank">🎥 What are AI Agents? — IBM Technology</a></li>
-          <li><a class="video-link" href="https://www.youtube.com/watch?v=g24tJk8Flsk" target="_blank">🎥 AI Agents Explained — LearnThatStack</a></li>
-          <li><a class="video-link" href="https://www.deeplearning.ai/short-courses/ai-agents-in-langgraph/" target="_blank">🎥 DeepLearning.AI: What is an Agent? — Lesson 1</a></li>
-        </ul>
-        <h4>Key Concepts</h4>
-        <ul>
-          <li>An agent perceives, decides, and acts autonomously</li>
-          <li>Agents use LLMs as their "brain" but add tools, memory, and planning</li>
-          <li>The difference between using AI vs AI that uses tools</li>
-        </ul>
-        <h4>Activity (20 min)</h4>
-        <ul>
-          <li>Write your own definition of an AI agent</li>
-          <li>Identify 3 agents you already use (even if you didn't know it!)</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="week-card week-1">
-      <div class="week-card-header" onclick="toggleCard(this)">
-        <span class="week-card-title">Day 2: The PDA Loop</span>
-        <div class="week-card-meta">
-          <span class="week-card-type type-video">🎥 Video + 🖼️ Diagram</span>
-          <span class="chevron">▼</span>
-        </div>
-      </div>
-      <div class="week-card-body">
-        <h4>Watch (30 min)</h4>
-        <ul>
-          <li><a class="video-link" href="https://www.youtube.com/watch?v=Eug2clsLtFs" target="_blank">🎥 Understanding ReACT with LangChain — Sam Witteveen</a></li>
-          <li><a class="video-link" href="https://www.deeplearning.ai/short-courses/ai-agents-in-langgraph/" target="_blank">🎥 DeepLearning.AI: Agent Loop — Lesson 2</a></li>
-        </ul>
-        <h4>Key Concepts</h4>
-        <ul>
-          <li><strong>Perceive:</strong> Agent receives input (user query, tool results)</li>
-          <li><strong>Decide:</strong> LLM reasons about what to do next</li>
-          <li><strong>Act:</strong> Agent executes an action (call tool, respond)</li>
-          <li>The loop repeats until the task is complete</li>
-        </ul>
-        <h4>Activity (30 min)</h4>
-        <ul>
-          <li>Study the PDA Loop diagram (Diagrams tab)</li>
-          <li>Trace through the weather example step by step</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="week-card week-1">
-      <div class="week-card-header" onclick="toggleCard(this)">
-        <span class="week-card-title">Day 3: Agent vs Chatbot vs RAG</span>
-        <div class="week-card-meta">
-          <span class="week-card-type type-video">🎥 Video</span>
-          <span class="chevron">▼</span>
-        </div>
-      </div>
-      <div class="week-card-body">
-        <h4>Watch (40 min)</h4>
-        <ul>
-          <li><a class="video-link" href="https://www.youtube.com/watch?v=T-D1OfcDW1M" target="_blank">🎥 What is Retrieval-Augmented Generation (RAG)? — IBM Technology</a></li>
-          <li><a class="video-link" href="https://www.youtube.com/watch?v=Fh9Xvc6Eaj4" target="_blank">🎥 AI Agent vs Chatbot Explained — SystemDR</a></li>
-        </ul>
-        <h4>Key Concepts</h4>
-        <ul>
-          <li><strong>Chatbot:</strong> Simple Q&A, no tools, no planning</li>
-          <li><strong>RAG:</strong> Retrieval + generation, grounded answers</li>
-          <li><strong>Agent:</strong> Tools + memory + planning + autonomy</li>
-        </ul>
-        <h4>Activity (20 min)</h4>
-        <ul>
-          <li>Study the comparison diagram (Diagrams tab)</li>
-          <li>Classify 5 AI products you use: chatbot, RAG, or agent?</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="week-card week-1">
-      <div class="week-card-header" onclick="toggleCard(this)">
-        <span class="week-card-title">Day 4: Tools & Function Calling</span>
-        <div class="week-card-meta">
-          <span class="week-card-type type-video">🎥 Video + 💻 Demo</span>
-          <span class="chevron">▼</span>
-        </div>
-      </div>
-      <div class="week-card-body">
-        <h4>Watch (40 min)</h4>
-        <ul>
-          <li><a class="video-link" href="https://www.youtube.com/watch?v=0lOSvOoF2to" target="_blank">🎥 OpenAI GPT-4 Function Calling: Unlimited Potential — sentdex</a></li>
-          <li><a class="video-link" href="https://www.youtube.com/watch?v=aqdWSYWC_LI" target="_blank">🎥 OpenAI Function Calling - Full Beginner Tutorial — Dave Ebbelaar</a></li>
-        </ul>
-        <h4>Key Concepts</h4>
-        <ul>
-          <li>Function calling = how LLMs interact with external tools</li>
-          <li>JSON schema defines available tools</li>
-          <li>LLM decides WHICH tool to call and with WHAT parameters</li>
-        </ul>
-        <h4>Activity (20 min)</h4>
-        <ul>
-          <li>Study the Tool Calling Architecture diagram</li>
-          <li>List 5 tools you'd give an agent for your work</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="week-card week-1">
-      <div class="week-card-header" onclick="toggleCard(this)">
-        <span class="week-card-title">Day 5: Memory & Context</span>
-        <div class="week-card-meta">
-          <span class="week-card-type type-video">🎥 Video</span>
-          <span class="chevron">▼</span>
-        </div>
-      </div>
-      <div class="week-card-body">
-        <h4>Watch (40 min)</h4>
-        <ul>
-          <li><a class="video-link" href="https://www.youtube.com/watch?v=X05uK0TZozM" target="_blank">🎥 Chatbot Memory for Chat-GPT, Davinci + other LLMs — James Briggs</a></li>
-          <li><a class="video-link" href="https://www.deeplearning.ai/short-courses/ai-agents-in-langgraph/" target="_blank">🎥 DeepLearning.AI: Persistence and Memory</a></li>
-        </ul>
-        <h4>Key Concepts</h4>
-        <ul>
-          <li><strong>Short-term:</strong> Current conversation context</li>
-          <li><strong>Long-term:</strong> Stored across sessions (vector DB, files)</li>
-          <li><strong>Working memory:</strong> Intermediate results during a task</li>
-        </ul>
-        <h4>Activity (20 min)</h4>
-        <ul>
-          <li>Think about how Alex (your AI assistant) uses memory</li>
-          <li>What would an agent forget without long-term memory?</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="week-card week-1">
-      <div class="week-card-header" onclick="toggleCard(this)">
-        <span class="week-card-title">Day 6: Explore Existing Agents</span>
-        <div class="week-card-meta">
-          <span class="week-card-type type-hands-on">💻 Hands-on</span>
-          <span class="chevron">▼</span>
-        </div>
-      </div>
-      <div class="week-card-body">
-        <h4>Activity (60 min)</h4>
-        <ul>
-          <li><strong>AutoGPT (20 min):</strong> Read docs, watch demo, note architecture</li>
-          <li><strong>BabyAGI (15 min):</strong> Understand task decomposition loop</li>
-          <li><strong>Claude Code (15 min):</strong> Analyze how Claude Code works — it's an agent!</li>
-          <li><strong>Write-up (10 min):</strong> Compare all three architectures</li>
-        </ul>
-        <h4>Deliverable</h4>
-        <ul>
-          <li>Agent comparison table (see projects/week-01/)</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="week-card week-1">
-      <div class="week-card-header" onclick="toggleCard(this)">
-        <span class="week-card-title">Day 7: Week 1 Review + RedNote Post</span>
-        <div class="week-card-meta">
-          <span class="week-card-type type-reflect">📝 Reflect</span>
-          <span class="chevron">▼</span>
-        </div>
-      </div>
-      <div class="week-card-body">
-        <h4>Review (30 min)</h4>
-        <ul>
-          <li>Revisit notes from Days 1-5</li>
-          <li>What was your biggest "aha moment"?</li>
-          <li>What concept do you want to revisit?</li>
-        </ul>
-        <h4>Share (30 min)</h4>
-        <ul>
-          <li>Write your Week 1 RedNote post (see Build in Public tab)</li>
-          <li>Share your progress screenshot</li>
-        </ul>
-      </div>
-    </div>
-
-    <h3 style="color: var(--green-strong); margin: 28px 0 12px;">🔨 Week 2: Building</h3>
-
-    <div class="week-card week-2">
-      <div class="week-card-header" onclick="toggleCard(this)">
-        <span class="week-card-title">Day 8: LangChain Fundamentals</span>
-        <div class="week-card-meta">
-          <span class="week-card-type type-video">🎥 Video + 💻 Code</span>
-          <span class="chevron">▼</span>
-        </div>
-      </div>
-      <div class="week-card-body">
-        <h4>Watch + Code (60 min)</h4>
-        <ul>
-          <li><a class="video-link" href="https://www.deeplearning.ai/short-courses/functions-tools-agents-langchain/" target="_blank">🎥 DeepLearning.AI: Functions, Tools & Agents — Lessons 1-2</a></li>
-        </ul>
-        <h4>Setup</h4>
-        <ul>
-          <li>Install: pip install langchain langchain-openai python-dotenv</li>
-          <li>Get OpenAI API key</li>
-          <li>Run your first LangChain chain</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="week-card week-2">
-      <div class="week-card-header" onclick="toggleCard(this)">
-        <span class="week-card-title">Day 9: Prompt Engineering for Agents</span>
-        <div class="week-card-meta">
-          <span class="week-card-type type-video">🎥 Video + 💻 Practice</span>
-          <span class="chevron">▼</span>
-        </div>
-      </div>
-      <div class="week-card-body">
-        <h4>Watch (40 min)</h4>
-        <ul>
-          <li><a class="video-link" href="https://www.deeplearning.ai/short-courses/functions-tools-agents-langchain/" target="_blank">🎥 DeepLearning.AI: Functions, Tools & Agents — Lesson 3</a></li>
-        </ul>
-        <h4>Practice (20 min)</h4>
-        <ul>
-          <li>Write a system prompt for a research assistant</li>
-          <li>Test ReAct prompting pattern</li>
-          <li>Add guard rails and constraints</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="week-card week-2">
-      <div class="week-card-header" onclick="toggleCard(this)">
-        <span class="week-card-title">Day 10: Tool Calling Deep Dive</span>
-        <div class="week-card-meta">
-          <span class="week-card-type type-hands-on">💻 Code</span>
-          <span class="chevron">▼</span>
-        </div>
-      </div>
-      <div class="week-card-body">
-        <h4>Watch + Code (60 min)</h4>
-        <ul>
-          <li><a class="video-link" href="https://www.deeplearning.ai/short-courses/functions-tools-agents-langchain/" target="_blank">🎥 DeepLearning.AI: Functions, Tools & Agents — Lessons 4-5</a></li>
-        </ul>
-        <h4>Code Along</h4>
-        <ul>
-          <li>Create custom tools with @tool decorator</li>
-          <li>Build an agent with search + calculator tools</li>
-          <li>Observe how the agent chooses tools</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="week-card week-2">
-      <div class="week-card-header" onclick="toggleCard(this)">
-        <span class="week-card-title">Day 11-13: Build a Research Agent 🔎</span>
-        <div class="week-card-meta">
-          <span class="week-card-type type-hands-on">💻 Project</span>
-          <span class="chevron">▼</span>
-        </div>
-      </div>
-      <div class="week-card-body">
-        <h4>3-Day Project</h4>
-        <ul>
-          <li><strong>Day 11:</strong> Setup + basic agent (search + summarize)</li>
-          <li><strong>Day 12:</strong> Add memory (multi-turn research)</li>
-          <li><strong>Day 13:</strong> Testing, error handling, polish</li>
-        </ul>
-        <h4>What You'll Build</h4>
-        <ul>
-          <li>A research agent that searches the web</li>
-          <li>Summarizes findings</li>
-          <li>Remembers previous queries</li>
-          <li>Saves notes to files</li>
-        </ul>
-        <ul>
-          <li>Full code in projects/week-02/ folder</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="week-card week-2">
-      <div class="week-card-header" onclick="toggleCard(this)">
-        <span class="week-card-title">Day 14: Week 2 Review + RedNote Post</span>
-        <div class="week-card-meta">
-          <span class="week-card-type type-reflect">📝 Reflect</span>
-          <span class="chevron">▼</span>
-        </div>
-      </div>
-      <div class="week-card-body">
-        <h4>Review (30 min)</h4>
-        <ul>
-          <li>Demo your research agent</li>
-          <li>What worked? What was harder than expected?</li>
-        </ul>
-        <h4>Share (30 min)</h4>
-        <ul>
-          <li>Write your Week 2 RedNote post</li>
-          <li>Include a code screenshot or demo GIF</li>
-        </ul>
-      </div>
-    </div>
-
-    <h3 style="color: var(--purple-strong); margin: 28px 0 12px;">🚀 Week 3: Advanced Patterns</h3>
-
-    <div class="week-card week-3">
-      <div class="week-card-header" onclick="toggleCard(this)">
-        <span class="week-card-title">Day 15: Multi-Agent Architectures</span>
-        <div class="week-card-meta">
-          <span class="week-card-type type-video">🎥 Video</span>
-          <span class="chevron">▼</span>
-        </div>
-      </div>
-      <div class="week-card-body">
-        <h4>Watch (45 min)</h4>
-        <ul>
-          <li><a class="video-link" href="https://www.youtube.com/watch?v=sPzc6hMg7So" target="_blank">🎥 CrewAI Tutorial: Complete Crash Course for Beginners — aiwithbrandon</a></li>
-          <li><a class="video-link" href="https://www.deeplearning.ai/short-courses/ai-agents-in-langgraph/" target="_blank">🎥 DeepLearning.AI: Multi-Agent lesson</a></li>
-        </ul>
-        <h4>Key Concepts</h4>
-        <ul>
-          <li>Supervisor, peer, pipeline, and debate patterns</li>
-          <li>When to use multi-agent vs single-agent</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="week-card week-3">
-      <div class="week-card-header" onclick="toggleCard(this)">
-        <span class="week-card-title">Day 16: Agent Communication Patterns</span>
-        <div class="week-card-meta">
-          <span class="week-card-type type-video">🎥 Video</span>
-          <span class="chevron">▼</span>
-        </div>
-      </div>
-      <div class="week-card-body">
-        <h4>Watch (40 min)</h4>
-        <ul>
-          <li><a class="video-link" href="https://www.youtube.com/watch?v=hvAPnpSfSGo" target="_blank">🎥 LangGraph: Multi-Agent Workflows — LangChain</a></li>
-          <li><a class="video-link" href="https://www.deeplearning.ai/short-courses/ai-agents-in-langgraph/" target="_blank">🎥 DeepLearning.AI: Multi-Agent Workflows</a></li>
-        </ul>
-        <h4>Key Concepts</h4>
-        <ul>
-          <li>Message passing between agents</li>
-          <li>Shared vs isolated state</li>
-          <li>Handoff protocols</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="week-card week-3">
-      <div class="week-card-header" onclick="toggleCard(this)">
-        <span class="week-card-title">Day 17: Production Patterns & Safety</span>
-        <div class="week-card-meta">
-          <span class="week-card-type type-video">🎥 Video</span>
-          <span class="chevron">▼</span>
-        </div>
-      </div>
-      <div class="week-card-body">
-        <h4>Read (40 min)</h4>
-        <ul>
-          <li><a class="video-link" href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank">📖 Anthropic: Building Effective Agents</a></li>
-        </ul>
-        <h4>Key Concepts</h4>
-        <ul>
-          <li>Human-in-the-loop: when to ask for approval</li>
-          <li>Rate limiting and sandboxing</li>
-          <li>Monitoring agent decisions and costs</li>
-          <li>Fallback patterns for graceful degradation</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="week-card week-3">
-      <div class="week-card-header" onclick="toggleCard(this)">
-        <span class="week-card-title">Day 18-20: Capstone — Multi-Agent Content Pipeline 🏭</span>
-        <div class="week-card-meta">
-          <span class="week-card-type type-hands-on">💻 Project</span>
-          <span class="chevron">▼</span>
-        </div>
-      </div>
-      <div class="week-card-body">
-        <h4>3-Day Capstone</h4>
-        <ul>
-          <li><strong>Day 18:</strong> Setup + coordinator logic</li>
-          <li><strong>Day 19:</strong> Build 3 agents (research, writer, editor)</li>
-          <li><strong>Day 20:</strong> Polish, error handling, documentation</li>
-        </ul>
-        <h4>What You'll Build</h4>
-        <ul>
-          <li>Research Agent → finds information</li>
-          <li>Writer Agent → creates content</li>
-          <li>Editor Agent → reviews and polishes</li>
-          <li>Coordinator → orchestrates the pipeline</li>
-        </ul>
-        <ul>
-          <li>Full code in projects/week-03/ folder</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="week-card week-3">
-      <div class="week-card-header" onclick="toggleCard(this)">
-        <span class="week-card-title">Day 21: Course Review + Final Post 🎉</span>
-        <div class="week-card-meta">
-          <span class="week-card-type type-reflect">📝 Celebrate!</span>
-          <span class="chevron">▼</span>
-        </div>
-      </div>
-      <div class="week-card-body">
-        <h4>Review (30 min)</h4>
-        <ul>
-          <li>What did you learn across all 3 weeks?</li>
-          <li>What's your biggest "before vs after" change?</li>
-          <li>What do you want to build next?</li>
-        </ul>
-        <h4>Celebrate (30 min)</h4>
-        <ul>
-          <li>Write your final RedNote post</li>
-          <li>Share your completed progress bar screenshot</li>
-          <li>🎉 You did it! 21 days, 21 hours, agent builder!</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- DIAGRAMS SECTION -->
-  <div class="section" id="diagrams">
-    <div class="section-header">
-      <h2>🖼️ Diagrams</h2>
-      <p>Visual guides for key concepts. All editable in Excalidraw.</p>
-    </div>
-
-    <div class="diagram-card">
-      <h3>1. The PDA Loop</h3>
-      <p>How agents think: Perceive → Decide → Act, on repeat.</p>
-      <div class="diagram-preview">
-        <img src="diagrams/01-pda-loop.svg" alt="Perceive-Decide-Act Loop — How agents think in cycles">
-      </div>
-      <div class="diagram-actions">
-        <a class="btn btn-outline" href="https://github.com/CeciliaW888/ai-agent-learning/blob/main/diagrams/01-pda-loop.excalidraw" target="_blank">✏️ Edit in Excalidraw</a>
-      </div>
-    </div>
-
-    <div class="diagram-card">
-      <h3>2. Agent vs Chatbot vs RAG</h3>
-      <p>Understanding the spectrum from simple chatbot to autonomous agent.</p>
-      <div class="diagram-preview">
-        <img src="diagrams/02-agent-vs-chatbot-vs-rag.svg" alt="Agent vs Chatbot vs RAG — Capability comparison">
-      </div>
-      <div class="diagram-actions">
-        <a class="btn btn-outline" href="https://github.com/CeciliaW888/ai-agent-learning/blob/main/diagrams/02-agent-vs-chatbot-vs-rag.excalidraw" target="_blank">✏️ Edit in Excalidraw</a>
-      </div>
-    </div>
-
-    <div class="diagram-card">
-      <h3>3. Tool Calling Architecture</h3>
-      <p>How LLMs interact with external tools through structured JSON.</p>
-      <div class="diagram-preview">
-        <img src="diagrams/03-tool-calling.svg" alt="Tool Calling Architecture — How LLMs use tools via JSON">
-      </div>
-      <div class="diagram-actions">
-        <a class="btn btn-outline" href="https://github.com/CeciliaW888/ai-agent-learning/blob/main/diagrams/03-tool-calling.excalidraw" target="_blank">✏️ Edit in Excalidraw</a>
-      </div>
-    </div>
-
-    <div class="diagram-card">
-      <h3>4. Multi-Agent Collaboration</h3>
-      <p>How specialized agents work together on complex tasks.</p>
-      <div class="diagram-preview">
-        <img src="diagrams/04-multi-agent.svg" alt="Multi-Agent Collaboration — Specialized agents working together">
-      </div>
-      <div class="diagram-actions">
-        <a class="btn btn-outline" href="https://github.com/CeciliaW888/ai-agent-learning/blob/main/diagrams/04-multi-agent.excalidraw" target="_blank">✏️ Edit in Excalidraw</a>
-      </div>
-    </div>
-
-    <div class="diagram-card">
-      <h3>5. Course Concept Map</h3>
-      <p>How all 21 days connect together.</p>
-      <div class="diagram-preview">
-        <img src="diagrams/05-weekly-concept-map.svg" alt="Course Concept Map — How all 21 days connect">
-      </div>
-      <div class="diagram-actions">
-        <a class="btn btn-outline" href="https://github.com/CeciliaW888/ai-agent-learning/blob/main/diagrams/05-weekly-concept-map.excalidraw" target="_blank">✏️ Edit in Excalidraw</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- VIDEOS SECTION -->
-  <div class="section" id="videos">
-    <div class="section-header">
-      <h2>🎥 Video Resources</h2>
-      <p>Curated free videos for each week. Quality over quantity.</p>
-    </div>
-
-    <h3 style="margin: 16px 0 12px; color: var(--terracotta);">📚 Full Courses (Free)</h3>
-
-    <div class="video-card">
-      <h4>🎓 AI Agents in LangGraph — DeepLearning.AI</h4>
-      <div class="source">DeepLearning.AI · Free Short Course · ~2 hours</div>
-      <div class="desc">The best intro to agent concepts. Covers agents, tools, memory, and multi-agent patterns using LangGraph. Used in Weeks 1-3.</div>
-      <a class="video-link" href="https://www.deeplearning.ai/short-courses/ai-agents-in-langgraph/" target="_blank" style="margin-top: 8px; display: inline-block;">→ Start Course</a>
-    </div>
-
-    <div class="video-card">
-      <h4>🎓 Functions, Tools and Agents with LangChain — DeepLearning.AI</h4>
-      <div class="source">DeepLearning.AI · Free Short Course · ~2 hours</div>
-      <div class="desc">Hands-on coding course for building agents with LangChain. Function calling, custom tools, agent executors. Used in Week 2.</div>
-      <a class="video-link" href="https://www.deeplearning.ai/short-courses/functions-tools-agents-langchain/" target="_blank" style="margin-top: 8px; display: inline-block;">→ Start Course</a>
-    </div>
-
-    <div class="video-card">
-      <h4>🎓 Building Agentic RAG with LlamaIndex — DeepLearning.AI</h4>
-      <div class="source">DeepLearning.AI · Free Short Course · ~1.5 hours</div>
-      <div class="desc">Combines RAG with agent capabilities. Great for understanding the spectrum from RAG to full agent. Bonus resource.</div>
-      <a class="video-link" href="https://www.deeplearning.ai/short-courses/building-agentic-rag-with-llamaindex/" target="_blank" style="margin-top: 8px; display: inline-block;">→ Start Course</a>
-    </div>
-
-    <h3 style="margin: 24px 0 12px; color: var(--terracotta);">🎬 YouTube Creators</h3>
-
-    <div class="video-card">
-      <h4>AI Jason</h4>
-      <div class="source">YouTube · Best for: Agent concepts & architectures</div>
-      <div class="desc">Clear explanations of agent systems, comparisons, and real-world applications. Great visual diagrams.</div>
-      <a class="video-link" href="https://www.youtube.com/@AIJasonZ" target="_blank" style="margin-top: 8px; display: inline-block;">→ Channel</a>
-    </div>
-
-    <div class="video-card">
-      <h4>Sam Witteveen</h4>
-      <div class="source">YouTube · Best for: Deep technical tutorials</div>
-      <div class="desc">Detailed LangChain, function calling, and agent implementation walkthroughs. Code-heavy, great for Week 2.</div>
-      <a class="video-link" href="https://www.youtube.com/@samwitteveen" target="_blank" style="margin-top: 8px; display: inline-block;">→ Channel</a>
-    </div>
-
-    <div class="video-card">
-      <h4>David Ondrej</h4>
-      <div class="source">YouTube · Best for: AI news & agent trends</div>
-      <div class="desc">Keeps you up to date on the latest in AI agents, new frameworks, and industry moves.</div>
-      <a class="video-link" href="https://www.youtube.com/@DavidOndrej" target="_blank" style="margin-top: 8px; display: inline-block;">→ Channel</a>
-    </div>
-
-    <div class="video-card">
-      <h4>LangChain Official</h4>
-      <div class="source">YouTube · Best for: Framework tutorials</div>
-      <div class="desc">Official tutorials, demos, and feature walkthroughs from the LangChain team.</div>
-      <a class="video-link" href="https://www.youtube.com/@LangChain" target="_blank" style="margin-top: 8px; display: inline-block;">→ Channel</a>
-    </div>
-
-    <h3 style="margin: 24px 0 12px; color: var(--terracotta);">📖 Reading Resources</h3>
-
-    <div class="video-card">
-      <h4>Lilian Weng: LLM Powered Autonomous Agents</h4>
-      <div class="source">Blog Post · OpenAI researcher · ~30 min read</div>
-      <div class="desc">The definitive blog post on agent architectures. Covers planning, memory, tool use, and more. Technical but accessible.</div>
-      <a class="video-link" href="https://lilianweng.github.io/posts/2023-06-23-agent/" target="_blank" style="margin-top: 8px; display: inline-block;">→ Read</a>
-    </div>
-
-    <div class="video-card">
-      <h4>Anthropic: Building Effective Agents</h4>
-      <div class="source">Blog Post · Anthropic · ~15 min read</div>
-      <div class="desc">Practical patterns for building production agents. Covers safety, human-in-the-loop, and common architectures.</div>
-      <a class="video-link" href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank" style="margin-top: 8px; display: inline-block;">→ Read</a>
-    </div>
-  </div>
-
-  <!-- PROJECTS SECTION -->
-  <div class="section" id="projects">
-    <div class="section-header">
-      <h2>💻 Projects</h2>
-      <p>Three hands-on projects, one per week. Learn by building.</p>
-    </div>
-
-    <div class="diagram-card">
-      <h3>Week 1: Agent Explorer 🔍</h3>
-      <p>Explore existing AI agents and compare their architectures.</p>
-      <div class="diagram-preview">
-What you'll do:
-1. Study AutoGPT — architecture, tools, limitations
-2. Study BabyAGI — task decomposition approach
-3. Analyze Claude Code — a real agent you use daily
-4. Write a comparison table
-
-Deliverable: Agent comparison document
-
-Time: Day 6 (60 min)
-Difficulty: ⭐ Beginner</div>
-      <div class="diagram-actions">
-        <a class="btn btn-outline" href="https://github.com/CeciliaW888/ai-agent-learning/tree/main/projects/week-01" target="_blank">📁 Project Files</a>
-      </div>
-    </div>
-
-    <div class="diagram-card">
-      <h3>Week 2: Research Agent 🔎</h3>
-      <p>Build a research assistant that searches the web and summarizes findings.</p>
-      <div class="diagram-preview">
-What you'll build:
-- LangChain agent with web search + note-saving tools
-- Multi-turn conversation with memory
-- Error handling and logging
-
-Tech: Python + LangChain + Tavily Search + OpenAI
-
-Deliverable: Working research agent CLI
-
-Time: Days 11-13 (3 hours total)
-Difficulty: ⭐⭐ Intermediate</div>
-      <div class="diagram-actions">
-        <a class="btn btn-outline" href="https://github.com/CeciliaW888/ai-agent-learning/tree/main/projects/week-02" target="_blank">📁 Project Files</a>
-      </div>
-    </div>
-
-    <div class="diagram-card">
-      <h3>Week 3: Content Pipeline 🏭</h3>
-      <p>Build a multi-agent system where Research → Writer → Editor collaborate.</p>
-      <div class="diagram-preview">
-What you'll build:
-- Coordinator agent that orchestrates the pipeline
-- Research Agent → finds information on a topic  
-- Writer Agent → creates content from research
-- Editor Agent → reviews and polishes output
-
-Tech: Python + LangChain + LangGraph
-
-Deliverable: Working multi-agent content creation system
-
-Time: Days 18-20 (3 hours total)
-Difficulty: ⭐⭐⭐ Advanced</div>
-      <div class="diagram-actions">
-        <a class="btn btn-outline" href="https://github.com/CeciliaW888/ai-agent-learning/tree/main/projects/week-03" target="_blank">📁 Project Files</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- BUILD IN PUBLIC SECTION -->
-  <div class="section" id="share">
-    <div class="section-header">
-      <h2>📱 Build in Public</h2>
-      <p>Share your journey on RedNote / 小红书. Templates ready to copy.</p>
-    </div>
-
-    <div class="share-bar">
-      <a class="share-btn" href="https://www.xiaohongshu.com" target="_blank">📱 RedNote 小红书</a>
-      <a class="share-btn" href="https://twitter.com/intent/tweet?text=Day%20X%20of%20learning%20AI%20Agents!%20%2321DayAILearning&url=" target="_blank">🐦 Twitter / X</a>
-    </div>
-
-    <div class="bip-card">
-      <h3>📌 Hashtags</h3>
-      <div class="hashtags">
-        <span class="hashtag">#21天AI学习</span>
-        <span class="hashtag">#AIAgent</span>
-        <span class="hashtag">#AI学习笔记</span>
-        <span class="hashtag">#程序员学习</span>
-        <span class="hashtag">#BuildInPublic</span>
-        <span class="hashtag">#AI智能体</span>
-        <span class="hashtag">#LangChain</span>
-        <span class="hashtag">#学习打卡</span>
-      </div>
-    </div>
-
-    <div class="bip-card">
-      <h3>📝 Week 1 Post Template</h3>
-      <div class="template-block">📚 #21天AI学习 Day 7/21
-
-这周我花了7个小时，从零开始学习AI Agent。
-
-1️⃣ AI Agent不是聊天机器人
-Agent可以主动思考、使用工具、记住上下文。
-
-2️⃣ PDA循环是核心
-感知(Perceive) → 决策(Decide) → 行动(Act)
-
-3️⃣ 工具调用是关键能力
-Agent的强大在于它能调用什么工具。
-
-最大的收获：[你的收获]
-
-#AIAgent #AI学习笔记 #程序员学习</div>
-      <button class="btn btn-outline" onclick="copyTemplate(this)" style="margin-top: 8px;">📋 Copy Template</button>
-    </div>
-
-    <div class="bip-card">
-      <h3>📝 Week 2 Post Template</h3>
-      <div class="template-block">📚 #21天AI学习 Day 14/21
-
-从看视频到写代码，这周是真正的突破！
-
-1️⃣ 学了LangChain框架
-2️⃣ 写了一个研究助手Agent
-3️⃣ 最难的部分是调试
-
-给新手的建议：
-- 先用verbose=True看Agent的思考过程
-- 从简单的工具开始
-- 不要怕报错
-
-下周：多Agent系统！🚀
-
-#AIAgent #LangChain #Python #程序员学习</div>
-      <button class="btn btn-outline" onclick="copyTemplate(this)" style="margin-top: 8px;">📋 Copy Template</button>
-    </div>
-
-    <div class="bip-card">
-      <h3>📝 Week 3 / Final Post Template</h3>
-      <div class="template-block">📚 #21天AI学习 Day 21/21 ✅
-
-21天，21个小时，从AI工具使用者变成Agent搭建者。
-
-第一周🧠 理论基础 — 理解Agent本质
-第二周🔨 动手搭建 — 第一个Agent
-第三周🚀 高级模式 — 多Agent系统
-
-最大的感悟：
-1. [感悟1]
-2. [感悟2]  
-3. [感悟3]
-
-给想学AI Agent的朋友：
-每天1小时就够了！
-
-#21天AI学习 #AIAgent #学习总结 #BuildInPublic</div>
-      <button class="btn btn-outline" onclick="copyTemplate(this)" style="margin-top: 8px;">📋 Copy Template</button>
-    </div>
-
-    <div class="bip-card">
-      <h3>💡 Weekly Reflection Prompts</h3>
-      <div class="template-block">Week 1 Reflection:
-• What's the most surprising thing about AI agents?
-• Can you explain the PDA loop to a friend?
-• What agents do you already use in daily life?
-
-Week 2 Reflection:
-• What was hardest about building your first agent?
-• How did it feel when your agent made its first tool call?
-• What would you add to your research agent?
-
-Week 3 Reflection:
-• How do multi-agent systems change what's possible?
-• What would you build with agents for your job?
-• What's your next learning goal?</div>
-    </div>
-  </div>
-
+<main>
+  <!-- ── 1. Learning Content ── -->
+  <section class="section active container" id="section-modules" aria-labelledby="tab-modules">
+    <div id="modules-container"></div>
+    <div class="empty-state" id="modules-loading">Loading modules…</div>
+  </section>
+
+  <!-- ── 2. Diagrams ── -->
+  <section class="section container" id="section-diagrams" aria-labelledby="tab-diagrams">
+    <h2 class="section-heading">Diagrams</h2>
+    <div class="diagram-grid" id="diagram-grid"></div>
+  </section>
+
+  <!-- ── 3. Flashcards ── -->
+  <section class="section container" id="section-flashcards" aria-labelledby="tab-flashcards">
+    <h2 class="section-heading">Flashcards</h2>
+    <div class="flashcard-grid" id="flashcard-grid"><p class="empty-state">Loading…</p></div>
+  </section>
+
+  <!-- ── 4. Quiz ── -->
+  <section class="section container" id="section-quiz" aria-labelledby="tab-quiz">
+    <h2 class="section-heading">Knowledge Check</h2>
+    <div id="quiz-container"><p class="empty-state">Loading…</p></div>
+  </section>
+
+  <!-- ── 5. Resources ── -->
+  <section class="section container" id="section-resources" aria-labelledby="tab-resources">
+    <h2 class="section-heading">Resources</h2>
+    <div class="resource-group">
+  <h3>📚 Free Courses</h3>
+  <a class="resource-link" href="https://www.deeplearning.ai/short-courses/ai-agents-in-langgraph/" target="_blank" rel="noopener">
+    <span class="resource-icon">🎓</span>
+    <span class="resource-text"><strong>AI Agents in LangGraph — DeepLearning.AI</strong><span>Free short course · ~2 hours · Covers agents, tools, memory, and multi-agent patterns</span></span>
+  </a>
+  <a class="resource-link" href="https://www.deeplearning.ai/short-courses/functions-tools-agents-langchain/" target="_blank" rel="noopener">
+    <span class="resource-icon">🎓</span>
+    <span class="resource-text"><strong>Functions, Tools and Agents with LangChain — DeepLearning.AI</strong><span>Free short course · ~2 hours · Hands-on coding with LangChain agents</span></span>
+  </a>
+  <a class="resource-link" href="https://www.deeplearning.ai/short-courses/building-agentic-rag-with-llamaindex/" target="_blank" rel="noopener">
+    <span class="resource-icon">🎓</span>
+    <span class="resource-text"><strong>Building Agentic RAG with LlamaIndex — DeepLearning.AI</strong><span>Free short course · ~1.5 hours · RAG meets agent capabilities</span></span>
+  </a>
 </div>
 
-<!-- FOOTER -->
-<footer>
-  <p>Built with ❤️ for learning AI agents, one hour at a time.</p>
-  <p style="margin-top: 8px;">
-    <a href="https://github.com/CeciliaW888/ai-agent-learning">GitHub</a> ·
-    <a href="https://www.xiaohongshu.com">RedNote 小红书</a>
-  </p>
-</footer>
+<div class="resource-group">
+  <h3>🎬 YouTube Creators</h3>
+  <a class="resource-link" href="https://www.youtube.com/@AIJasonZ" target="_blank" rel="noopener">
+    <span class="resource-icon">▶️</span>
+    <span class="resource-text"><strong>AI Jason</strong><span>Best for agent concepts &amp; architectures</span></span>
+  </a>
+  <a class="resource-link" href="https://www.youtube.com/@samwitteveen" target="_blank" rel="noopener">
+    <span class="resource-icon">▶️</span>
+    <span class="resource-text"><strong>Sam Witteveen</strong><span>Deep technical LangChain tutorials</span></span>
+  </a>
+  <a class="resource-link" href="https://www.youtube.com/@DavidOndrej" target="_blank" rel="noopener">
+    <span class="resource-icon">▶️</span>
+    <span class="resource-text"><strong>David Ondrej</strong><span>AI news &amp; agent trends</span></span>
+  </a>
+  <a class="resource-link" href="https://www.youtube.com/@LangChain" target="_blank" rel="noopener">
+    <span class="resource-icon">▶️</span>
+    <span class="resource-text"><strong>LangChain Official</strong><span>Framework tutorials &amp; demos</span></span>
+  </a>
+</div>
+
+<div class="resource-group">
+  <h3>📖 Essential Reading</h3>
+  <a class="resource-link" href="https://lilianweng.github.io/posts/2023-06-23-agent/" target="_blank" rel="noopener">
+    <span class="resource-icon">📄</span>
+    <span class="resource-text"><strong>LLM Powered Autonomous Agents — Lilian Weng</strong><span>The definitive blog post on agent architectures · ~30 min read</span></span>
+  </a>
+  <a class="resource-link" href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank" rel="noopener">
+    <span class="resource-icon">📄</span>
+    <span class="resource-text"><strong>Building Effective Agents — Anthropic</strong><span>Production patterns, safety, and common architectures · ~15 min read</span></span>
+  </a>
+</div>
+
+<div class="resource-group">
+  <h3>🐙 This Course</h3>
+  <a class="resource-link" href="https://github.com/CeciliaW888/ai-agent-learning" target="_blank" rel="noopener">
+    <span class="resource-icon">📦</span>
+    <span class="resource-text"><strong>GitHub Repository</strong><span>Source code, study guides, and course materials</span></span>
+  </a>
+  <a class="resource-link" href="https://github.com/CeciliaW888/ai-agent-learning/issues" target="_blank" rel="noopener">
+    <span class="resource-icon">💬</span>
+    <span class="resource-text"><strong>Issues & Discussions</strong><span>Ask questions, share feedback, or report problems</span></span>
+  </a>
+</div>
+  </section>
+
+</main>
 
 <script>
-  // === PROGRESS TRACKING ===
-  const STORAGE_KEY = 'ai-agent-progress';
+/* ── Configuration ── */
+const DAY_COUNT    = 21;
+const MODULE_FILES = [
+  'modules/01-what-is-an-ai-agent.html',
+  'modules/02-pda-loop.html',
+  'modules/03-agent-vs-chatbot-vs-rag.html',
+  'modules/04-tools-and-function-calling.html',
+  'modules/05-memory-and-context.html',
+  'modules/06-explore-existing-agents.html',
+  'modules/07-week-1-review.html',
+  'modules/08-langchain-fundamentals.html',
+  'modules/09-prompt-engineering-for-agents.html',
+  'modules/10-tool-calling-deep-dive.html',
+  'modules/11-build-research-agent-start.html',
+  'modules/12-add-memory-to-agent.html',
+  'modules/13-testing-and-debugging.html',
+  'modules/14-week-2-review.html',
+  'modules/15-multi-agent-architectures.html',
+  'modules/16-agent-communication-patterns.html',
+  'modules/17-production-patterns-and-safety.html',
+  'modules/18-capstone-start.html',
+  'modules/19-capstone-build-and-integrate.html',
+  'modules/20-capstone-polish-and-deploy.html',
+  'modules/21-course-review.html'
+];
+const DIAGRAM_FILES = [
+  'diagrams/01-pda-loop.svg',
+  'diagrams/02-agent-vs-chatbot-vs-rag.svg',
+  'diagrams/03-tool-calling.svg',
+  'diagrams/04-multi-agent.svg',
+  'diagrams/05-weekly-concept-map.svg'
+];
+const STORAGE_KEY  = 'ai-agent-learning-progress';
 
-  function getProgress() {
-    try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
-    } catch { return {}; }
+/* ── Tab switching ── */
+const tabs     = document.querySelectorAll('.tab-btn');
+const sections = document.querySelectorAll('.section');
+let modulesLoaded = false;
+
+tabs.forEach(btn => {
+  btn.addEventListener('click', async () => {
+    tabs.forEach(t => t.classList.remove('active'));
+    sections.forEach(s => s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('section-' + btn.dataset.tab).classList.add('active');
+    if (btn.dataset.tab === 'modules'    && !modulesLoaded) { await loadModules(); modulesLoaded = true; }
+    if (btn.dataset.tab === 'flashcards') loadFlashcards();
+    if (btn.dataset.tab === 'quiz')       loadQuiz();
+    if (btn.dataset.tab === 'diagrams')   renderDiagrams();
+  });
+});
+
+/* ── Day grid + progress ── */
+function buildDayGrid() {
+  const grid = document.getElementById('day-grid');
+  const done = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  for (let i = 1; i <= DAY_COUNT; i++) {
+    const cell = document.createElement('button');
+    cell.className = 'streak-cell' + (done.includes(i) ? ' done' : '');
+    cell.textContent = i;
+    cell.title = 'Day ' + i;
+    cell.addEventListener('click', () => toggleDay(i, cell));
+    grid.appendChild(cell);
   }
+  updateProgress(done.length);
+}
+function toggleDay(n, el) {
+  const done = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const idx = done.indexOf(n);
+  if (idx === -1) done.push(n); else done.splice(idx, 1);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(done));
+  el.classList.toggle('done');
+  updateProgress(done.length);
+}
+function updateProgress(count) {
+  const pct = Math.round(count / DAY_COUNT * 100);
+  const circ = 2 * Math.PI * 37;
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-text').textContent = count + '/' + DAY_COUNT;
+  document.getElementById('progress-ring-fg').style.strokeDashoffset = circ - (circ * pct / 100);
+  document.getElementById('progress-remaining').textContent = (DAY_COUNT - count) + ' days left';
+}
+buildDayGrid();
 
-  function saveProgress(data) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  }
+/* ── Accordion: build week sections with lazy-loaded day cards ── */
+const MODULE_TITLES = [
+  'What is an AI Agent?', 'The PDA Loop', 'Agent vs Chatbot vs RAG',
+  'Tools & Function Calling', 'Memory & Context', 'Explore Existing Agents', 'Week 1 Review',
+  'LangChain Fundamentals', 'Prompt Engineering for Agents', 'Tool Calling Deep Dive',
+  'Building a Search Agent', 'Adding Memory to Your Agent', 'Testing & Debugging', 'Week 2 Review',
+  'Multi-Agent Architectures', 'Agent Communication Patterns', 'Production Patterns & Safety',
+  'Capstone: Project Start', 'Capstone: Build & Integrate', 'Capstone: Polish & Deploy', 'Course Review'
+];
+const MODULE_TYPES = [
+  'foundations','foundations','foundations','foundations','foundations','project','review',
+  'concepts','concepts','concepts','project','project','project','review',
+  'advanced','advanced','advanced','project','project','project','review'
+];
+const WEEK_NAMES  = ['🧠 Week 1: Foundations', '🔨 Week 2: Building', '🚀 Week 3: Advanced Patterns'];
+const WEEK_RANGES = [[0,6],[7,13],[14,20]];
 
-  function renderProgress() {
-    const progress = getProgress();
-    const grid = document.getElementById('day-grid');
-    const bar = document.getElementById('progress-bar');
-    const text = document.getElementById('progress-text');
-    
-    grid.innerHTML = '';
-    let completed = 0;
+function loadModules() {
+  const container = document.getElementById('modules-container');
+  const loading   = document.getElementById('modules-loading');
 
-    for (let i = 1; i <= 21; i++) {
-      const dot = document.createElement('div');
-      dot.className = 'day-dot' + (progress[i] ? ' completed' : '');
-      dot.innerHTML = `<span>${i}</span>`;
-      dot.title = `Day ${i}` + (progress[i] ? ' ✓' : ' — click to mark complete');
-      dot.onclick = () => {
-        const p = getProgress();
-        p[i] = !p[i];
-        saveProgress(p);
-        renderProgress();
-      };
-      grid.appendChild(dot);
-      if (progress[i]) completed++;
+  WEEK_NAMES.forEach((weekName, wi) => {
+    const [start, end] = WEEK_RANGES[wi];
+    const section = document.createElement('div');
+    section.className = 'week-section';
+    section.innerHTML = `<h3>${weekName}</h3>`;
+
+    for (let i = start; i <= end; i++) {
+      const day = i + 1;
+      const card = document.createElement('div');
+      card.className = 'day-card';
+      const typeLabel = MODULE_TYPES[i].charAt(0).toUpperCase() + MODULE_TYPES[i].slice(1);
+      card.innerHTML = `
+        <div class="day-card-header">
+          <span class="day-card-title">Day ${day}: ${MODULE_TITLES[i]}</span>
+          <div class="day-card-meta">
+            <span class="day-type type-${MODULE_TYPES[i]}">${typeLabel}</span>
+            <span class="chevron">▾</span>
+          </div>
+        </div>
+        <div class="day-card-body"></div>`;
+
+      let loaded = false;
+      const header = card.querySelector('.day-card-header');
+      const body   = card.querySelector('.day-card-body');
+
+      header.addEventListener('click', async () => {
+        const opening = !card.classList.contains('open');
+        card.classList.toggle('open');
+        if (opening && !loaded) {
+          body.innerHTML = '<p style="padding:16px;color:var(--text-muted)">Loading…</p>';
+          try {
+            const resp = await fetch(MODULE_FILES[i]);
+            if (resp.ok) {
+              body.innerHTML = await resp.text();
+              loaded = true;
+              if (typeof initIndexQuizzes === 'function') initIndexQuizzes();
+              if (typeof initChatWindows  === 'function') initChatWindows();
+              setupChatAutoPlay(body);
+            } else {
+              body.innerHTML = '<p style="padding:16px;color:var(--text-muted)">Content not found.</p>';
+            }
+          } catch(e) {
+            body.innerHTML = '<p style="padding:16px;color:var(--text-muted)">Failed to load.</p>';
+          }
+        }
+      });
+
+      section.appendChild(card);
     }
-
-    const pct = Math.round((completed / 21) * 100);
-    bar.style.width = pct + '%';
-    text.textContent = `${completed} / 21 days (${pct}%)`;
-  }
-
-  renderProgress();
-
-  // === NAV TABS ===
-  document.querySelectorAll('.nav-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-      tab.classList.add('active');
-      document.getElementById(tab.dataset.section).classList.add('active');
-    });
+    container.appendChild(section);
   });
 
-  // === ACCORDION CARDS ===
-  function toggleCard(header) {
-    header.parentElement.classList.toggle('open');
-  }
+  loading.style.display = 'none';
+}
+loadModules();
+modulesLoaded = true;
 
-  // === COPY TEMPLATE ===
-  function copyTemplate(btn) {
-    const text = btn.previousElementSibling.textContent;
-    navigator.clipboard.writeText(text).then(() => {
-      const orig = btn.textContent;
-      btn.textContent = '✅ Copied!';
-      setTimeout(() => btn.textContent = orig, 2000);
-    });
-  }
+/* ── Chat auto-play: advances messages automatically when window scrolls into view ── */
+function setupChatAutoPlay(container) {
+  container.querySelectorAll('.chat-window').forEach(win => {
+    if (win.dataset.autoplay) return;
+    win.dataset.autoplay = '1';
+    const nextBtn = win.querySelector('.chat-next-btn');
+    if (!nextBtn) return;
+    const total = win.querySelectorAll('[data-msg]').length;
+    let shown = 0;
 
-  // === PWA SERVICE WORKER ===
-  console.log('[PWA] Initializing...');
-  console.log('[PWA] Protocol:', window.location.protocol);
-  console.log('[PWA] Display mode standalone:', window.matchMedia('(display-mode: standalone)').matches);
-  console.log('[PWA] navigator.standalone (iOS):', navigator.standalone);
-
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then(reg => {
-          console.log('✅ [PWA] Service Worker registered:', reg.scope);
-          setInterval(() => reg.update(), 60 * 60 * 1000);
-        })
-        .catch(err => console.warn('❌ [PWA] SW registration failed:', err));
-    });
-  } else {
-    console.warn('[PWA] Service Workers not supported in this browser');
-  }
-
-  // === PWA INSTALL PROMPT ===
-  let deferredPrompt = null;
-  const heroInstallBtn = document.getElementById('install-btn-hero');
-
-  // Check if already installed — hide button if so
-  function isAppInstalled() {
-    return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
-  }
-
-  // Show/hide the permanent hero install button
-  function updateInstallButton() {
-    if (isAppInstalled()) {
-      console.log('[PWA] App is already installed — hiding install button');
-      heroInstallBtn.classList.add('hidden');
-      return;
-    }
-    // Show the button — it works even without deferredPrompt (shows instructions)
-    heroInstallBtn.classList.remove('hidden');
-    console.log('[PWA] Install button visible');
-  }
-
-  // Listen for the browser's install prompt
-  window.addEventListener('beforeinstallprompt', (e) => {
-    console.log('✅ [PWA] beforeinstallprompt fired!');
-    e.preventDefault();
-    deferredPrompt = e;
-    updateInstallButton();
-    showInstallBanner();
-  });
-
-  // Handle click on the permanent hero install button
-  async function handleInstallClick() {
-    console.log('[PWA] Install button clicked, deferredPrompt:', !!deferredPrompt);
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      console.log('[PWA] Install prompt outcome:', outcome);
-      if (outcome === 'accepted') {
-        heroInstallBtn.classList.add('hidden');
+    const obs = new IntersectionObserver(entries => {
+      if (!entries[0].isIntersecting) return;
+      obs.disconnect();
+      function advance() {
+        if (shown >= total) return;
+        nextBtn.click();
+        shown++;
+        setTimeout(advance, 1600); // 800ms internal delay + 800ms pause between messages
       }
-      deferredPrompt = null;
-      dismissInstall();
-    } else {
-      // No deferred prompt — show manual instructions
-      showManualInstallInstructions();
-    }
-  }
+      setTimeout(advance, 600); // brief pause before first message
+    }, { threshold: 0.3 });
 
-  function showManualInstallInstructions() {
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-    let instructions = '';
-    
-    if (isIOS || isSafari) {
-      instructions = 'Tap the Share button (📤) at the bottom of Safari, then tap "Add to Home Screen"';
-    } else {
-      instructions = 'Click the browser menu (⋮) and select "Install app" or "Add to Home Screen"';
-    }
-    
-    // Create a nice modal
-    const modal = document.createElement('div');
-    modal.id = 'install-instructions-modal';
-    modal.innerHTML = `
-      <div style="
-        position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-        display: flex; align-items: center; justify-content: center;
-        z-index: 10001; padding: 20px;
-      " onclick="this.parentElement.remove()">
-        <div style="
-          background: white; border-radius: 16px; padding: 28px;
-          max-width: 380px; width: 100%; text-align: center;
-          font-family: 'Inter', sans-serif;
-        " onclick="event.stopPropagation()">
-          <div style="font-size: 48px; margin-bottom: 12px;">📲</div>
-          <h3 style="margin-bottom: 8px; font-size: 18px; color: #2c2c2c;">Install this App</h3>
-          <p style="color: #666; font-size: 14px; line-height: 1.6; margin-bottom: 20px;">
-            ${instructions}
-          </p>
-          <button onclick="this.closest('#install-instructions-modal').remove()" style="
-            background: #c4825a; color: white; border: none;
-            padding: 10px 24px; border-radius: 10px;
-            font-weight: 600; font-size: 14px; cursor: pointer;
-          ">Got it!</button>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(modal);
-  }
-
-  function showInstallBanner() {
-    if (isAppInstalled()) return;
-    // Don't show banner if user already dismissed it this session
-    if (sessionStorage.getItem('pwa-banner-dismissed')) return;
-    
-    const banner = document.createElement('div');
-    banner.id = 'pwa-install-banner';
-    banner.innerHTML = `
-      <div style="
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: white;
-        border: 1px solid #e5ddd5;
-        border-radius: 16px;
-        padding: 16px 20px;
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        box-shadow: 0 8px 32px rgba(196, 130, 90, 0.2);
-        z-index: 10000;
-        max-width: 420px;
-        width: calc(100% - 40px);
-        font-family: 'Inter', sans-serif;
-        animation: slideUp 0.4s ease;
-      ">
-        <div style="font-size: 2rem; flex-shrink: 0;">🤖</div>
-        <div style="flex: 1;">
-          <div style="font-weight: 600; font-size: 0.95rem; color: #2c2c2c;">Install AI Agent Learning</div>
-          <div style="font-size: 0.8rem; color: #999; margin-top: 2px;">Access the course offline anytime</div>
-        </div>
-        <button onclick="handleInstallClick()" style="
-          background: #c4825a; color: white; border: none;
-          padding: 10px 18px; border-radius: 10px;
-          font-weight: 600; font-size: 0.85rem; cursor: pointer;
-          white-space: nowrap; flex-shrink: 0;
-        ">Install</button>
-        <button onclick="dismissInstall()" style="
-          background: none; border: none; color: #999;
-          font-size: 1.2rem; cursor: pointer; padding: 4px;
-          line-height: 1; flex-shrink: 0;
-        ">✕</button>
-      </div>
-    `;
-    
-    // Add slide-up animation
-    if (!document.getElementById('pwa-anim-style')) {
-      const style = document.createElement('style');
-      style.id = 'pwa-anim-style';
-      style.textContent = '@keyframes slideUp { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }';
-      document.head.appendChild(style);
-    }
-    
-    document.body.appendChild(banner);
-  }
-
-  function dismissInstall() {
-    const banner = document.getElementById('pwa-install-banner');
-    if (banner) banner.remove();
-    sessionStorage.setItem('pwa-banner-dismissed', 'true');
-  }
-
-  // Hide buttons if app is installed
-  window.addEventListener('appinstalled', () => {
-    console.log('✅ [PWA] App installed!');
-    heroInstallBtn.classList.add('hidden');
-    dismissInstall();
+    obs.observe(win);
   });
+}
 
-  // Also listen for display-mode changes (installed state)
-  window.matchMedia('(display-mode: standalone)').addEventListener('change', (e) => {
-    if (e.matches) {
-      console.log('[PWA] Now running in standalone mode');
-      heroInstallBtn.classList.add('hidden');
-    }
-  });
+/* ── Module interactive elements (event delegation for lazy-loaded content) ── */
 
-  // Initial check — show install button even before beforeinstallprompt fires
-  // (for iOS Safari which never fires beforeinstallprompt)
-  if (!isAppInstalled()) {
-    heroInstallBtn.classList.remove('hidden');
-    console.log('[PWA] Initial: showing install button (not installed)');
+// Flashcard flip: standalone .flashcard elements (not inside .flashcard-deck)
+document.addEventListener('click', function(e) {
+  const card = e.target.closest('.flashcard');
+  if (card && !card.closest('.flashcard-deck')) {
+    card.classList.toggle('flipped');
   }
+});
+
+// Quiz immediate feedback: .quiz-option inside .quiz-card
+document.addEventListener('click', function(e) {
+  const btn = e.target.closest('.quiz-option');
+  if (!btn) return;
+  const card = btn.closest('.quiz-card');
+  if (!card || card.classList.contains('answered')) return;
+  card.classList.add('answered');
+  const correct = btn.dataset.correct === 'true';
+  card.querySelectorAll('.quiz-option').forEach(o => {
+    if (o.dataset.correct === 'true') o.classList.add('correct');
+    else if (o === btn) o.classList.add('incorrect');
+  });
+  const explanation = correct ? btn.dataset.explanationCorrect : btn.dataset.explanationWrong;
+  if (explanation) {
+    const fb = document.createElement('p');
+    fb.className = 'quiz-feedback';
+    fb.style.cssText = `background:${correct ? '#d1fae5' : '#fee2e2'};border-left:3px solid ${correct ? '#10b981' : '#ef4444'};color:${correct ? '#065f46' : '#991b1b'};`;
+    fb.textContent = explanation;
+    card.appendChild(fb);
+  }
+});
+
+/* ── Flashcards ── */
+let flashcardsLoaded = false;
+async function loadFlashcards() {
+  if (flashcardsLoaded) return;
+  const grid = document.getElementById('flashcard-grid');
+  try {
+    const cards = await (await fetch('./data/flashcards.json')).json();
+    grid.innerHTML = '';
+    cards.forEach(c => {
+      const el = document.createElement('div');
+      el.className = 'fc';
+      el.innerHTML = `<div class="fc-inner">
+        <div class="fc-front"><div class="fc-term">${c.term}</div><div class="fc-hint">Click to reveal</div></div>
+        <div class="fc-back"><div class="fc-term">${c.definition}</div></div>
+      </div>`;
+      el.addEventListener('click', () => el.classList.toggle('flipped'));
+      grid.appendChild(el);
+    });
+    flashcardsLoaded = true;
+  } catch(e) { grid.innerHTML = '<p class="empty-state">No flashcards found — add data/flashcards.json</p>'; }
+}
+
+/* ── Quiz ── */
+let quizLoaded = false;
+async function loadQuiz() {
+  if (quizLoaded) return;
+  const container = document.getElementById('quiz-container');
+  const urls = MODULE_FILES.map((_, i) => `./data/quiz-${String(i+1).padStart(2,'0')}.json`);
+  let allQ = [];
+  for (const url of urls) {
+    try { const r = await fetch(url); if (r.ok) { const d = await r.json(); allQ = allQ.concat(d.questions || d); } } catch(e) {}
+  }
+  if (!allQ.length) { container.innerHTML = '<p class="empty-state">No quiz data — add data/quiz-01.json etc.</p>'; return; }
+  container.innerHTML = '';
+  allQ.forEach((q, qi) => {
+    const block = document.createElement('div');
+    block.className = 'quiz-block';
+    const opts = q.options.map((o, oi) => `<button class="quiz-opt" data-idx="${oi}">${o}</button>`).join('');
+    block.innerHTML = `<div class="quiz-q">Q${qi+1}: ${q.question}</div><div class="quiz-opts">${opts}</div><div class="quiz-explanation"></div>`;
+    block.querySelectorAll('.quiz-opt').forEach(btn => {
+      btn.addEventListener('click', () => {
+        block.querySelectorAll('.quiz-opt').forEach(b => b.disabled = true);
+        const correct = parseInt(btn.dataset.idx) === q.answer;
+        btn.classList.add(correct ? 'correct' : 'wrong');
+        if (!correct) block.querySelectorAll('.quiz-opt')[q.answer].classList.add('correct');
+        const exp = block.querySelector('.quiz-explanation');
+        exp.textContent = q.explanation || (correct ? '✓ Correct!' : '✗ Incorrect.');
+        exp.classList.add('visible');
+      });
+    });
+    container.appendChild(block);
+  });
+  quizLoaded = true;
+}
+
+/* ── Diagrams ── */
+function renderDiagrams() {
+  const grid = document.getElementById('diagram-grid');
+  if (grid.children.length > 0) return;
+  if (!DIAGRAM_FILES.length) { grid.innerHTML = '<p class="empty-state">No diagrams yet — add SVGs to website/diagrams/</p>'; return; }
+  DIAGRAM_FILES.forEach(f => {
+    const label = f.replace(/.*\//, '').replace(/\.[^.]+$/, '').replace(/-/g, ' ');
+    const card = document.createElement('div');
+    card.className = 'diagram-card';
+    card.innerHTML = `<img src="${f}" alt="${label}" loading="lazy"><div class="diagram-label">${label}</div>`;
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', () => openLightbox(f, label));
+    grid.appendChild(card);
+  });
+}
+
+function openLightbox(src, label) {
+  const lb = document.createElement('div');
+  lb.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:zoom-out;padding:24px;';
+  lb.innerHTML = `<img src="${src}" alt="${label}" style="max-width:100%;max-height:100%;border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,0.5);">`;
+  lb.addEventListener('click', () => lb.remove());
+  document.addEventListener('keydown', function esc(e) { if (e.key === 'Escape') { lb.remove(); document.removeEventListener('keydown', esc); } });
+  document.body.appendChild(lb);
+}
+
+/* ── PWA install prompt ── */
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault(); deferredPrompt = e;
+  document.getElementById('install-btn-hero').classList.add('visible');
+});
+document.getElementById('install-btn-hero').addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  if (outcome === 'accepted') document.getElementById('install-btn-hero').classList.remove('visible');
+  deferredPrompt = null;
+});
+
+/* ── Service worker ── */
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(console.warn);
+}
 </script>
+
+<script>
+function copyPre(btn) {
+  const pre = btn.previousElementSibling;
+  navigator.clipboard.writeText(pre.textContent).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = '✅ Copied!';
+    setTimeout(() => { btn.textContent = orig; }, 2000);
+  });
+}
+</script>
+
+<footer style="text-align:center;padding:40px 24px;color:var(--text-muted);font-size:14px;border-top:1px solid var(--border);margin-top:40px;">
+  <p>Built with ❤️ for learning AI agents, one hour at a time.</p>
+  <p style="margin-top:8px;">
+    <a href="https://github.com/CeciliaW888/ai-agent-learning" style="color:var(--accent);text-decoration:none;">GitHub</a>
+  </p>
+</footer>
 </body>
 </html>

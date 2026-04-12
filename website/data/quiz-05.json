@@ -1,0 +1,37 @@
+{
+  "questions": [
+    {
+      "question": "Which type of memory persists across multiple conversation sessions?",
+      "options": [
+        "Short-term memory (conversation buffer)",
+        "Long-term memory (vector DB, files)",
+        "Working memory (task scratch pad)",
+        "Cache memory (token cache)"
+      ],
+      "answer": 1,
+      "explanation": "Long-term memory, stored in vector databases or files, persists beyond a single session and can be retrieved in future conversations."
+    },
+    {
+      "question": "What is 'working memory' in an AI agent?",
+      "options": [
+        "The model weights stored on disk",
+        "The user's message history",
+        "Intermediate results stored during a task's execution",
+        "The list of available tools"
+      ],
+      "answer": 2,
+      "explanation": "Working memory holds temporary data the agent accumulates while completing a task — like partial results from tool calls — before producing a final answer."
+    },
+    {
+      "question": "What is a context window?",
+      "options": [
+        "The maximum amount of text an LLM can process in one request",
+        "A UI panel showing the agent's current state",
+        "The number of tools available to the agent",
+        "The time limit for an agent's response"
+      ],
+      "answer": 0,
+      "explanation": "The context window is the fixed-size buffer of tokens an LLM can read at once. When conversations or data exceed it, older content must be truncated or summarized."
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "questions": [
+    {
+      "question": "In the PDA loop, what happens during the \"Decide\" phase?",
+      "options": [
+        "The agent retrieves data from a database",
+        "The agent sends output to the user",
+        "The LLM reasons about what action to take next",
+        "The agent resets its memory"
+      ],
+      "answer": 2,
+      "explanation": "During Decide, the LLM processes what it perceived and determines the best next action — such as calling a tool or responding to the user."
+    },
+    {
+      "question": "What triggers the start of a new PDA cycle?",
+      "options": [
+        "A scheduled timer",
+        "Receiving new input such as a user query or tool result",
+        "The agent finishing a tool call",
+        "The context window filling up"
+      ],
+      "answer": 1,
+      "explanation": "Each new piece of input — whether a user message or a tool result — triggers a fresh Perceive-Decide-Act cycle."
+    },
+    {
+      "question": "The ReAct pattern combines which two processes?",
+      "options": [
+        "Retrieval and Compression",
+        "Ranking and Classification",
+        "Responding and Caching",
+        "Reasoning and Acting"
+      ],
+      "answer": 3,
+      "explanation": "ReAct stands for Reasoning and Acting — the agent alternates between thinking (Thought) and doing (Action) to solve tasks."
+    }
+  ]
+}

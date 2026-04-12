@@ -1,0 +1,245 @@
+<section class="module" id="module-16" data-day="16">
+<div class="module-inner">
+
+  <h2>Day 16: Agent Communication Patterns</h2>
+
+  <div class="callout-accent">
+    <span class="callout-icon">📨</span>
+    <div class="callout-content">
+      <strong>The hardest part isn't building the agents — it's connecting them.</strong> Communication is where multi-agent systems succeed or fail. Bad communication means agents duplicating work, misunderstanding each other, or silently dropping important context. Today you learn the three ways agents talk to each other — and how to choose between them.
+    </div>
+  </div>
+
+  <!-- Learning Objectives -->
+  <h3>🎯 Learning Objectives</h3>
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">1</span>
+      <div class="step-body">
+        <strong>Explain the three communication methods</strong>
+        <p>Shared state, message passing, and handoffs — what each one is and how it works.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">2</span>
+      <div class="step-body">
+        <strong>Understand handoff protocols</strong>
+        <p>Know what information a receiving agent needs and how to pass control cleanly between agents.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">3</span>
+      <div class="step-body">
+        <strong>Handle errors in multi-agent communication</strong>
+        <p>When one agent fails, know the strategies — retry, fallback, escalate — to keep the system going.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Watch -->
+  <h3>📺 Watch First (40 min)</h3>
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">🎥</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://www.youtube.com/watch?v=hvAPnpSfSGo" target="_blank" rel="noopener">LangGraph: Multi-Agent Workflows — LangChain</a></strong>
+        <p>40 min · Deep dive into how LangGraph handles state and communication between agents. The clearest visual explanation available.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">🎓</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://www.deeplearning.ai/short-courses/ai-agents-in-langgraph/" target="_blank" rel="noopener">Multi-Agent Workflows lesson — DeepLearning.AI</a></strong>
+        <p>~15 min for the multi-agent lesson · Andrew Ng's team covers agent communication with code examples.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">📄</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank" rel="noopener">Anthropic: Orchestrator-Workers — Handoff Patterns</a></strong>
+        <p>~10 min · The "Orchestrator-workers" section covers real-world handoff design decisions.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core Concepts -->
+  <h3>📚 Core Concepts</h3>
+
+  <h4>📬 Three Ways Agents Talk to Each Other</h4>
+
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">1</span>
+      <div class="step-body">
+        <strong>Shared State</strong>
+        <p>All agents read and write to a common data structure — like a shared whiteboard. Agent A adds research notes; Agent B reads them and writes a draft; Agent C reads the draft and adds feedback. Simple, visible, but the state can grow large and agents can accidentally overwrite each other.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">2</span>
+      <div class="step-body">
+        <strong>Message Passing</strong>
+        <p>Agents send discrete messages directly to each other — like email. Each message has a sender, receiver, content, and type (request / response / handoff). More structured and private than shared state, but requires a message bus or router to coordinate delivery.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">3</span>
+      <div class="step-body">
+        <strong>Handoff (Transfer of Control)</strong>
+        <p>One agent explicitly passes control — and its full work product — to the next agent. Like handing off a baton in a relay race. The key rule: include enough context so the receiving agent doesn't need to ask what's going on. Never assume the next agent knows what you were thinking.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout-info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-content">
+      <strong>Common gotcha:</strong> When Agent A passes to Agent B, make sure enough context is included. Agents don't share memory by default. If Agent B doesn't understand the full situation, it will make decisions based on incomplete information — and the errors compound downstream.
+    </div>
+  </div>
+
+  <h4>💬 A Structured Handoff in Action</h4>
+
+  <p>Watch how two agents pass a task with a structured handoff message:</p>
+
+  <div class="chat-window" id="chat-handoff">
+    <div class="chat-messages">
+      <div class="chat-message" data-msg="1" data-sender="1" style="display:none;">
+        User → Researcher: "Research the latest developments in AI coding assistants."
+      </div>
+      <div class="chat-message" data-msg="2" data-sender="2" style="display:none;">
+        Researcher [Working]: Searching web, reading articles, extracting key facts...
+      </div>
+      <div class="chat-message" data-msg="3" data-sender="3" style="display:none;">
+        Researcher [Action]: transfer_to_writer({ "task": "Write a 500-word article", "research_summary": "Key findings: GitHub Copilot 70% adoption, Cursor editor rising, Claude and GPT-4 powering most tools, debate over code quality...", "target_audience": "developers", "tone": "informative" })
+      </div>
+      <div class="chat-message" data-msg="4" data-sender="4" style="display:none;">
+        [HANDOFF] Researcher → Writer. Context received: task, research, audience, tone.
+      </div>
+      <div class="chat-message" data-msg="5" data-sender="2" style="display:none;">
+        Writer [Thought]: I have everything I need. Research summary is clear, audience is defined. I can start writing.
+      </div>
+      <div class="chat-message" data-msg="6" data-sender="3" style="display:none;">
+        Writer [Action]: write_article(research_summary, audience="developers", word_count=500)
+      </div>
+      <div class="chat-message" data-msg="7" data-sender="1" style="display:none;">
+        Writer → User: "Article complete. 498 words, 4 sections covering adoption trends, top tools, tradeoffs, and what's next."
+      </div>
+      <div class="chat-typing typing-indicator" style="display:none;">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="chat-controls">
+      <button class="chat-next-btn">Next →</button>
+      <button class="chat-all-btn">Show All</button>
+      <button class="chat-reset-btn">Reset</button>
+    </div>
+  </div>
+
+  <p><strong>Notice the handoff message:</strong> it's structured — task, research, audience, tone. The Writer gets everything it needs without having to ask. That's a good handoff.</p>
+
+  <h4>⚠️ Common Pitfalls in Agent Communication</h4>
+
+  <div class="callout-warning">
+    <span class="callout-icon">⚠️</span>
+    <div class="callout-content">
+      <strong>Watch out for infinite revision loops.</strong> Writer → Editor → Writer → Editor → ... Set a maximum revision count in your state. If you don't, agents will happily loop forever, burning tokens and time.
+    </div>
+  </div>
+
+  <h4>🔄 Shared State vs Message Passing</h4>
+
+  <div class="flashcard">
+    <div class="flashcard-inner">
+      <div class="flashcard-front">
+        <h4>🗂️ Shared State</h4>
+        <p>All agents read and write a common data structure. Like a shared whiteboard everyone can see.</p>
+        <p><strong>Use when:</strong> agents need to see the full picture, the workflow is well-defined, and you want simple debugging (just inspect the state object).</p>
+        <p><strong>Watch out:</strong> state grows large; agents can accidentally clobber each other's data.</p>
+        <p style="font-size:2em;margin-top:12px">🗂️</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted)">← Tap to flip →</p>
+      </div>
+      <div class="flashcard-back">
+        <h4>📨 Message Passing</h4>
+        <p>Agents send discrete messages directly to each other. Each message has a clear sender, receiver, and type.</p>
+        <p><strong>Use when:</strong> agents need privacy from each other, communication is event-driven, or you want to decouple agents so they can run independently.</p>
+        <p><strong>Watch out:</strong> needs a message bus to coordinate; context can get lost if messages aren't well-structured.</p>
+        <p style="font-size:2em;margin-top:12px">📨</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted)">← Tap to flip →</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Terms -->
+  <h3>📖 Key Terms</h3>
+  <div class="term-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Shared State</strong><br>
+      A common data structure all agents can read and write — like a shared whiteboard. Simple to inspect but requires careful coordination to avoid conflicts.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Message Passing</strong><br>
+      Agents send structured messages directly to each other. Each message has a sender, receiver, content, and type (request / response / handoff).
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Handoff</strong><br>
+      One agent explicitly transfers control and context to another. A good handoff includes enough information so the next agent can act without asking follow-up questions.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">State Graph</strong><br>
+      A graph structure (like LangGraph) that defines agent nodes and the edges between them — including conditional edges that route based on current state.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Conditional Edge</strong><br>
+      A transition in a state graph that routes to different nodes depending on the state — e.g., "if the editor says APPROVED, end; otherwise, send back for revision."
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Message Bus</strong><br>
+      A central hub that routes messages between agents. Agents register with the bus and send messages to named recipients — like a postal service for agents.
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <h3>📝 Quick Check</h3>
+
+  <div class="quiz-card">
+    <p class="quiz-question"><strong>Q1:</strong> Agent A finishes research and passes to Agent B. What should the handoff message always include?</p>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Agent B can't read Agent A's mind. Just the agent's name isn't enough — the receiving agent needs the actual content and context to act on.">Just the sending agent's name</button>
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="An empty trigger is the worst kind of handoff — Agent B will have no idea what to do or why it was invoked.">An empty trigger message to start Agent B</button>
+      <button class="quiz-option" data-correct="true" data-explanation-correct="Correct! A good handoff includes enough context — the task, the findings, any relevant constraints — so Agent B can act immediately without needing to ask what's going on.">Enough context for Agent B to act without asking follow-up questions</button>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <p class="quiz-question"><strong>Q2:</strong> When is shared state a better choice than message passing?</p>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="true" data-explanation-correct="Correct! Shared state shines when all agents need to see the full picture and you want simple debugging — just inspect the state object to see what every agent has contributed.">When all agents need to see the full picture and you want easy debugging</button>
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Shared state doesn't inherently improve speed. In fact, write conflicts can slow things down if multiple agents update the same fields simultaneously.">When you want agents to run faster in parallel</button>
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Message passing is actually better for privacy between agents — each message is only seen by sender and receiver, unlike shared state which is visible to all.">When agents need privacy from each other</button>
+    </div>
+  </div>
+
+  <!-- Reflection -->
+  <h3>🤔 Reflection</h3>
+  <div class="reflection-card">
+    <p>Think about the multi-agent system you designed yesterday. How would the agents communicate? Would you use shared state, message passing, or handoffs — or a combination? What information would each agent need to receive in order to do its job?</p>
+    <textarea class="reflection-input" placeholder="Write your thoughts here..."></textarea>
+    <button class="save-reflection">Save</button>
+  </div>
+
+  <!-- Checklist -->
+  <h3>✅ Before You Move On</h3>
+  <div class="checklist" style="margin-top:16px;">
+    <label><input type="checkbox"> I can explain shared state, message passing, and handoffs in my own words</label>
+    <label><input type="checkbox"> I understand when to choose shared state vs message passing</label>
+    <label><input type="checkbox"> I know what a good handoff message includes (and what's missing from a bad one)</label>
+    <label><input type="checkbox"> I completed the reflection above</label>
+  </div>
+
+  <p style="margin-top:24px;"><strong>Tomorrow:</strong> Day 17 — Production Patterns &amp; Safety. You've built multi-agent systems that work. Tomorrow you'll learn what it takes to make them safe, observable, and trustworthy enough to run without you watching.</p>
+
+  <p><a class="day-link" href="https://github.com/CeciliaW888/ai-agent-learning/blob/main/week-03/day-16-agent-communication.md" target="_blank" rel="noopener">📖 Read the full Day 16 study guide →</a></p>
+
+</div>
+</section>

@@ -1,0 +1,294 @@
+<section class="module" id="module-11" data-day="11">
+<div class="module-inner">
+
+  <h2>Day 11: Building a Research Agent — Project Start</h2>
+
+  <div class="callout-accent">
+    <span class="callout-icon">🔬</span>
+    <div class="callout-content">
+      <strong>Hands-on day!</strong> Today you stop reading about agents and start <em>building</em> one. By the end of this session you'll have a real, working research assistant that searches the web, reads articles, and saves reports — the kind of tool people actually pay for.
+    </div>
+  </div>
+
+  <!-- Learning Objectives -->
+  <h3>🎯 Learning Objectives</h3>
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">1</span>
+      <div class="step-body">
+        <strong>Design a complete agent project from scratch</strong>
+        <p>Understand why separating tools, prompts, and agent logic into their own files pays off as the project grows.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">2</span>
+      <div class="step-body">
+        <strong>Build four production-quality tools</strong>
+        <p>Write search, reader, writer, and calculator tools — each with proper error handling and clear descriptions.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">3</span>
+      <div class="step-body">
+        <strong>Create a LangChain research agent end-to-end</strong>
+        <p>Connect LLM + tools + system prompt into an interactive agent you can run from the terminal.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">4</span>
+      <div class="step-body">
+        <strong>Test with real queries and read the agent's reasoning</strong>
+        <p>Run simple and multi-step queries and observe the Think → Act → Observe loop in action.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Watch -->
+  <h3>📺 Watch First (30 min)</h3>
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">🎥</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://www.youtube.com/watch?v=bTMPwUgLZf0" target="_blank" rel="noopener">Build an AI Agent From Scratch in Python — Tech With Tim</a></strong>
+        <p>~30 min · Full code walkthrough. Watch this before you build — it gives you the complete picture first.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">🎥</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://www.youtube.com/watch?v=hvAPnpSfSGo" target="_blank" rel="noopener">LangGraph: Multi-Agent Workflows — LangChain</a></strong>
+        <p>~20 min · Shows how LangGraph handles the agent loop under the hood. Great companion to today's build.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core Concepts -->
+  <h3>📚 Core Concepts</h3>
+
+  <h4>🏗️ Project Structure — Why It Matters</h4>
+
+  <p>A well-structured agent separates tools, prompts, and agent wiring into their own files. This isn't over-engineering — it's the minimum structure that makes debugging possible.</p>
+
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">🔧</span>
+      <div class="step-body">
+        <strong>tools/ — the agent's hands</strong>
+        <p><code>search.py</code>, <code>reader.py</code>, <code>writer.py</code>, <code>calculator.py</code>. Each tool is a Python function wrapped with the <code>@tool</code> decorator so the LLM can call it.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">📋</span>
+      <div class="step-body">
+        <strong>prompts/ — the agent's personality</strong>
+        <p>The system prompt defines how the agent behaves: what format to use, how many searches to do, when to stop. Treat it like code — version-control it and iterate.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">🤖</span>
+      <div class="step-body">
+        <strong>agent.py — the wiring</strong>
+        <p>Creates the LLM, connects the tools, and returns a runnable agent. One file, one job — easy to swap out the model or tools later.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">▶️</span>
+      <div class="step-body">
+        <strong>main.py — the entry point</strong>
+        <p>The interactive loop: accepts user input, invokes the agent, and displays tool calls and the final answer. Nothing else lives here.</p>
+      </div>
+    </div>
+  </div>
+
+  <h4>🔍 Why Tavily for Search?</h4>
+
+  <p>Your agent needs to search the web. <span class="term" data-definition="A search API purpose-built for AI agents — returns clean, structured text optimized for LLM consumption instead of HTML for human browsers">Tavily</span> is purpose-built for agents: it returns clean, structured text that LLMs can read directly. The Google Search API returns HTML designed for human browsers — scripts, ads, navigation — noise the LLM has to filter through before getting to facts.</p>
+
+  <div class="callout-info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-content">
+      <strong>Get your free Tavily key at <a class="day-link" href="https://tavily.com" target="_blank" rel="noopener">tavily.com</a></strong> — 1,000 free searches per month. More than enough for this course.
+    </div>
+  </div>
+
+  <h4>⚙️ Wiring Up the Agent</h4>
+
+  <p>Here's the core of <code>agent.py</code> — the moment tools, LLM, and prompt come together:</p>
+
+  <pre><code># agent.py
+from dotenv import load_dotenv
+from langchain_openai import ChatOpenAI
+from langgraph.prebuilt import create_react_agent
+
+from tools.search import search_web
+from tools.reader import read_webpage
+from tools.writer import save_report
+from tools.calculator import calculate
+from prompts.system import RESEARCH_AGENT_PROMPT
+
+load_dotenv()
+
+def create_agent():
+    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+    tools = [search_web, read_webpage, save_report, calculate]
+
+    agent = create_react_agent(
+        llm,
+        tools,
+        prompt=RESEARCH_AGENT_PROMPT
+    )
+
+    return agent</code></pre>
+
+  <p><strong>Key choices:</strong> <code>temperature=0</code> makes tool selection deterministic and consistent. <code>create_react_agent</code> wraps the LLM with the ReAct loop — Think → Act → Observe → Think again — automatically.</p>
+
+  <div class="callout-warning">
+    <span class="callout-icon">⚠️</span>
+    <div class="callout-content">
+      <strong>Tool descriptions are everything.</strong> The LLM picks which tool to call based solely on the docstring. A vague description like <code>"""Find information."""</code> leads to wrong choices. Be specific about what the tool does, when to use it, and when NOT to use it.
+    </div>
+  </div>
+
+  <h4>💬 Watching the Agent Process a Query</h4>
+
+  <p>Step through how the agent handles a real research request:</p>
+
+  <div class="chat-window" id="chat-research-query">
+    <div class="chat-messages">
+      <div class="chat-message" data-msg="1" data-sender="1" style="display:none;">
+        User: "What are the top 3 AI agent frameworks in 2024? Compare their pros and cons."
+      </div>
+      <div class="chat-message" data-msg="2" data-sender="2" style="display:none;">
+        Agent [Thought]: The user wants a current comparison of AI agent frameworks. I need web search — this space changes fast and my training data may be stale.
+      </div>
+      <div class="chat-message" data-msg="3" data-sender="3" style="display:none;">
+        Agent [Action]: search_web("best AI agent frameworks 2024 comparison LangChain AutoGen LlamaIndex")
+      </div>
+      <div class="chat-message" data-msg="4" data-sender="4" style="display:none;">
+        Tool Result: [3 results returned — LangChain overview, AutoGen paper summary, LlamaIndex comparison article with URLs and content snippets...]
+      </div>
+      <div class="chat-message" data-msg="5" data-sender="2" style="display:none;">
+        Agent [Thought]: Good overview. The AutoGen article looks most detailed for pros/cons. Let me read it directly for specifics.
+      </div>
+      <div class="chat-message" data-msg="6" data-sender="3" style="display:none;">
+        Agent [Action]: read_webpage("https://microsoft.github.io/autogen/docs/getting-started")
+      </div>
+      <div class="chat-message" data-msg="7" data-sender="4" style="display:none;">
+        Tool Result: [AutoGen docs — multi-agent conversation framework, strong orchestration, steeper learning curve, enterprise focus...]
+      </div>
+      <div class="chat-message" data-msg="8" data-sender="2" style="display:none;">
+        Agent [Thought]: I now have enough from 2 sources. Time to synthesize into the structured format: Summary → Key Findings → Analysis → Sources → Confidence.
+      </div>
+      <div class="chat-message" data-msg="9" data-sender="1" style="display:none;">
+        Agent [Answer]: ### Summary — LangChain, AutoGen, and LlamaIndex dominate 2024... [Full structured report with cited sources and confidence: High]
+      </div>
+      <div class="chat-typing typing-indicator" style="display:none;">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="chat-controls">
+      <button class="chat-next-btn">Next →</button>
+      <button class="chat-all-btn">Show All</button>
+      <button class="chat-reset-btn">Reset</button>
+    </div>
+  </div>
+
+  <p><strong>Notice the decisions:</strong> The agent chose to search first (not guess), then decided one source needed deeper reading, then stopped when it had enough. That's the ReAct loop — autonomous judgment at each step.</p>
+
+  <h4>🆚 Tavily vs Google Search for Agents</h4>
+
+  <div class="flashcard">
+    <div class="flashcard-inner">
+      <div class="flashcard-front">
+        <h4>🌐 Google Search API</h4>
+        <p>Returns links and HTML snippets designed for human browsers. Navigation, ads, and scripts come along for the ride — noise the LLM has to filter out.</p>
+        <p>Expensive ($5 per 1,000 queries), requires billing setup, strict rate limits.</p>
+        <p><em>Great for users browsing. Awkward for agents that need clean text.</em></p>
+        <p style="font-size:0.8em;color:var(--color-text-muted)">← Tap to flip →</p>
+      </div>
+      <div class="flashcard-back">
+        <h4>🤖 Tavily Search API</h4>
+        <p>Returns clean, extracted text from pages — exactly what an LLM needs. No HTML parsing required on your end.</p>
+        <p>Free tier: 1,000 searches/month. Built from the ground up for AI agent use cases.</p>
+        <p><em>The right tool for the job. Use Tavily for agents, Google for human-facing search.</em></p>
+        <p style="font-size:0.8em;color:var(--color-text-muted)">← Tap to flip →</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Terms -->
+  <h3>📖 Key Terms</h3>
+  <div class="term-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Tavily</strong><br>
+      A web search API purpose-built for AI agents. Returns clean, structured text instead of raw HTML. Free tier: 1,000 searches/month at tavily.com.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">@tool decorator</strong><br>
+      A LangChain decorator that turns a regular Python function into a callable tool. The function's docstring becomes the tool's description — what the LLM reads to decide when to use it.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">create_react_agent</strong><br>
+      LangGraph function that wires an LLM and a list of tools into the ReAct loop: Reason → Act → Observe → repeat, until the agent produces a final answer.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">temperature=0</strong><br>
+      LLM setting that makes responses deterministic — always picks the most likely token. Agents benefit from this because you want consistent, predictable tool selection across runs.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">BeautifulSoup</strong><br>
+      Python library for parsing HTML. Used in the reader tool to strip scripts, ads, and nav elements — leaving just the readable text content of a webpage.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">System Prompt</strong><br>
+      Instructions given to the LLM before any user message. For agents, this defines behavior: response format, tool usage rules, when to stop. Treat it like code — version-control it.
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <h3>📝 Quick Check</h3>
+
+  <div class="quiz-card">
+    <p class="quiz-question"><strong>Q1:</strong> Why is Tavily a better search tool for agents than the Google Search API?</p>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Tavily actually returns fewer results, not more. Volume isn't the advantage — the format of what's returned is.">Tavily returns more search results per query</button>
+      <button class="quiz-option" data-correct="true" data-explanation-correct="Correct! Tavily returns clean, structured text designed for LLMs. Google returns HTML designed for human browsers — the LLM has to wade through markup and noise to find the facts.">Tavily returns clean text optimized for LLMs; Google returns HTML meant for browsers</button>
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Cost is one advantage, but the real reason is the format of the response — clean text vs raw HTML. An agent needs text it can reason over directly.">Tavily is free and Google is always paid</button>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <p class="quiz-question"><strong>Q2:</strong> The LLM decides which tool to call based on what?</p>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="The LLM doesn't analyze tool source code — it reads the text description you provide in the docstring.">The tool's source code and implementation details</button>
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="The order matters a little in edge cases, but the primary factor is the description — what the tool says it does and when to use it.">The order tools appear in the tools list</button>
+      <button class="quiz-option" data-correct="true" data-explanation-correct="Exactly! The docstring IS the tool's description to the LLM. A vague docstring leads to wrong tool choices. A clear, specific docstring leads to correct, reliable tool selection.">The tool's docstring — the description you write for each function</button>
+    </div>
+  </div>
+
+  <!-- Reflection -->
+  <h3>🤔 Reflection</h3>
+  <div class="reflection-card">
+    <p>After building (or reading through) the research agent: what surprised you most about how it works? Was the hardest part the code, the prompt, or the tool design — and why?</p>
+    <textarea class="reflection-input" placeholder="Write your thoughts here..."></textarea>
+    <button class="save-reflection">Save</button>
+  </div>
+
+  <!-- Checklist -->
+  <h3>✅ Before You Move On</h3>
+  <div class="checklist" style="margin-top:16px;">
+    <label><input type="checkbox"> Project directory created with the correct folder structure</label>
+    <label><input type="checkbox"> Dependencies installed (langchain, langchain-openai, langgraph, tavily-python, beautifulsoup4)</label>
+    <label><input type="checkbox"> .env file created with OpenAI and Tavily API keys</label>
+    <label><input type="checkbox"> All 4 tools implemented with clear docstrings and error handling</label>
+    <label><input type="checkbox"> System prompt defined in prompts/system.py</label>
+    <label><input type="checkbox"> Agent wired up and running end-to-end</label>
+    <label><input type="checkbox"> At least 2 test queries run and agent reasoning reviewed</label>
+  </div>
+
+  <p style="margin-top:24px;"><strong>Tomorrow:</strong> Day 12 — Adding Memory. We'll give your agent persistent memory so it can recall past research, remember your preferences, and build on previous sessions. <strong>Come with your working research agent from today!</strong></p>
+
+  <p><a class="day-link" href="https://github.com/CeciliaW888/ai-agent-learning/blob/main/week-02/day-11-research-agent-project.md" target="_blank" rel="noopener">📖 Read the full Day 11 study guide →</a></p>
+
+</div>
+</section>

@@ -1,0 +1,37 @@
+{
+  "questions": [
+    {
+      "question": "What should a well-implemented fallback pattern do?",
+      "options": [
+        "Return a graceful error message or partial result rather than crashing",
+        "Retry the failed operation indefinitely",
+        "Escalate to a more powerful LLM automatically",
+        "Log the error silently and return an empty response"
+      ],
+      "answer": 0,
+      "explanation": "A good fallback preserves user experience by returning something useful — a partial result, a clear error message, or a prompt for the user to try again — rather than an unhandled exception."
+    },
+    {
+      "question": "Why add logging to production agents?",
+      "options": [
+        "To satisfy Python's import requirements",
+        "To prevent the agent from making tool calls",
+        "To make the agent run faster",
+        "To track decisions, tool calls, and costs for debugging and monitoring"
+      ],
+      "answer": 3,
+      "explanation": "Logs give you observability into a running agent — you can trace exactly what the agent did, how much it cost, and where it failed when something goes wrong in production."
+    },
+    {
+      "question": "A CLI interface for your agent should accept:",
+      "options": [
+        "Only JSON-formatted input",
+        "At minimum, the task or query as a command-line argument",
+        "Input only from a config file",
+        "No arguments — all config should be hardcoded"
+      ],
+      "answer": 1,
+      "explanation": "At a minimum, a CLI agent interface should let users pass the query or task directly as an argument (e.g., python agent.py \"research AI agents\") so it can be scripted and automated."
+    }
+  ]
+}

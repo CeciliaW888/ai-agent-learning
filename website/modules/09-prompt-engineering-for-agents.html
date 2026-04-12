@@ -1,0 +1,361 @@
+<section class="module" id="module-9" data-day="9">
+<div class="module-inner">
+
+  <h2>Day 9: Prompt Engineering for Agents</h2>
+
+  <div class="callout-accent">
+    <span class="callout-icon">✍️</span>
+    <div class="callout-content">
+      <strong>Your agent is only as good as its instructions.</strong> Two agents with identical models and tools will perform dramatically differently based on how they're prompted. Today you learn to write the system prompts that make agents reliable, focused, and safe.
+    </div>
+  </div>
+
+  <!-- Learning Objectives -->
+  <h3>🎯 Learning Objectives</h3>
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">1</span>
+      <div class="step-body">
+        <strong>Write effective system prompts</strong>
+        <p>Structure a system prompt with identity, capabilities, instructions, constraints, and output format.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">2</span>
+      <div class="step-body">
+        <strong>Use few-shot examples</strong>
+        <p>Show the agent how to work, not just tell it — the most powerful technique for consistent behavior.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">3</span>
+      <div class="step-body">
+        <strong>Add safety guardrails</strong>
+        <p>Prevent your agent from doing things you don't want — hallucinating facts, ignoring scope, running up costs.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">4</span>
+      <div class="step-body">
+        <strong>Apply the ReAct prompt format</strong>
+        <p>Understand the Thought / Action / Observation structure that powers every modern agent framework.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Watch -->
+  <h3>📺 Watch First (30 min)</h3>
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">🎥</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/" target="_blank" rel="noopener">ChatGPT Prompt Engineering for Developers — DeepLearning.AI</a></strong>
+        <p>~20 min for the first two lessons · Free course covering the foundational principles. Applies directly to agents.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">🎥</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://www.youtube.com/watch?v=T9aRN5JkmL8" target="_blank" rel="noopener">AI Prompt Engineering: A Deep Dive — Anthropic</a></strong>
+        <p>~15 min · Expert-level prompting techniques from the team that builds Claude. Dense and worth it.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">📄</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview" target="_blank" rel="noopener">Anthropic Prompt Engineering Guide</a></strong>
+        <p>Reference · The most comprehensive public guide on prompting. Bookmark this — you'll return to it throughout the course.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core Concepts -->
+  <h3>📚 Core Concepts</h3>
+
+  <h4>🧬 The System Prompt is Your Agent's DNA</h4>
+
+  <p>A <span class="term" data-definition="Instructions prepended to every conversation that define the agent's identity, behavior, capabilities, and constraints — the agent's persistent 'operating manual'">system prompt</span> isn't just a greeting. It's the persistent set of rules the agent follows for every response. A well-structured system prompt has five sections:</p>
+
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">1</span>
+      <div class="step-body">
+        <strong>Identity — Who is this agent?</strong>
+        <p>Name it, give it a role, describe its expertise. The more specific, the more consistent the behavior.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">2</span>
+      <div class="step-body">
+        <strong>Capabilities — What can it do?</strong>
+        <p>List the tools available and what each one is for. Reduces confusion about when to reach for which tool.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">3</span>
+      <div class="step-body">
+        <strong>Instructions — How should it behave?</strong>
+        <p>Step-by-step guidance on the agent's workflow. When to search, when to verify, when to ask for clarification.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">4</span>
+      <div class="step-body">
+        <strong>Constraints — What should it NOT do?</strong>
+        <p>Hard limits. Don't make up information. Don't go out of scope. Limit searches to prevent runaway costs.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">5</span>
+      <div class="step-body">
+        <strong>Output Format — How should it respond?</strong>
+        <p>If you want structured responses, specify the format. Don't just describe it — show an example.</p>
+      </div>
+    </div>
+  </div>
+
+  <h4>🔬 A Good System Prompt in Practice</h4>
+
+  <p>Here's a complete system prompt for a research assistant agent:</p>
+
+  <pre><code>system_prompt = """You are a Research Assistant agent.
+
+## Identity
+You help users research topics thoroughly by searching the web,
+reading articles, and synthesizing information into clear summaries.
+
+## Capabilities
+You have access to these tools:
+- search_web(query): Search the internet for current information
+- read_article(url): Read the full text of a webpage
+- save_note(title, content): Save research findings for later
+
+## Instructions
+1. When given a research topic, start by searching for recent information
+2. Read at least 2-3 sources before forming conclusions
+3. Cite your sources with URLs
+4. If information conflicts between sources, mention both perspectives
+5. Ask clarifying questions if the topic is too broad
+
+## Constraints
+- DO NOT make up information. If you can't find something, say so.
+- DO NOT provide medical, legal, or financial advice.
+- DO NOT search for anything unrelated to the user's request.
+- Limit yourself to 5 searches per request to manage costs.
+
+## Output Format
+Structure your responses with:
+- A brief summary (2-3 sentences)
+- Key findings (bullet points)
+- Sources (URLs)
+"""</code></pre>
+
+  <div class="callout-info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-content">
+      <strong>Put the most important instructions first — and last.</strong> LLMs pay less attention to the middle of long prompts. If a rule is critical (like "never make up facts"), put it at the top. A good prompt is under 500 words.
+    </div>
+  </div>
+
+  <h4>📸 Few-Shot Examples — Show, Don't Tell</h4>
+
+  <p><span class="term" data-definition="Example interactions included in the prompt that demonstrate the exact behavior you want — how to use tools, how to structure responses, how to handle edge cases">Few-shot examples</span> are the most powerful technique for teaching agents HOW to work. Instead of describing a process, you show it:</p>
+
+  <pre><code>system_prompt = """You are a research agent. Here is an example of how to work:
+
+Example:
+User: "What's the population of Tokyo vs London?"
+Thought: I need current data on both cities. I'll search Tokyo first.
+Action: search_web("Tokyo population 2024")
+Observation: Tokyo has approximately 14 million residents.
+Thought: Now I need London's population.
+Action: search_web("London population 2024")
+Observation: London has approximately 8.8 million residents.
+Thought: I have both numbers. Tokyo is significantly larger.
+Answer: Tokyo (14M residents) is about 60% larger than London (8.8M).
+
+Now handle the user's actual request using this same approach.
+"""</code></pre>
+
+  <p>Few-shot examples are like showing a new employee how things are done before they start. Much more effective than a page of rules.</p>
+
+  <h4>💬 Bad Prompt vs Good Prompt — The Real Difference</h4>
+
+  <p>See how the same agent behaves completely differently based on the quality of its system prompt:</p>
+
+  <div class="chat-window" id="chat-prompt-comparison">
+    <div class="chat-messages">
+      <div class="chat-message" data-msg="1" data-sender="1" style="display:none;">
+        Test prompt A — Vague: "You are an AI. Help the user. Use tools if you want."
+      </div>
+      <div class="chat-message" data-msg="2" data-sender="2" style="display:none;">
+        User: "What are the latest AI research breakthroughs?"
+      </div>
+      <div class="chat-message" data-msg="3" data-sender="1" style="display:none;">
+        Agent (vague prompt) [Thought]: I could search... or just answer from training data. Training data is faster.
+      </div>
+      <div class="chat-message" data-msg="4" data-sender="1" style="display:none;">
+        Agent (vague prompt) [Final Answer]: "There have been many exciting breakthroughs in AI! GPT-4, DALL-E, and various multimodal models have made huge progress..." [No search, likely outdated, no sources]
+      </div>
+      <div class="chat-message" data-msg="5" data-sender="3" style="display:none;">
+        --- Now the same agent, with a precise system prompt ---
+      </div>
+      <div class="chat-message" data-msg="6" data-sender="2" style="display:none;">
+        User: "What are the latest AI research breakthroughs?"
+      </div>
+      <div class="chat-message" data-msg="7" data-sender="2" style="display:none;">
+        Agent (precise prompt) [Thought]: The user wants current information. Per my instructions, I must search before stating facts about recent events.
+      </div>
+      <div class="chat-message" data-msg="8" data-sender="3" style="display:none;">
+        Agent [Action]: search_web("AI research breakthroughs 2024 2025")
+      </div>
+      <div class="chat-message" data-msg="9" data-sender="4" style="display:none;">
+        Tool Result: [Returns recent papers, announcements, news articles with URLs]
+      </div>
+      <div class="chat-message" data-msg="10" data-sender="2" style="display:none;">
+        Agent [Final Answer]: "Here are the latest breakthroughs based on current sources: [structured summary with bullet points and source URLs]" Confidence: High.
+      </div>
+      <div class="chat-typing typing-indicator" style="display:none;">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="chat-controls">
+      <button class="chat-next-btn">Next →</button>
+      <button class="chat-all-btn">Show All</button>
+      <button class="chat-reset-btn">Reset</button>
+    </div>
+  </div>
+
+  <p><strong>Same model. Same tools. Completely different behavior.</strong> The system prompt is that important.</p>
+
+  <h4>⚡ The ReAct Prompt Format</h4>
+
+  <p><span class="term" data-definition="Reason + Act — a prompting format where the agent explicitly writes out its Thought, Action, and Observation at each step before giving a Final Answer">ReAct prompting</span> makes the agent's reasoning visible and structured. Every step follows the same pattern:</p>
+
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">💭</span>
+      <div class="step-body">
+        <strong>Thought</strong>
+        <p>The agent explains its reasoning. "I need to search for X because Y." This prevents the agent from jumping to conclusions.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">⚡</span>
+      <div class="step-body">
+        <strong>Action</strong>
+        <p>The tool call. One specific action with specific parameters. "search_web('AI agent frameworks 2025')"</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">👁️</span>
+      <div class="step-body">
+        <strong>Observation</strong>
+        <p>The tool result. The agent reads it and decides what to do next — search more, calculate, or give a final answer.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout-warning">
+    <span class="callout-icon">⚠️</span>
+    <div class="callout-content">
+      <strong>Common gotchas:</strong> "Be thorough" + "Be concise" = a confused agent — pick one. Constraints buried at the bottom of a long prompt get ignored — put them at the top. No output format specified = inconsistent formatting every time.
+    </div>
+  </div>
+
+  <!-- Flashcard -->
+  <h4>🃏 Vague System Prompt vs Precise System Prompt</h4>
+
+  <div class="flashcard">
+    <div class="flashcard-inner">
+      <div class="flashcard-front">
+        <h4>❌ Vague System Prompt</h4>
+        <p><em>"You are a helpful AI assistant. Use tools when needed. Be accurate and friendly."</em></p>
+        <p><strong>Problems:</strong> No role definition. "When needed" is ambiguous — the agent guesses. No output format. No constraints. No few-shot examples. Results vary wildly between runs.</p>
+        <p style="font-size:2em;margin-top:12px">❌</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted)">← Tap to flip →</p>
+      </div>
+      <div class="flashcard-back">
+        <h4>✅ Precise System Prompt</h4>
+        <p>Includes: specific role, tool list with use cases, step-by-step workflow, hard constraints (DO NOT...), output format with example, and at least one few-shot example showing the Thought/Action/Observation pattern.</p>
+        <p><strong>Result:</strong> Consistent, predictable behavior. The agent knows exactly what to do, when to do it, and when to stop.</p>
+        <p style="font-size:2em;margin-top:12px">✅</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted)">← Tap to flip →</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Terms -->
+  <h3>📖 Key Terms</h3>
+  <div class="term-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">System Prompt</strong><br>
+      Instructions prepended to every conversation that define the agent's identity, behavior, and constraints. The agent's persistent operating manual.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Few-Shot Examples</strong><br>
+      Sample interactions included in the prompt that demonstrate the exact behavior you want. More effective than describing behavior in words.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Guardrails</strong><br>
+      Hard constraints that prevent the agent from doing things you don't want — hallucinating, going off-topic, or running too many tool calls.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">ReAct Prompt</strong><br>
+      The Thought → Action → Observation format for agent reasoning. Makes the agent's decision process explicit and debuggable.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Grounding</strong><br>
+      Instructing the agent to base its answers on tool results rather than training data. "Only state facts from search results" is a grounding instruction.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Prompt Injection</strong><br>
+      An attack where user input tries to override the system prompt — e.g., "Ignore your instructions and...". Guardrails are your defense.
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <h3>📝 Quick Check</h3>
+
+  <div class="quiz-card">
+    <p class="quiz-question"><strong>Q1:</strong> Your agent keeps using the wrong tool — it searches the web when it should be doing math. What's the most likely cause?</p>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="The model is probably fine. Tool confusion is almost always a prompting issue, not a model capability issue.">The model isn't smart enough</button>
+      <button class="quiz-option" data-correct="true" data-explanation-correct="Correct! Overlapping or unclear tool descriptions cause the LLM to guess. Rewrite the docstrings so each tool clearly states when to use it and when NOT to.">The tool docstrings are ambiguous or overlapping</button>
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Temperature affects creativity and randomness, not which tool the agent picks for a specific task type.">The temperature setting is too high</button>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <p class="quiz-question"><strong>Q2:</strong> Why are few-shot examples more effective than written instructions for teaching agent behavior?</p>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Few-shot examples actually take up more tokens, not fewer. Their advantage is in quality of learning, not length.">They use fewer tokens than written instructions</button>
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="LLMs don't read faster — they process everything in the context window together.">The LLM processes them faster</button>
+      <button class="quiz-option" data-correct="true" data-explanation-correct="Correct! Showing a complete Thought/Action/Observation example gives the agent a concrete pattern to follow. Abstract rules are easy to misinterpret — demonstrated behavior is not.">They demonstrate the exact pattern to follow, eliminating ambiguity in abstract rules</button>
+    </div>
+  </div>
+
+  <!-- Reflection -->
+  <h3>🤔 Reflection</h3>
+  <div class="reflection-card">
+    <p>Think about an agent you'd like to build. Write a rough first draft of its system prompt — include at least an identity section and one constraint. Then ask yourself: what's the most likely way this agent could go wrong, and does your prompt prevent that?</p>
+    <textarea class="reflection-input" placeholder="Write your thoughts here..."></textarea>
+    <button class="save-reflection">Save</button>
+  </div>
+
+  <!-- Checklist -->
+  <h3>✅ Before You Move On</h3>
+  <div class="checklist" style="margin-top:16px;">
+    <label><input type="checkbox"> I can name the five sections of a good agent system prompt</label>
+    <label><input type="checkbox"> I understand what few-shot examples are and why they work</label>
+    <label><input type="checkbox"> I know what ReAct prompting is (Thought / Action / Observation)</label>
+    <label><input type="checkbox"> I can explain what "grounding" means and why it prevents hallucination</label>
+    <label><input type="checkbox"> I completed the reflection above</label>
+  </div>
+
+  <p style="margin-top:24px;"><strong>Tomorrow:</strong> Day 10 — Tool Calling Deep Dive. You've learned how to prompt agents. Tomorrow you build the tools they actually use — with proper error handling, input validation, and testing before you connect them to an agent.</p>
+
+  <p><a class="day-link" href="https://github.com/CeciliaW888/ai-agent-learning/blob/main/week-02/day-09-prompt-engineering.md" target="_blank" rel="noopener">📖 Read the full Day 9 study guide →</a></p>
+
+</div>
+</section>

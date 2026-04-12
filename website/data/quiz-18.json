@@ -1,0 +1,37 @@
+{
+  "questions": [
+    {
+      "question": "In a content creation pipeline, what does the Research Agent do?",
+      "options": [
+        "Edits the draft for grammar and clarity",
+        "Finds and gathers relevant information on the given topic",
+        "Formats the final output as HTML",
+        "Scores the quality of the finished article"
+      ],
+      "answer": 1,
+      "explanation": "The Research Agent is responsible for sourcing facts, links, and context — it uses search tools to gather the raw material that the Writer Agent will turn into content."
+    },
+    {
+      "question": "What is the Coordinator's role in a multi-agent pipeline?",
+      "options": [
+        "It writes the first draft of the content",
+        "It stores all research results in a vector database",
+        "It orchestrates the workflow, directing agents in the right sequence",
+        "It validates the final output against a rubric"
+      ],
+      "answer": 2,
+      "explanation": "The Coordinator (supervisor) manages the pipeline — it decides which agent runs next, passes outputs between agents, and ensures the overall goal is met."
+    },
+    {
+      "question": "Why separate the Writer and Editor into distinct agents?",
+      "options": [
+        "Separation of concerns — creation and critique benefit from different perspectives",
+        "Because LangChain requires at least three agents",
+        "To reduce the total number of tokens used",
+        "So they can run on different machines"
+      ],
+      "answer": 0,
+      "explanation": "Having separate Writer and Editor agents mirrors how human workflows operate — one agent focuses on generating content freely while another applies critical scrutiny without self-censorship bias."
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "questions": [
+    {
+      "question": "In the Supervisor pattern, what role does the supervisor agent play?",
+      "options": [
+        "It executes all tasks directly without delegating",
+        "It monitors logs and reports errors",
+        "It stores long-term memory for all agents",
+        "It coordinates other agents, assigning tasks and combining results"
+      ],
+      "answer": 3,
+      "explanation": "The supervisor acts as an orchestrator — it receives the high-level goal, delegates subtasks to specialist agents, and assembles their outputs into a final result."
+    },
+    {
+      "question": "The Pipeline pattern is best described as:",
+      "options": [
+        "Multiple agents competing to solve the same task",
+        "Agents passing work sequentially, each building on the previous output",
+        "A single agent that spawns copies of itself",
+        "Agents sharing a common memory pool"
+      ],
+      "answer": 1,
+      "explanation": "In the Pipeline pattern, Agent A's output becomes Agent B's input, forming an assembly line where each agent specializes in one stage of the workflow."
+    },
+    {
+      "question": "When would you choose a multi-agent system over a single agent?",
+      "options": [
+        "When you want to reduce API costs",
+        "When the task is simple and well-defined",
+        "When tasks benefit from specialization, parallelism, or separation of concerns",
+        "When you need faster response times for simple queries"
+      ],
+      "answer": 2,
+      "explanation": "Multi-agent systems shine when different parts of a task require different expertise, can run in parallel, or when keeping concerns separate improves quality and maintainability."
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "questions": [
+    {
+      "question": "Which week introduced multi-agent systems?",
+      "options": [
+        "Week 1 — Foundations",
+        "Week 2 — Building with LangChain",
+        "Week 3 — Advanced Patterns",
+        "Multi-agent systems were not covered in this course"
+      ],
+      "answer": 2,
+      "explanation": "Week 3 (Days 15-21) covered advanced patterns including multi-agent architectures, communication patterns, production safety, and the capstone project."
+    },
+    {
+      "question": "The ReAct pattern, PDA Loop, and function calling are all concepts from:",
+      "options": [
+        "Week 1 — Foundations",
+        "Week 2 — Building with LangChain",
+        "Week 3 — Advanced Patterns",
+        "They were introduced across all three weeks equally"
+      ],
+      "answer": 0,
+      "explanation": "These are foundational concepts introduced in Week 1 (Days 1-7) to establish how agents think, perceive, decide, and act before diving into implementation."
+    },
+    {
+      "question": "What is the capstone project in this course?",
+      "options": [
+        "A chatbot with retrieval-augmented generation",
+        "A multi-agent content creation pipeline with Research, Writer, and Editor agents",
+        "A fine-tuned LLM for a specific domain",
+        "A single-agent web scraper with memory"
+      ],
+      "answer": 1,
+      "explanation": "The capstone (Days 18-21) brings all three weeks together: a multi-agent pipeline where a Coordinator directs Research, Writer, and Editor agents to produce polished content."
+    }
+  ]
+}

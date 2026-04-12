@@ -1,0 +1,260 @@
+<section class="module" id="module-15" data-day="15">
+<div class="module-inner">
+
+  <h2>Day 15: Multi-Agent Architectures</h2>
+
+  <div class="callout-accent">
+    <span class="callout-icon">🏗️</span>
+    <div class="callout-content">
+      <strong>Week 3 — Advanced!</strong> Your single agent from Week 2 is impressive — but it's doing everything alone: research, write, edit, fact-check. That's like hiring one person to run every department. Multi-agent systems split the work so each agent specializes, catches others' mistakes, and handles tasks a single agent simply can't.
+    </div>
+  </div>
+
+  <!-- Learning Objectives -->
+  <h3>🎯 Learning Objectives</h3>
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">1</span>
+      <div class="step-body">
+        <strong>Explain why multi-agent outperforms single-agent for complex tasks</strong>
+        <p>Articulate the limits of one agent doing everything — and when splitting work pays off.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">2</span>
+      <div class="step-body">
+        <strong>Name and describe all four core patterns</strong>
+        <p>Supervisor, Peer, Pipeline, and Debate — know what each one is and when it fits.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">3</span>
+      <div class="step-body">
+        <strong>Choose the right pattern for a given problem</strong>
+        <p>Given a real scenario, confidently pick an architecture and explain your reasoning.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Watch -->
+  <h3>📺 Watch First (35 min)</h3>
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">🎥</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://www.youtube.com/watch?v=hvAPnpSfSGo" target="_blank" rel="noopener">LangGraph: Multi-Agent Workflows — LangChain</a></strong>
+        <p>15 min · See how real multi-agent systems are wired together. Great visuals of the patterns in action.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">🎥</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://www.youtube.com/watch?v=sPzc6hMg7So" target="_blank" rel="noopener">CrewAI Tutorial: Complete Crash Course — aiwithbrandon</a></strong>
+        <p>20 min · Hands-on walkthrough of building a multi-agent crew from scratch. Very beginner-friendly.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">📄</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank" rel="noopener">Anthropic: Building Effective Agents — "Orchestrator-Workers" section</a></strong>
+        <p>~10 min read · Anthropic's take on when and how to use multi-agent orchestration in production.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core Concepts -->
+  <h3>📚 Core Concepts</h3>
+
+  <h4>🤔 When Single-Agent Falls Short</h4>
+
+  <p>A single agent handling research, writing, editing, and fact-checking tends to lose focus on long tasks. It reviews its own work with the same blind spots it used to create it. Multi-agent systems solve this through <strong>specialization</strong> — each agent does one thing well and hands off to the next.</p>
+
+  <div class="callout-info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-content">
+      <strong>The analogy:</strong> You wouldn't hire one person to be your company's researcher, copywriter, editor, and legal reviewer. You'd hire specialists who hand work to each other. Multi-agent systems apply the same logic to AI.
+    </div>
+  </div>
+
+  <h4>🗂️ The Four Core Patterns</h4>
+
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">1</span>
+      <div class="step-body">
+        <strong>Supervisor (Orchestrator)</strong>
+        <p>One agent coordinates the others — like a project manager assigning tasks to specialists. The supervisor breaks down the goal, delegates sub-tasks, collects results, and decides what comes next. <em>Best for:</em> structured tasks with clear sub-steps where quality control matters.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">2</span>
+      <div class="step-body">
+        <strong>Peer (Collaborative)</strong>
+        <p>Agents work as equals with no central coordinator. Each agent can message others, request help, or pass work as needed. <em>Best for:</em> brainstorming, creative tasks, or workflows that aren't predictable in advance.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">3</span>
+      <div class="step-body">
+        <strong>Pipeline (Sequential)</strong>
+        <p>Agents pass work in a fixed order — like an assembly line. Agent 1 finishes, hands to Agent 2, who hands to Agent 3. <em>Best for:</em> content creation, data processing, any task with clear ordered stages.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">4</span>
+      <div class="step-body">
+        <strong>Debate (Adversarial)</strong>
+        <p>Agents argue opposing positions — a "for" agent, an "against" agent, and a judge who evaluates. The back-and-forth pressure produces more robust conclusions. <em>Best for:</em> high-stakes decisions, risk analysis, and quality assurance.</p>
+      </div>
+    </div>
+  </div>
+
+  <h4>💬 Supervisor Agent in Action</h4>
+
+  <p>Watch a supervisor agent break down a task and delegate to specialists:</p>
+
+  <div class="chat-window" id="chat-supervisor">
+    <div class="chat-messages">
+      <div class="chat-message" data-msg="1" data-sender="1" style="display:none;">
+        User: "Write a research report on AI in healthcare — research, draft, and edit it."
+      </div>
+      <div class="chat-message" data-msg="2" data-sender="2" style="display:none;">
+        Supervisor [Thought]: This has three clear phases. I'll delegate each to a specialist and collect results.
+      </div>
+      <div class="chat-message" data-msg="3" data-sender="3" style="display:none;">
+        Supervisor → Researcher: "Find the 5 most important AI healthcare developments in 2024."
+      </div>
+      <div class="chat-message" data-msg="4" data-sender="4" style="display:none;">
+        Researcher: "Done. Key findings: AI diagnostics, drug discovery, patient triage, surgical robotics, personalized treatment plans. [details attached]"
+      </div>
+      <div class="chat-message" data-msg="5" data-sender="3" style="display:none;">
+        Supervisor → Writer: "Write a structured report from these research findings." [passes research]
+      </div>
+      <div class="chat-message" data-msg="6" data-sender="4" style="display:none;">
+        Writer: "Draft complete — 800 words, 5 sections, intro and conclusion included."
+      </div>
+      <div class="chat-message" data-msg="7" data-sender="3" style="display:none;">
+        Supervisor → Editor: "Review this draft for clarity, accuracy, and flow. Approve or flag issues."
+      </div>
+      <div class="chat-message" data-msg="8" data-sender="4" style="display:none;">
+        Editor: "Minor fixes in section 3. Approved with edits — final version ready."
+      </div>
+      <div class="chat-message" data-msg="9" data-sender="1" style="display:none;">
+        Supervisor → User: "Here is your completed report. Researched, written, and reviewed by specialist agents."
+      </div>
+      <div class="chat-typing typing-indicator" style="display:none;">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="chat-controls">
+      <button class="chat-next-btn">Next →</button>
+      <button class="chat-all-btn">Show All</button>
+      <button class="chat-reset-btn">Reset</button>
+    </div>
+  </div>
+
+  <p><strong>Notice:</strong> The supervisor never does the research, writing, or editing itself — it only orchestrates. Each specialist does one job and reports back.</p>
+
+  <div class="callout-info">
+    <span class="callout-icon">📊</span>
+    <div class="callout-content">
+      <strong>Pattern vs complexity:</strong> <strong>Pipeline</strong> — lowest complexity, great for predictable sequential workflows. <strong>Supervisor</strong> — medium complexity, highest reliability for structured tasks. <strong>Debate</strong> — medium complexity, excellent for stress-testing decisions. <strong>Peer</strong> — most flexible, but hardest to debug when something goes wrong.
+    </div>
+  </div>
+
+  <h4>🔀 Single Agent vs Multi-Agent — The Tradeoffs</h4>
+
+  <div class="flashcard">
+    <div class="flashcard-inner">
+      <div class="flashcard-front">
+        <h4>🤖 Single Agent</h4>
+        <p>Does everything itself: research, write, edit, review. Simple to set up and trace.</p>
+        <p><strong>Strengths:</strong> Low overhead, easy to debug, fast for small tasks.</p>
+        <p><strong>Weaknesses:</strong> Reviews its own work with the same blind spots, loses focus on long tasks, sequential bottleneck on complex work.</p>
+        <p style="font-size:2em;margin-top:12px">🤖</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted)">← Tap to flip →</p>
+      </div>
+      <div class="flashcard-back">
+        <h4>🏗️ Multi-Agent System</h4>
+        <p>Specialists collaborate: one researches, one writes, one edits. Work passes between them.</p>
+        <p><strong>Strengths:</strong> Specialists catch each other's mistakes, parallel tasks speed up throughput, complex workflows become manageable.</p>
+        <p><strong>Weaknesses:</strong> Higher setup cost, harder to debug handoffs, communication overhead adds latency.</p>
+        <p style="font-size:2em;margin-top:12px">🏗️</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted)">← Tap to flip →</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Terms -->
+  <h3>📖 Key Terms</h3>
+  <div class="term-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Multi-Agent System (MAS)</strong><br>
+      Multiple AI agents working together on a shared task, each with defined roles and communication channels.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Supervisor</strong><br>
+      A coordinating agent that receives the main task, breaks it into sub-tasks, delegates to specialists, and assembles the final result.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Pipeline</strong><br>
+      A sequential agent workflow where output from one agent becomes input for the next: A → B → C.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Orchestration</strong><br>
+      Managing the flow of work between agents — deciding who does what, in what order, and what happens next.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Handoff</strong><br>
+      When one agent explicitly passes control — and its work product — to another agent to continue.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Agent Specialization</strong><br>
+      Designing each agent to focus on one domain or skill — research, writing, editing, coding — rather than doing everything.
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <h3>📝 Quick Check</h3>
+
+  <div class="quiz-card">
+    <p class="quiz-question"><strong>Q1:</strong> You're building a system: find sources → write a draft → check for errors. Which pattern fits best?</p>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Debate is for stress-testing decisions by having agents argue opposing views. This workflow is sequential and predictable, not adversarial.">Debate</button>
+      <button class="quiz-option" data-correct="true" data-explanation-correct="Correct! Pipeline is perfect here — each stage has a clear order, and the output of one step becomes the input for the next.">Pipeline</button>
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Peer works when the workflow is unpredictable. Here you have a fixed sequence, so Pipeline is the cleaner fit.">Peer</button>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <p class="quiz-question"><strong>Q2:</strong> What is the main advantage of a Supervisor pattern over a Peer system?</p>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Supervisors add coordination overhead and don't inherently speed things up. Speed isn't the key advantage.">It's faster because agents run in parallel</button>
+      <button class="quiz-option" data-correct="true" data-explanation-correct="Exactly! Centralized control means one agent tracks the full goal, enforces quality, and decides what comes next — making the system predictable and reliable for structured tasks.">Centralized control means clearer quality checks and predictable task flow</button>
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="All patterns use LLMs. The model choice isn't tied to architecture pattern.">It uses cheaper AI models</button>
+    </div>
+  </div>
+
+  <!-- Reflection -->
+  <h3>🤔 Reflection</h3>
+  <div class="reflection-card">
+    <p>Think of a complex task you do regularly — at work or in your life. How would you break it into specialized roles? Which multi-agent pattern would you use, and why? What would each agent's job be?</p>
+    <textarea class="reflection-input" placeholder="Write your thoughts here..."></textarea>
+    <button class="save-reflection">Save</button>
+  </div>
+
+  <!-- Checklist -->
+  <h3>✅ Before You Move On</h3>
+  <div class="checklist" style="margin-top:16px;">
+    <label><input type="checkbox"> I can describe all four patterns (Supervisor, Peer, Pipeline, Debate) in my own words</label>
+    <label><input type="checkbox"> I can explain when to use each pattern and why</label>
+    <label><input type="checkbox"> I understand how a supervisor delegates vs how a pipeline hands off</label>
+    <label><input type="checkbox"> I completed the reflection above</label>
+  </div>
+
+  <p style="margin-top:24px;"><strong>Tomorrow:</strong> Day 16 — Agent Communication Patterns. You designed the architecture today; tomorrow you learn the <em>plumbing</em> — how agents actually pass messages, share state, and handle handoffs reliably.</p>
+
+  <p><a class="day-link" href="https://github.com/CeciliaW888/ai-agent-learning/blob/main/week-03/day-15-multi-agent-architectures.md" target="_blank" rel="noopener">📖 Read the full Day 15 study guide →</a></p>
+
+</div>
+</section>

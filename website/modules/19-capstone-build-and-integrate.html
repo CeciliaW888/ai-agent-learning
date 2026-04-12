@@ -1,0 +1,210 @@
+<section class="module" id="module-19" data-day="19">
+<div class="module-inner">
+
+  <h2>Day 19: Capstone Build &amp; Integrate</h2>
+
+  <div class="callout-accent">
+    <span class="callout-icon">🔨</span>
+    <div class="callout-content">
+      <strong>Project day!</strong> Yesterday you built the skeleton. Today you add the muscle: error handling so agents fail gracefully, cost tracking so you know what each run costs, a progress display so you can see what's happening in real time, and a stronger revision loop that actually improves output.
+    </div>
+  </div>
+
+  <!-- Today's Build Goals -->
+  <h3>🎯 Today's Build Goals</h3>
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">1</span>
+      <div class="step-body">
+        <strong>Add error handling to every agent</strong>
+        <p>Wrap each node with a <code>safe_node()</code> wrapper. When an agent fails, the pipeline should degrade gracefully — not crash and lose all work done so far.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">2</span>
+      <div class="step-body">
+        <strong>Add cost tracking across the pipeline</strong>
+        <p>Build a <code>PipelineCostTracker</code> that logs tokens and estimated cost per agent. After each run you should know exactly what it cost and which agent used the most tokens.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">3</span>
+      <div class="step-body">
+        <strong>Add a real-time progress display</strong>
+        <p>Build a <code>PipelineProgress</code> class that prints clear stage updates — so users aren't staring at a blank terminal wondering if it's working.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">4</span>
+      <div class="step-body">
+        <strong>Strengthen the editor-writer loop</strong>
+        <p>Upgrade the Editor prompt to give structured, specific feedback (max 3 changes per review). Vague feedback like "improve the flow" is useless — the Writer needs exact instructions.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">5</span>
+      <div class="step-body">
+        <strong>Build a proper CLI with argparse</strong>
+        <p>Replace the <code>input()</code> prompts with a real CLI: topic as a positional argument, flags for requirements, max-revisions, verbose mode, and no-save.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">6</span>
+      <div class="step-body">
+        <strong>Test with 3 different topics end-to-end</strong>
+        <p>Run the full pipeline on three different topics and observe: How many revisions did the editor request? Did the writer actually address the feedback? What did it cost?</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core Concepts -->
+  <h3>📚 Core Concepts</h3>
+
+  <h4>🛡️ Why Agents Need Error Handling</h4>
+
+  <p>A multi-agent pipeline has more failure points than a single agent. Any one of these can fail: the LLM call, the web search, the webpage reader, the JSON parsing, the file write. Without error handling, one bad search result crashes the entire pipeline and loses all work done up to that point.</p>
+
+  <div class="callout-info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-content">
+      <strong>The <code>safe_node()</code> pattern:</strong> Wrap each agent node function in a try/except. On failure, return a fallback state with an error message — don't raise. This lets the pipeline continue or terminate cleanly instead of crashing mid-run.
+    </div>
+  </div>
+
+  <h4>💬 The Three Agents Collaborating</h4>
+
+  <p>Here's a full pipeline run with the Research-to-Writer-to-Editor handoff — including a revision round:</p>
+
+  <div class="chat-window" id="chat-pipeline-collab">
+    <div class="chat-messages">
+      <div class="chat-message" data-msg="1" data-sender="1" style="display:none;">
+        User: python main.py "The future of remote work in 2025" --max-revisions 2 --verbose
+      </div>
+      <div class="chat-message" data-msg="2" data-sender="3" style="display:none;">
+        Research Agent [Stage 1/4]: Searching "remote work trends 2025"... reading 3 articles... found 8 key facts, 5 statistics, 4 expert quotes. Research brief: 1,840 characters. Passing to Writer.
+      </div>
+      <div class="chat-message" data-msg="3" data-sender="2" style="display:none;">
+        Writer Agent [Stage 2/4]: Drafting from research brief. First draft: 920 words. Hook: "In 2019, remote work was a perk. By 2025, it's a negotiation chip." Sending to Editor.
+      </div>
+      <div class="chat-message" data-msg="4" data-sender="4" style="display:none;">
+        Editor Agent [Stage 3/4 — Revision 0]: Accuracy 8/10, Clarity 6/10, Structure 7/10, Engagement 7/10. Overall: 7/10. Verdict: NEEDS REVISION. Required changes: (1) Section 3 is too abstract — add 2 concrete company examples. (2) Move the statistics paragraph before the expert quotes. (3) The conclusion doesn't tie back to the hook.
+      </div>
+      <div class="chat-message" data-msg="5" data-sender="2" style="display:none;">
+        Writer Agent [Revision 1]: Addressing all 3 editor notes. Added Microsoft and Shopify examples. Reordered statistics paragraph. Rewrote conclusion to mirror opening hook. New draft: 1,010 words.
+      </div>
+      <div class="chat-message" data-msg="6" data-sender="4" style="display:none;">
+        Editor Agent [Stage 3/4 — Revision 1]: Accuracy 9/10, Clarity 9/10, Structure 9/10, Engagement 8/10. Overall: 9/10. Verdict: APPROVED.
+      </div>
+      <div class="chat-message" data-msg="7" data-sender="1" style="display:none;">
+        Pipeline complete in 47s. 1,010 words | 4 sources | 1 revision | Cost: $0.0031 | Saved to output/the-future-of-remote-work-in-2025.md
+      </div>
+      <div class="chat-typing typing-indicator" style="display:none;">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="chat-controls">
+      <button class="chat-next-btn">Next →</button>
+      <button class="chat-all-btn">Show All</button>
+      <button class="chat-reset-btn">Reset</button>
+    </div>
+  </div>
+
+  <h4>💰 Cost Tracking — Know What You're Spending</h4>
+
+  <p>Without cost tracking, a single test run can cost more than you expect. A <code>PipelineCostTracker</code> logs input and output tokens per agent so you can see exactly where money is going — and which agent is the most expensive.</p>
+
+  <div class="callout-warning">
+    <span class="callout-icon">⚠️</span>
+    <div class="callout-content">
+      <strong>The revision loop multiplies costs.</strong> Each revision round = one more Writer call + one more Editor call. With max 2 revisions and a verbose Editor prompt, a single pipeline run can make 6–8 LLM calls. Track this from day one.
+    </div>
+  </div>
+
+  <!-- Flashcard -->
+  <h4>🔄 Isolated Agent vs. Pipeline Agent</h4>
+
+  <div class="flashcard">
+    <div class="flashcard-inner">
+      <div class="flashcard-front">
+        <h4>🤖 Agent Working in Isolation</h4>
+        <p>Receives input from a human. Returns output to a human. If it fails, the human notices immediately and retries. Error handling is optional — a human is in the loop catching mistakes.</p>
+        <p><strong>Testing:</strong> Simple. Call the function, read the output, judge it yourself.</p>
+        <p style="font-size:2em;margin-top:12px">🤖</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted)">← Tap to flip →</p>
+      </div>
+      <div class="flashcard-back">
+        <h4>🔗 Agent in a Pipeline</h4>
+        <p>Receives input from another agent. Returns output to another agent. If it fails silently, the next agent receives garbage — and may produce confident-sounding garbage in return. No human sees the failure until the end.</p>
+        <p><strong>Testing:</strong> You must test the handoffs. What happens if research returns an empty string? What if the editor never writes "APPROVED"?</p>
+        <p style="font-size:2em;margin-top:12px">🔗</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted)">← Tap to flip →</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Terms -->
+  <h3>📖 Key Terms</h3>
+  <div class="term-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Graceful Degradation</strong><br>
+      When something fails, return a safe fallback instead of crashing. The pipeline continues (or exits cleanly) rather than losing all work done up to that point.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Token Cost</strong><br>
+      LLM APIs charge per token (roughly one word). Input tokens (your prompt) and output tokens (the model's response) have different rates. Longer prompts and longer outputs cost more.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">argparse</strong><br>
+      Python's standard library for parsing command-line arguments. Lets users call your script with flags like <code>--verbose</code> or <code>--max-revisions 3</code> instead of answering prompts interactively.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Structured Feedback</strong><br>
+      Editor feedback that specifies exactly what to change and why — not "improve the flow" but "move paragraph 3 before paragraph 2 because the statistics should precede the examples." Structured feedback is what makes revision loops actually improve output.
+    </div>
+  </div>
+
+  <!-- Debugging Checklist -->
+  <h3>🐛 Debugging Checklist</h3>
+
+  <div class="callout-info">
+    <span class="callout-icon">📌</span>
+    <div class="callout-content">
+      When your pipeline isn't working as expected, run through this checklist before diving into the code. Most pipeline bugs fall into one of these categories.
+    </div>
+  </div>
+
+  <div class="checklist" style="margin-top:16px;">
+    <label><input type="checkbox"> <strong>Empty research output:</strong> Did the Research Agent actually find results? Print <code>state["research"]</code> before the Writer runs.</label>
+    <label><input type="checkbox"> <strong>Writer ignoring feedback:</strong> Is the feedback being passed into the Writer prompt? Check that <code>state["feedback"]</code> and <code>state["revision_count"]</code> are populated correctly.</label>
+    <label><input type="checkbox"> <strong>Editor never approving:</strong> Is the string "APPROVED" in the Editor's output? Check for case mismatches — use <code>.upper()</code> when searching for the verdict.</label>
+    <label><input type="checkbox"> <strong>Infinite revision loop:</strong> Is <code>revision_count</code> incrementing correctly? Is the auto-approve-after-max-revisions logic firing?</label>
+    <label><input type="checkbox"> <strong>Pipeline crashing on API error:</strong> Are your agent nodes wrapped in <code>safe_node()</code>? Test by temporarily passing an invalid API key.</label>
+    <label><input type="checkbox"> <strong>Output file not saving:</strong> Does the <code>output/</code> directory exist? Is <code>os.makedirs("output", exist_ok=True)</code> called before the file write?</label>
+    <label><input type="checkbox"> <strong>Costs unexpectedly high:</strong> How many LLM calls are happening per run? Is the Research Agent making more than 3 search queries?</label>
+    <label><input type="checkbox"> <strong>State not carrying forward:</strong> Are your node functions returning a dict with the correct keys matching your TypedDict fields?</label>
+  </div>
+
+  <!-- Reflection -->
+  <h3>🤔 Reflection</h3>
+  <div class="reflection-card">
+    <p>After running your pipeline on 3 different topics: Was the editor's feedback specific and useful? Did the writer actually address it? What's the most common failure mode you encountered — and how did you fix it?</p>
+    <textarea class="reflection-input" placeholder="Notes from your 3 test runs — what worked, what broke, what surprised you..."></textarea>
+    <button class="save-reflection">Save</button>
+  </div>
+
+  <!-- Next Steps -->
+  <h3>✅ Before You Move On</h3>
+  <div class="checklist" style="margin-top:16px;">
+    <label><input type="checkbox"> Every agent node is wrapped in error handling — the pipeline can't crash mid-run</label>
+    <label><input type="checkbox"> Cost tracking shows me what each run costs by agent</label>
+    <label><input type="checkbox"> The CLI accepts a topic as an argument with optional flags</label>
+    <label><input type="checkbox"> I ran the full pipeline on 3 different topics and reviewed the output quality</label>
+    <label><input type="checkbox"> I know which part of my pipeline is most likely to fail and why</label>
+  </div>
+
+  <p style="margin-top:24px;"><strong>Tomorrow:</strong> Day 20 — Polish &amp; Deploy. Final documentation, a test suite, clean code review, and pushing your project to GitHub.</p>
+
+  <p><a class="day-link" href="https://github.com/CeciliaW888/ai-agent-learning/blob/main/week-03/day-19-capstone-build.md" target="_blank" rel="noopener">📖 Read the full Day 19 study guide →</a></p>
+
+</div>
+</section>

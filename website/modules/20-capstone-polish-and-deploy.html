@@ -1,0 +1,317 @@
+<section class="module" id="module-20" data-day="20">
+<div class="module-inner">
+
+  <h2>Day 20: Capstone Day 3 — Polish &amp; Deploy</h2>
+
+  <div class="callout-accent">
+    <span class="callout-icon">🚢</span>
+    <div class="callout-content">
+      <strong>"Real artists ship."</strong> You've built a multi-agent content pipeline. Today you make it something you'd be proud to show anyone — clean code, good error handling, a CLI, and a README that makes it easy for someone else to run it.
+    </div>
+  </div>
+
+  <!-- Today's Polish Goals (replaces Learning Objectives) -->
+  <h3>🎯 Today's Polish Goals</h3>
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">1</span>
+      <div class="step-body">
+        <strong>Add comprehensive error handling</strong>
+        <p>Every agent node and tool call should catch exceptions and return structured errors — no silent failures, no bare stack traces in production output.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">2</span>
+      <div class="step-body">
+        <strong>Add structured logging</strong>
+        <p>Log every agent decision, tool call, and pipeline state transition to a file. After any run, you should be able to reconstruct exactly what happened and why.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">3</span>
+      <div class="step-body">
+        <strong>Build a CLI interface</strong>
+        <p>Users should be able to run <code>python main.py "your topic here"</code> from the terminal with optional flags for verbosity, revision count, and output format.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">4</span>
+      <div class="step-body">
+        <strong>Test with 3 different topics</strong>
+        <p>Run the full pipeline on a tech topic, a business topic, and a lifestyle topic. Fix every edge case you discover — this is where hidden bugs surface.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">5</span>
+      <div class="step-body">
+        <strong>Write the architecture README</strong>
+        <p>Document each agent, the data flow between them, setup instructions, and usage examples. If a friend can clone and run it in 10 minutes, you're done.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core Concepts -->
+  <h3>📚 Core Concepts</h3>
+
+  <h4>🏭 Prototype vs Production-Ready</h4>
+
+  <p>The code you wrote on Days 18–19 works — but "works on my machine" is a prototype. Production-ready means it works reliably for other people, in conditions you didn't test, without you there to explain it.</p>
+
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">✅</span>
+      <div class="step-body">
+        <strong>Production-ready agent code has:</strong>
+        <p>Consistent error handling across all nodes, structured logging you can search after the fact, clear CLI interface, .env.example so others can set up API keys, a README with a working quick-start, and at least basic tests.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">🚧</span>
+      <div class="step-body">
+        <strong>Prototype code has:</strong>
+        <p>Debug print statements scattered throughout, hardcoded API keys or paths, no tests, no README, and it works only if you run exactly the right command in exactly the right directory.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout-info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-content">
+      <strong>Logging best practice for agents:</strong> Log at the pipeline boundary (topic in → article out), at each agent handoff (researcher → writer, writer → editor), and inside every tool call. Use <code>logging.INFO</code> for normal flow and <code>logging.WARNING</code> for fallbacks. Avoid logging the full LLM prompt/response to files — that's token-heavy and can contain sensitive data.
+    </div>
+  </div>
+
+  <h4>⌨️ CLI Setup with argparse</h4>
+
+  <p>Here's a clean CLI setup for your content pipeline. Notice how it handles defaults gracefully and prints usage when arguments are wrong:</p>
+
+  <pre><code>"""
+main.py — Multi-Agent Content Pipeline CLI
+Usage: python main.py "Your topic here" [options]
+"""
+import argparse
+import logging
+import sys
+from pipeline import build_pipeline, PipelineState
+
+# Set up file + console logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler("pipeline.log"),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger("pipeline")
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Multi-agent content pipeline: research → write → edit",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  python main.py "The future of AI in healthcare"
+  python main.py "Remote work trends" --requirements "Focus on data"
+  python main.py "Python vs JavaScript" --max-revisions 3 --verbose
+        """
+    )
+    parser.add_argument(
+        "topic",
+        help="The topic to research and write about"
+    )
+    parser.add_argument(
+        "--requirements",
+        default="",
+        help="Additional requirements for the article (optional)"
+    )
+    parser.add_argument(
+        "--max-revisions",
+        type=int,
+        default=2,
+        help="Maximum editor revision cycles (default: 2)"
+    )
+    parser.add_argument(
+        "--verbose",
+        action="store_true",
+        help="Print agent reasoning steps as they happen"
+    )
+    return parser.parse_args()
+
+
+def main():
+    args = parse_args()
+
+    logger.info(f"Starting pipeline for topic: '{args.topic}'")
+
+    pipeline = build_pipeline(max_revisions=args.max_revisions)
+
+    initial_state: PipelineState = {
+        "topic": args.topic,
+        "requirements": args.requirements,
+        "research": "",
+        "sources": [],
+        "draft": "",
+        "feedback": "",
+        "approved": False,
+        "revision_count": 0,
+        "final_article": "",
+        "metadata": {}
+    }
+
+    try:
+        result = pipeline.invoke(initial_state)
+        article = result.get("final_article", "")
+
+        if not article:
+            logger.error("Pipeline completed but no article was produced")
+            sys.exit(1)
+
+        print("\n" + "=" * 60)
+        print(f"TOPIC: {args.topic}")
+        print("=" * 60)
+        print(article)
+        print("=" * 60)
+
+        meta = result.get("metadata", {})
+        print(f"\nWord count: {meta.get('word_count', 'unknown')}")
+        print(f"Revisions: {result.get('revision_count', 0)}")
+        logger.info("Pipeline complete.")
+
+    except Exception as e:
+        logger.error(f"Pipeline failed: {e}")
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()</code></pre>
+
+  <h4>💬 The Polished Pipeline Running</h4>
+
+  <p>Here's what a clean end-to-end run looks like after today's polish work:</p>
+
+  <div class="chat-window" id="chat-pipeline-run">
+    <div class="chat-messages">
+      <div class="chat-message" data-msg="1" data-sender="4" style="display:none;">
+        $ python main.py "The rise of AI coding assistants" --verbose
+      </div>
+      <div class="chat-message" data-msg="2" data-sender="2" style="display:none;">
+        [INFO] Starting pipeline for topic: 'The rise of AI coding assistants'
+        [INFO] Researcher agent starting...
+        [INFO] SEARCH: "AI coding assistants market 2024"
+        [INFO] SEARCH: "GitHub Copilot vs Cursor vs Claude Code comparison"
+        [INFO] Research complete — 847 words, 4 sources
+      </div>
+      <div class="chat-message" data-msg="3" data-sender="3" style="display:none;">
+        [INFO] Writer agent starting...
+        [INFO] Draft generated — 1,124 words
+        [INFO] Handing off to editor...
+      </div>
+      <div class="chat-message" data-msg="4" data-sender="2" style="display:none;">
+        [INFO] Editor agent reviewing...
+        [INFO] Feedback: "Strong research. Introduction needs a stronger hook. Add one concrete statistic in paragraph 2."
+        [INFO] Revision 1 of 2 requested.
+      </div>
+      <div class="chat-message" data-msg="5" data-sender="3" style="display:none;">
+        [INFO] Writer agent revising...
+        [INFO] Revised draft — 1,198 words
+        [INFO] Handing off to editor...
+      </div>
+      <div class="chat-message" data-msg="6" data-sender="2" style="display:none;">
+        [INFO] Editor agent reviewing...
+        [INFO] APPROVED — article meets quality bar.
+      </div>
+      <div class="chat-message" data-msg="7" data-sender="1" style="display:none;">
+        ============================================================
+        TOPIC: The rise of AI coding assistants
+        ============================================================
+        # The Rise of AI Coding Assistants: From Autocomplete to Autonomous Agents
+
+        The software development landscape changed permanently in 2021 when GitHub Copilot launched...
+
+        [Full article — 1,198 words — with citations]
+        ============================================================
+        Word count: 1,198 | Revisions: 1
+      </div>
+      <div class="chat-typing typing-indicator" style="display:none;">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="chat-controls">
+      <button class="chat-next-btn">Next →</button>
+      <button class="chat-all-btn">Show All</button>
+      <button class="chat-reset-btn">Reset</button>
+    </div>
+  </div>
+
+  <h4>📦 Prototype vs Production-Ready</h4>
+
+  <div class="flashcard">
+    <div class="flashcard-inner">
+      <div class="flashcard-front">
+        <h4>🚧 Day 18 Prototype</h4>
+        <p>It runs — if you run the exact right file with the right hardcoded topic. Debug print statements everywhere. API keys in the code. No CLI, no README, no tests.</p>
+        <p>You built it to learn and it served that purpose. But you wouldn't send this to anyone.</p>
+        <p style="font-size:2em;margin-top:12px">🚧</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted)">← Tap to flip →</p>
+      </div>
+      <div class="flashcard-back">
+        <h4>🚀 Day 20 Production-Ready</h4>
+        <p>CLI with <code>--help</code>, .env for secrets, structured logging to a file, error handling at every boundary, a README with a working quick-start, and tests for the core pipeline.</p>
+        <p>Someone else can clone this, follow the README, and have it running in under 10 minutes.</p>
+        <p style="font-size:2em;margin-top:12px">🚀</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted)">← Tap to flip →</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ship Checklist (replaces Quiz) -->
+  <h3>🚀 Ship Checklist</h3>
+  <p>Work through this before calling it done. Check each box only when it's actually complete:</p>
+  <div class="checklist" style="margin-top:16px;">
+    <label><input type="checkbox"> Error handling: every agent node and tool call has try/except with clear error messages</label>
+    <label><input type="checkbox"> Logging: all tool calls and agent handoffs are logged to <code>pipeline.log</code></label>
+    <label><input type="checkbox"> CLI: <code>python main.py "topic"</code> works, <code>--help</code> shows usage, invalid args give a clear error</label>
+    <label><input type="checkbox"> Tested topic 1: technology — pipeline completed, article is coherent</label>
+    <label><input type="checkbox"> Tested topic 2: business or finance — pipeline completed, article is coherent</label>
+    <label><input type="checkbox"> Tested topic 3: lifestyle or science — pipeline completed, article is coherent</label>
+    <label><input type="checkbox"> README: setup instructions, .env.example, usage examples, and architecture description</label>
+    <label><input type="checkbox"> Git: code committed and pushed to GitHub with a meaningful commit message</label>
+  </div>
+
+  <!-- Reflection -->
+  <h3>🤔 Reflection</h3>
+  <div class="reflection-card">
+    <p>Would you actually use this pipeline for something real — your own writing, work research, content creation? What's the one change that would make it genuinely useful in your life? What surprised you most about how the agents collaborate?</p>
+    <textarea class="reflection-input" placeholder="My honest assessment of the pipeline..."></textarea>
+    <button class="save-reflection">Save</button>
+  </div>
+
+  <!-- Key Terms -->
+  <h3>📖 Key Terms</h3>
+  <div class="term-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">argparse</strong><br>
+      Python's standard CLI argument parsing library. Turns your script into a proper command-line tool with help text and argument validation.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">.env.example</strong><br>
+      A template showing what environment variables are needed, with placeholder values. Lets others set up API keys without exposing yours.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Architecture Doc</strong><br>
+      A README section describing each agent, the data flow between them, and the overall system design. Essential for anyone (including future you) who reads the code.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Structured Logging</strong><br>
+      Logs with consistent format (timestamp, level, message) written to a file. Makes post-run debugging possible — you can reconstruct exactly what happened.
+    </div>
+  </div>
+
+  <p style="margin-top:24px;"><strong>Tomorrow:</strong> Day 21 — Course Complete! You've finished the 21-day journey. Tomorrow we review the full arc, celebrate how far you've come, and map out what to build next.</p>
+
+  <p><a class="day-link" href="https://github.com/CeciliaW888/ai-agent-learning/blob/main/week-03/day-20-capstone-polish.md" target="_blank" rel="noopener">📖 Read the full Day 20 study guide →</a></p>
+
+</div>
+</section>

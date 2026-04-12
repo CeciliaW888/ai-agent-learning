@@ -1,0 +1,37 @@
+{
+  "questions": [
+    {
+      "question": "What format does an LLM use to describe available tools to use?",
+      "options": [
+        "Plain text descriptions",
+        "XML markup",
+        "JSON Schema",
+        "Python type hints"
+      ],
+      "answer": 2,
+      "explanation": "Tools are described to the LLM using JSON Schema, which defines the tool's name, description, and expected parameters in a structured format."
+    },
+    {
+      "question": "Who decides WHICH tool to call and with what parameters?",
+      "options": [
+        "The LLM, based on the user's request and available tools",
+        "The developer, via hardcoded logic",
+        "A separate routing model",
+        "The user, by typing a command"
+      ],
+      "answer": 0,
+      "explanation": "The LLM reads the tool definitions and the user's intent, then decides autonomously which tool to call and what arguments to pass."
+    },
+    {
+      "question": "What happens after a tool returns its result to the agent?",
+      "options": [
+        "The agent immediately terminates",
+        "The result is discarded",
+        "The result is stored in long-term memory only",
+        "The LLM interprets the result and decides the next action"
+      ],
+      "answer": 3,
+      "explanation": "Tool results are fed back into the LLM's context, and the LLM then decides whether to call another tool, ask a follow-up, or produce a final answer."
+    }
+  ]
+}

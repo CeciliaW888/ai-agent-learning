@@ -1,0 +1,358 @@
+<section class="module" id="module-8" data-day="8">
+<div class="module-inner">
+
+  <h2>Day 8: LangChain Fundamentals</h2>
+
+  <div class="callout-accent">
+    <span class="callout-icon">🛠️</span>
+    <div class="callout-content">
+      <strong>Week 2 starts — time to build.</strong> Last week was theory. This week you write code. LangChain is the most popular framework for building LLM-powered agents, and today you'll go from zero to a working agent in a single session.
+    </div>
+  </div>
+
+  <!-- Learning Objectives -->
+  <h3>🎯 Learning Objectives</h3>
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">1</span>
+      <div class="step-body">
+        <strong>Understand what LangChain provides</strong>
+        <p>Know why a framework exists vs raw API calls — and when the abstraction is actually worth the dependency.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">2</span>
+      <div class="step-body">
+        <strong>Build your first chain</strong>
+        <p>Connect a prompt template, an LLM, and an output parser using the <code>|</code> pipe operator.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">3</span>
+      <div class="step-body">
+        <strong>Create a basic agent with tools</strong>
+        <p>Give an LLM real capabilities using <code>create_react_agent</code> and watch the PDA loop run live.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">4</span>
+      <div class="step-body">
+        <strong>Know Chain vs Agent vs Graph</strong>
+        <p>Pick the right abstraction for the job instead of defaulting to the most complex option.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Watch -->
+  <h3>📺 Watch First (35 min)</h3>
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">🎥</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://www.youtube.com/watch?v=aywZrzNaKjs" target="_blank" rel="noopener">LangChain Explained in 13 Minutes — Rabbitmetrics</a></strong>
+        <p>13 min · Quick, clear overview of how LangChain fits together. Start here before touching any code.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">🎥</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://www.deeplearning.ai/short-courses/functions-tools-agents-langchain/" target="_blank" rel="noopener">Functions, Tools and Agents with LangChain — DeepLearning.AI</a></strong>
+        <p>~20 min for Lessons 1–2 · Andrew Ng's team walks through tools and agents hands-on. Free course.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">🎥</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://www.youtube.com/watch?v=bTMPwUgLZf0" target="_blank" rel="noopener">Build an AI Agent From Scratch in Python — Tech With Tim</a></strong>
+        <p>~20 min · Full code walkthrough. Great for seeing everything connect in one project.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core Concepts -->
+  <h3>📚 Core Concepts</h3>
+
+  <h4>🧩 Why LangChain Exists</h4>
+
+  <p>You <em>could</em> call the OpenAI API directly with raw Python — but you'd end up rebuilding the same plumbing in every project: prompt management, tool execution, conversation history, output parsing. <span class="term" data-definition="A Python and JavaScript framework that provides LLM abstractions, prompt templates, tool integration, agent loops, and memory systems for building AI applications">LangChain</span> handles all of that so you can focus on what your agent <em>does</em>, not how it talks to an API.</p>
+
+  <p>Think of it this way: you <em>could</em> build a website with raw HTTP sockets, but you'd use React or Django instead. LangChain is the React of AI agents.</p>
+
+  <div class="callout-info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-content">
+      <strong>The LangChain ecosystem at a glance:</strong> <code>langchain-core</code> (base abstractions) → <code>langchain</code> (chains and agents) → <code>langchain-openai</code> / <code>langchain-anthropic</code> (model providers) → <code>langgraph</code> (graph-based workflows) → <code>langsmith</code> (debugging and evaluation). You don't need all of these on day one.
+    </div>
+  </div>
+
+  <h4>⚙️ Environment Setup</h4>
+
+  <p>Before you build anything, you need a working Python environment. Run these commands in your terminal:</p>
+
+  <pre><code># Create a project directory and virtual environment
+mkdir my-first-agent && cd my-first-agent
+python -m venv venv
+source venv/bin/activate   # Windows: venv\Scripts\activate
+
+# Install LangChain and the OpenAI integration
+pip install langchain langchain-openai langgraph python-dotenv
+
+# Create a .env file for your API key (never commit this file!)
+echo "OPENAI_API_KEY=your-key-here" > .env</code></pre>
+
+  <p>Verify your setup by creating <code>verify_setup.py</code> and running it with <code>python verify_setup.py</code>:</p>
+
+  <pre><code>from dotenv import load_dotenv
+from langchain_openai import ChatOpenAI
+
+load_dotenv()
+
+llm = ChatOpenAI(model="gpt-4o-mini")  # cheaper model for testing
+response = llm.invoke("Say hello in 3 words.")
+print(response.content)
+# Expected: something like "Hello there, friend!"</code></pre>
+
+  <div class="callout-warning">
+    <span class="callout-icon">⚠️</span>
+    <div class="callout-content">
+      <strong>Version gotcha:</strong> LangChain has evolved rapidly. Many tutorials on YouTube use outdated APIs (v0.1 or v0.2). Always check you're reading v0.3+ docs. If something doesn't work, version mismatch is the most likely cause.
+    </div>
+  </div>
+
+  <h4>🔗 Building Block: Chains</h4>
+
+  <p>A <span class="term" data-definition="A linear pipeline in LangChain connecting components with the | operator — typically prompt → LLM → output parser — that executes in a fixed sequence">Chain</span> connects components like Unix pipes. The <code>|</code> operator does the work — each piece feeds its output into the next:</p>
+
+  <pre><code>from langchain_openai import ChatOpenAI
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+
+llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+
+prompt = ChatPromptTemplate.from_messages([
+    ("system", "You explain {topic} in simple, clear terms."),
+    ("user", "{question}")
+])
+
+# The | operator creates a chain: prompt → LLM → parser
+chain = prompt | llm | StrOutputParser()
+
+result = chain.invoke({
+    "topic": "machine learning",
+    "question": "What is overfitting?"
+})
+print(result)  # clean string output, no extra formatting needed</code></pre>
+
+  <h4>🤖 Building Block: Agents</h4>
+
+  <p>An <span class="term" data-definition="An LLM in a decision loop that picks tools to call, observes their results, and repeats until the task is complete — implementing the ReAct pattern">Agent</span> is a chain that can loop. You give it tools, and the LLM decides what to call and when. <code>create_react_agent</code> from LangGraph gives you the full PDA loop in a single call:</p>
+
+  <pre><code>from langchain_openai import ChatOpenAI
+from langchain_core.tools import tool
+from langgraph.prebuilt import create_react_agent
+
+llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+
+@tool
+def search(query: str) -> str:
+    """Search the web for information about any topic."""
+    return f"[Simulated results for '{query}']"
+
+@tool
+def calculate(expression: str) -> str:
+    """Calculate a math expression like '100 * 0.15' or '(50 + 30) / 2'."""
+    import ast
+    try:
+        return str(ast.literal_eval(expression))
+    except Exception as e:
+        return f"Error: {e}"
+
+agent = create_react_agent(llm, [search, calculate])
+
+result = agent.invoke({
+    "messages": [{"role": "user", "content": "What's 15% tip on a $85 dinner?"}]
+})
+
+for message in result["messages"]:
+    print(f"{message.type}: {message.content}")</code></pre>
+
+  <div class="callout-info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-content">
+      <strong>Notice the docstrings on each tool.</strong> LangChain passes them directly to the LLM as tool descriptions. The LLM decides <em>which</em> tool to use based on these descriptions — a vague docstring means an agent that picks the wrong tool or calls tools at random.
+    </div>
+  </div>
+
+  <h4>💬 Watching a Chain Execute Step by Step</h4>
+
+  <p>Here's what happens inside LangChain when you invoke an agent on a real request:</p>
+
+  <div class="chat-window" id="chat-langchain-exec">
+    <div class="chat-messages">
+      <div class="chat-message" data-msg="1" data-sender="1" style="display:none;">
+        User: "What's 20% of $340, and search for current interest rates."
+      </div>
+      <div class="chat-message" data-msg="2" data-sender="2" style="display:none;">
+        LangChain: Formatting tool schemas into JSON and sending everything to the LLM...
+      </div>
+      <div class="chat-message" data-msg="3" data-sender="2" style="display:none;">
+        LLM [Thought]: The user wants two things — a calculation and a search. I'll handle the math first.
+      </div>
+      <div class="chat-message" data-msg="4" data-sender="3" style="display:none;">
+        LLM [Action]: calculate("340 * 0.20")
+      </div>
+      <div class="chat-message" data-msg="5" data-sender="4" style="display:none;">
+        Tool Result: "340 * 0.20 = 68.0"
+      </div>
+      <div class="chat-message" data-msg="6" data-sender="2" style="display:none;">
+        LLM [Thought]: Got the calculation. Now I need to search for interest rates.
+      </div>
+      <div class="chat-message" data-msg="7" data-sender="3" style="display:none;">
+        LLM [Action]: search("current interest rates 2024")
+      </div>
+      <div class="chat-message" data-msg="8" data-sender="4" style="display:none;">
+        Tool Result: "[Search results: Fed funds rate is X%, mortgage rates are Y%...]"
+      </div>
+      <div class="chat-message" data-msg="9" data-sender="2" style="display:none;">
+        LLM [Thought]: I have both pieces of information now. I can give a complete final answer.
+      </div>
+      <div class="chat-message" data-msg="10" data-sender="1" style="display:none;">
+        Agent [Final Answer]: 20% of $340 is $68. As for interest rates, the Fed funds rate is currently... [summarizes search results]
+      </div>
+      <div class="chat-typing typing-indicator" style="display:none;">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="chat-controls">
+      <button class="chat-next-btn">Next →</button>
+      <button class="chat-all-btn">Show All</button>
+      <button class="chat-reset-btn">Reset</button>
+    </div>
+  </div>
+
+  <p><strong>The key insight:</strong> LangChain handles the loop automatically. You define the tools — it handles the back-and-forth between the LLM and those tools until the task is done.</p>
+
+  <h4>🔄 Chain vs Agent vs Graph</h4>
+
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">🔗</span>
+      <div class="step-body">
+        <strong>Chain — Fixed pipeline</strong>
+        <p>Always does A → B → C. High predictability, zero flexibility. Best for: document summarization, formatting pipelines, fixed Q&amp;A workflows.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">🤖</span>
+      <div class="step-body">
+        <strong>Agent — LLM decides the path</strong>
+        <p>The LLM picks which tools to call and when. Medium predictability, high flexibility. Best for: open-ended research, multi-step reasoning, tasks where you don't know the steps in advance.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">🗺️</span>
+      <div class="step-body">
+        <strong>Graph (LangGraph) — Developer designs the flow</strong>
+        <p>You define exact nodes and edges. High predictability, full control. Best for: complex production workflows with approvals, branching, and human-in-the-loop checkpoints. Week 3 topic.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flashcard -->
+  <h4>🃏 LangChain Chain vs LangChain Agent</h4>
+
+  <div class="flashcard">
+    <div class="flashcard-inner">
+      <div class="flashcard-front">
+        <h4>🔗 LangChain Chain</h4>
+        <p>A fixed sequence of steps connected with <code>|</code>. Every invocation follows the same path: prompt → LLM → output parser.</p>
+        <p><strong>Analogy:</strong> An assembly line — the product always goes through the same stations in the same order.</p>
+        <p><strong>Use when:</strong> You know exactly what steps are needed and they don't change based on the input.</p>
+        <p style="font-size:2em;margin-top:12px">🔗</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted)">← Tap to flip →</p>
+      </div>
+      <div class="flashcard-back">
+        <h4>🤖 LangChain Agent</h4>
+        <p>A loop where the LLM decides what to do next. It picks tools, calls them, reads results, and decides whether to keep going or give a final answer.</p>
+        <p><strong>Analogy:</strong> A freelancer — given a goal, they figure out the steps and adapt as they go.</p>
+        <p><strong>Use when:</strong> The steps needed depend on the specific task or on the results of earlier steps.</p>
+        <p style="font-size:2em;margin-top:12px">🤖</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted)">← Tap to flip →</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Terms -->
+  <h3>📖 Key Terms</h3>
+  <div class="term-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">LangChain</strong><br>
+      Python/JS framework that handles the plumbing of LLM apps — prompts, tools, memory, agent loops — so you focus on logic, not infrastructure.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Chain</strong><br>
+      A linear sequence of components connected with <code>|</code>. Fixed flow every time: prompt → LLM → parser. Predictable, simple, no loops.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Agent</strong><br>
+      An LLM in a decision loop. It decides which tools to call, observes results, and loops until done. Built on the ReAct pattern from Week 1.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Tool</strong><br>
+      A Python function decorated with <code>@tool</code> that the agent can call. The docstring becomes the description the LLM uses to decide when to call it.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Prompt Template</strong><br>
+      A reusable prompt with <code>{variable}</code> placeholders. Fill in different values each call — same structure, different content every time.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">LangGraph</strong><br>
+      An extension of LangChain for graph-based workflows. You design nodes and edges — maximum control for complex production agents. Week 3 topic.
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <h3>📝 Quick Check</h3>
+
+  <div class="quiz-card">
+    <p class="quiz-question"><strong>Q1:</strong> You're building a pipeline that always summarizes a document in the same three steps. Which LangChain abstraction is the right fit?</p>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="An agent would work, but it's overkill — it adds unpredictability and extra API costs for a task with fixed steps.">An Agent with tools</button>
+      <button class="quiz-option" data-correct="true" data-explanation-correct="Correct! A chain is perfect for fixed, predictable sequences. It's simpler, faster, and cheaper than an agent for linear workflows.">A Chain (prompt | LLM | parser)</button>
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="LangGraph is for complex workflows with branching and conditions — far more than needed for a simple 3-step pipeline.">A LangGraph workflow</button>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <p class="quiz-question"><strong>Q2:</strong> Why does the <code>@tool</code> decorator require a docstring?</p>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Python doesn't require docstrings to run functions. The requirement comes from LangChain, and for a specific reason.">Python won't run functions without docstrings</button>
+      <button class="quiz-option" data-correct="true" data-explanation-correct="Correct! LangChain passes the docstring to the LLM as the tool's description. Without it, the LLM doesn't know what the tool does or when to use it.">LangChain passes it to the LLM as the tool's description</button>
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Docstrings are text, not code. They don't affect runtime performance.">It speeds up tool execution at runtime</button>
+    </div>
+  </div>
+
+  <!-- Reflection -->
+  <h3>🤔 Reflection</h3>
+  <div class="reflection-card">
+    <p>Think of a repetitive task you do regularly — researching something, transforming data, answering the same kinds of questions. Would a Chain or an Agent be the right abstraction to automate it? What tools would it need?</p>
+    <textarea class="reflection-input" placeholder="Write your thoughts here..."></textarea>
+    <button class="save-reflection">Save</button>
+  </div>
+
+  <!-- Checklist -->
+  <h3>✅ Before You Move On</h3>
+  <div class="checklist" style="margin-top:16px;">
+    <label><input type="checkbox"> My environment is set up and <code>verify_setup.py</code> runs without errors</label>
+    <label><input type="checkbox"> I can explain the difference between a Chain, an Agent, and a Graph</label>
+    <label><input type="checkbox"> I understand why docstrings on tools matter for agent behavior</label>
+    <label><input type="checkbox"> I ran the agent example and read through the tool calls in the output</label>
+    <label><input type="checkbox"> I completed the reflection above</label>
+  </div>
+
+  <p style="margin-top:24px;"><strong>Tomorrow:</strong> Day 9 — Prompt Engineering for Agents. You have the tools now. Tomorrow you learn how to <em>instruct</em> your agent — because a great system prompt is the difference between an agent that works reliably and one that hallucinates.</p>
+
+  <p><a class="day-link" href="https://github.com/CeciliaW888/ai-agent-learning/blob/main/week-02/day-08-langchain-intro.md" target="_blank" rel="noopener">📖 Read the full Day 8 study guide →</a></p>
+
+</div>
+</section>

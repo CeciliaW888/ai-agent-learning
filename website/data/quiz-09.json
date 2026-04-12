@@ -1,0 +1,37 @@
+{
+  "questions": [
+    {
+      "question": "What is a system prompt?",
+      "options": [
+        "A user message sent at the start of conversation",
+        "A terminal command that starts the agent",
+        "Instructions given to an LLM that define its role, behavior, and constraints",
+        "A JSON config file for the agent"
+      ],
+      "answer": 2,
+      "explanation": "The system prompt is a special instruction block sent to the LLM before the conversation starts, shaping its persona, capabilities, and guardrails."
+    },
+    {
+      "question": "The ReAct prompting pattern helps agents by:",
+      "options": [
+        "Interleaving reasoning (Thought) steps with action steps",
+        "Reducing the number of tool calls needed",
+        "Caching responses for faster replies",
+        "Translating queries into SQL automatically"
+      ],
+      "answer": 0,
+      "explanation": "ReAct structures the agent's output as alternating Thought and Action steps, making reasoning transparent and enabling the agent to adapt based on tool results."
+    },
+    {
+      "question": "Why should agent system prompts include explicit constraints?",
+      "options": [
+        "To make the prompt longer and more detailed",
+        "To improve the speed of the LLM",
+        "To reduce token usage",
+        "To prevent the agent from taking unintended actions or going off-task"
+      ],
+      "answer": 3,
+      "explanation": "Without explicit constraints, agents may hallucinate tool calls, take irreversible actions, or drift from the intended goal. Constraints act as guardrails."
+    }
+  ]
+}

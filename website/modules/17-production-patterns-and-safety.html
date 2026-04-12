@@ -1,0 +1,263 @@
+<section class="module" id="module-17" data-day="17">
+<div class="module-inner">
+
+  <h2>Day 17: Production Patterns &amp; Safety</h2>
+
+  <div class="callout-accent">
+    <span class="callout-icon">🛡️</span>
+    <div class="callout-content">
+      <strong>"Move fast and break things" does NOT apply to autonomous AI agents.</strong> Building an agent that works in a demo is easy. Building one that works safely in production is a different challenge entirely. Production agents run unsupervised, handle real data, cost real money, and can cause real damage if they go wrong. This lesson is about building agents you can actually trust.
+    </div>
+  </div>
+
+  <!-- Learning Objectives -->
+  <h3>🎯 Learning Objectives</h3>
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">1</span>
+      <div class="step-body">
+        <strong>Implement the five production safety patterns</strong>
+        <p>Human-in-the-loop, guardrails, rate limiting, monitoring, and graceful degradation — understand what each one does and why it matters.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">2</span>
+      <div class="step-body">
+        <strong>Know when to require human approval</strong>
+        <p>Identify the actions that should never be automated without a human checkpoint — and design those checkpoints correctly.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">3</span>
+      <div class="step-body">
+        <strong>Design agents that fail gracefully</strong>
+        <p>When something goes wrong — and it will — your agent should degrade cleanly, not crash and burn silently.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Watch -->
+  <h3>📺 Watch &amp; Read (40 min)</h3>
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">📄</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank" rel="noopener">Building Effective Agents — Anthropic Engineering</a></strong>
+        <p>40 min · The definitive guide. Read the "Error handling and guardrails" and "Human oversight" sections especially closely.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">🎥</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://www.youtube.com/watch?v=T9aRN5JkmL8" target="_blank" rel="noopener">AI Prompt Engineering: Safety &amp; Guardrails — Anthropic</a></strong>
+        <p>~15 min · Anthropic's deep dive on safety considerations in prompting and guardrails for real-world agents.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">📄</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://owasp.org/www-project-top-10-for-large-language-model-applications/" target="_blank" rel="noopener">OWASP Top 10 for LLM Applications</a></strong>
+        <p>~10 min · The security checklist every production agent builder should know. Prompt injection is #1 for a reason.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core Concepts -->
+  <h3>📚 Core Concepts</h3>
+
+  <div class="callout-warning">
+    <span class="callout-icon">⚠️</span>
+    <div class="callout-content">
+      <strong>An agent without guardrails is a liability, not an asset.</strong> Without rate limiting, a runaway agent can make thousands of API calls and cost hundreds of dollars. Without sandboxing, a tool-calling agent can delete files or modify a database. Without monitoring, you won't know any of this happened until the damage is done.
+    </div>
+  </div>
+
+  <h4>🏗️ The Five Production Safety Patterns</h4>
+
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">1</span>
+      <div class="step-body">
+        <strong>Human-in-the-Loop (HITL)</strong>
+        <p>Pause and require human approval before high-stakes actions: sending emails, deleting files, making payments, publishing content. Not everything should be automated. Define a clear list of actions that always need a human "yes" before proceeding.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">2</span>
+      <div class="step-body">
+        <strong>Rate Limiting</strong>
+        <p>Cap how many tool calls, API requests, or actions an agent can take per run. A well-designed agent shouldn't need more than 20 actions to complete a typical task. If it does, something is wrong — and you want it to stop and tell you, not silently keep going.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">3</span>
+      <div class="step-body">
+        <strong>Sandboxing</strong>
+        <p>Restrict what tools can touch. Read-only file access where possible. Network allowlists so agents can't call arbitrary endpoints. No system commands unless explicitly needed. Give agents the minimum permissions required — not "just in case" access.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">4</span>
+      <div class="step-body">
+        <strong>Monitoring &amp; Logging</strong>
+        <p>Log every agent decision, tool call, and cost in real time. Track total API spend per session. Alert on unusual patterns — too many retries, unexpected tool sequences, cost spikes. You can't fix what you can't see.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">5</span>
+      <div class="step-body">
+        <strong>Graceful Degradation</strong>
+        <p>When a tool fails, a model is unavailable, or a budget is exceeded — return partial results and a helpful error instead of crashing. Design fallback paths so users get something useful even when the primary path fails.</p>
+      </div>
+    </div>
+  </div>
+
+  <h4>💬 Agent Hitting a Rate Limit — Fallback in Action</h4>
+
+  <p>Watch how a well-designed production agent handles a rate limit gracefully:</p>
+
+  <div class="chat-window" id="chat-ratelimit">
+    <div class="chat-messages">
+      <div class="chat-message" data-msg="1" data-sender="1" style="display:none;">
+        User: "Search for recent news on every major AI company — OpenAI, Google, Anthropic, Meta, Mistral, Cohere, and Stability AI."
+      </div>
+      <div class="chat-message" data-msg="2" data-sender="2" style="display:none;">
+        Agent [Thought]: That's 7 searches. My budget is 5 API calls per session. I'll work with what I have and be transparent about the limit.
+      </div>
+      <div class="chat-message" data-msg="3" data-sender="3" style="display:none;">
+        Agent [Action]: search("OpenAI news 2024") → success (1/5)
+      </div>
+      <div class="chat-message" data-msg="4" data-sender="3" style="display:none;">
+        Agent [Action]: search("Google AI news 2024") → success (2/5)
+      </div>
+      <div class="chat-message" data-msg="5" data-sender="3" style="display:none;">
+        Agent [Action]: search("Anthropic news 2024") → success (3/5)
+      </div>
+      <div class="chat-message" data-msg="6" data-sender="3" style="display:none;">
+        Agent [Action]: search("Meta AI news 2024") → success (4/5)
+      </div>
+      <div class="chat-message" data-msg="7" data-sender="3" style="display:none;">
+        Agent [Action]: search("Mistral Cohere Stability AI news") → success (5/5)
+      </div>
+      <div class="chat-message" data-msg="8" data-sender="2" style="display:none;">
+        Agent [Thought]: Rate limit reached (5/5 calls). I have enough for a good partial answer. I'll combine the results and note what's missing — not crash.
+      </div>
+      <div class="chat-message" data-msg="9" data-sender="1" style="display:none;">
+        Agent → User: "Here's the latest news for OpenAI, Google, Anthropic, and Meta. For Mistral, Cohere, and Stability AI I combined results into one search. For more detail on any of them, let me know and I'll search individually next session."
+      </div>
+      <div class="chat-typing typing-indicator" style="display:none;">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="chat-controls">
+      <button class="chat-next-btn">Next →</button>
+      <button class="chat-all-btn">Show All</button>
+      <button class="chat-reset-btn">Reset</button>
+    </div>
+  </div>
+
+  <p><strong>Graceful degradation:</strong> The agent didn't crash when it hit the limit. It adapted its strategy, delivered the best result it could with what it had, and told the user exactly what happened and what to do next.</p>
+
+  <h4>🔐 Safety Principles to Build By</h4>
+
+  <div class="callout-info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-content">
+      <strong>Least Privilege:</strong> Give agents the minimum tools and permissions needed for the task — not "just in case" access. Every extra tool is a new surface for mistakes. <strong>Fail Safe:</strong> When in doubt, stop and ask. Never silently continue with bad data. <strong>Reversibility:</strong> Prefer reversible actions. Can the agent's file write be undone? Can the email be recalled? If not, that action needs a human checkpoint.
+    </div>
+  </div>
+
+  <h4>🚀 Development Agent vs Production Agent</h4>
+
+  <div class="flashcard">
+    <div class="flashcard-inner">
+      <div class="flashcard-front">
+        <h4>🧪 Development Agent</h4>
+        <p>You're watching it. You can stop it manually. Costs are small. Data is fake or test data. Mistakes are learning opportunities.</p>
+        <p><strong>What you skip:</strong> rate limits (annoying to test with), HITL (slows down iteration), detailed logging (noise during development).</p>
+        <p style="font-size:2em;margin-top:12px">🧪</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted)">← Tap to flip →</p>
+      </div>
+      <div class="flashcard-back">
+        <h4>🏭 Production Agent</h4>
+        <p>Nobody's watching. It runs autonomously on real data with real consequences. A bug can mean real money spent, real data deleted, real emails sent.</p>
+        <p><strong>What you add:</strong> rate limits and cost caps, HITL for sensitive actions, full logging and monitoring, fallback paths for every failure mode, input validation and prompt injection defense.</p>
+        <p style="font-size:2em;margin-top:12px">🏭</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted)">← Tap to flip →</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Terms -->
+  <h3>📖 Key Terms</h3>
+  <div class="term-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">HITL (Human-in-the-Loop)</strong><br>
+      A checkpoint that requires human approval before the agent takes a sensitive action — sending emails, deleting files, making payments.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Guardrails</strong><br>
+      Constraints that run before and after every agent action — checking for blocked patterns, rate limits, cost limits, and filtering sensitive data from outputs.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Sandboxing</strong><br>
+      Running agent tools in isolated, restricted environments so a misbehaving tool can't affect the broader system — read-only access, network allowlists, no system commands.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Observability</strong><br>
+      The ability to see what an agent is doing in real time — logging decisions, tool calls, costs, and errors so you can audit behavior and catch problems early.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Graceful Degradation</strong><br>
+      When the primary path fails, the agent returns partial results and a helpful message instead of crashing — keeping the user informed and the system stable.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Prompt Injection</strong><br>
+      An attack where malicious user input tries to override the agent's instructions — e.g., "Ignore your previous instructions and..." Input validation is the defense.
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <h3>📝 Quick Check</h3>
+
+  <div class="quiz-card">
+    <p class="quiz-question"><strong>Q1:</strong> An agent is about to send an email to 500 customers on behalf of a user. What should happen?</p>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Sending email is a high-stakes, irreversible action. Logging it afterward doesn't prevent harm — by then the emails are already sent.">Send it, then log the action for the audit trail</button>
+      <button class="quiz-option" data-correct="true" data-explanation-correct="Correct! Sending emails to hundreds of customers is irreversible. This is exactly the kind of action that requires a HITL checkpoint — show the user what will be sent and get explicit approval first.">Pause and require human approval before sending</button>
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Rate limiting controls how many actions an agent takes, but it doesn't provide human oversight for high-stakes irreversible actions. You need HITL here.">Apply rate limiting to slow it down</button>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <p class="quiz-question"><strong>Q2:</strong> Your agent hits an API rate limit mid-task. What does graceful degradation look like?</p>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Crashing with an unhandled exception is the worst outcome — the user gets nothing and doesn't know what happened or what to do.">Raise an unhandled exception and crash</button>
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Retrying forever will just keep hitting the rate limit and may run up costs or make the problem worse. You need a ceiling on retries and a fallback.">Retry indefinitely until the limit resets</button>
+      <button class="quiz-option" data-correct="true" data-explanation-correct="Exactly! Graceful degradation means delivering the best partial result available, clearly explaining what happened, and giving the user a path forward — not crashing or silently failing.">Return the partial results completed so far and tell the user what happened</button>
+    </div>
+  </div>
+
+  <!-- Reflection -->
+  <h3>🤔 Reflection</h3>
+  <div class="reflection-card">
+    <p>Think about the agent you've been building in this course. Which of the five production patterns (HITL, rate limiting, sandboxing, monitoring, graceful degradation) would be most important to add before trusting it with real tasks? What's the riskiest thing it could do if it went wrong?</p>
+    <textarea class="reflection-input" placeholder="Write your thoughts here..."></textarea>
+    <button class="save-reflection">Save</button>
+  </div>
+
+  <!-- Checklist -->
+  <h3>✅ Before You Move On</h3>
+  <div class="checklist" style="margin-top:16px;">
+    <label><input type="checkbox"> I can name all five production safety patterns and explain what each one does</label>
+    <label><input type="checkbox"> I know which actions should always require human approval</label>
+    <label><input type="checkbox"> I understand the difference between a development agent and a production agent</label>
+    <label><input type="checkbox"> I completed the reflection above</label>
+  </div>
+
+  <p style="margin-top:24px;"><strong>Tomorrow:</strong> Day 18 — Capstone Project Start. Everything from Week 1, Week 2, and this week converges. You'll begin building a multi-agent content creation pipeline that applies every pattern you've learned.</p>
+
+  <p><a class="day-link" href="https://github.com/CeciliaW888/ai-agent-learning/blob/main/week-03/day-17-production-patterns.md" target="_blank" rel="noopener">📖 Read the full Day 17 study guide →</a></p>
+
+</div>
+</section>

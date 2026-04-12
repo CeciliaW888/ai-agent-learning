@@ -1,0 +1,37 @@
+{
+  "questions": [
+    {
+      "question": "Which pattern describes an agent that repeatedly Perceives, Decides, and Acts?",
+      "options": [
+        "The PDA Loop",
+        "The RAG Pipeline",
+        "The Chain-of-Thought Pattern",
+        "The Supervisor Pattern"
+      ],
+      "answer": 0,
+      "explanation": "The PDA (Perceive-Decide-Act) Loop is the fundamental cycle that drives agent behavior — perceiving input, deciding on an action, acting, then repeating."
+    },
+    {
+      "question": "In function calling, what does the LLM receive back from a tool?",
+      "options": [
+        "A confirmation that the tool ran",
+        "Nothing — tools are fire-and-forget",
+        "The tool's output, which it then incorporates into its next response",
+        "A new system prompt"
+      ],
+      "answer": 2,
+      "explanation": "After a tool executes, its output is inserted back into the conversation so the LLM can read it and decide what to do next."
+    },
+    {
+      "question": "What is the key architectural difference between RAG and a full agent?",
+      "options": [
+        "RAG uses a larger model than agents",
+        "Agents can take actions and use multiple tools; RAG only retrieves and generates",
+        "RAG supports multi-turn conversations; agents do not",
+        "Agents always require a vector database; RAG does not"
+      ],
+      "answer": 1,
+      "explanation": "RAG fetches documents and generates a response — a single fixed pipeline. Agents dynamically decide which tools to use, can take real-world actions, and loop until the task is done."
+    }
+  ]
+}

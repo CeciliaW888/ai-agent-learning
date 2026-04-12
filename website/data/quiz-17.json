@@ -1,0 +1,37 @@
+{
+  "questions": [
+    {
+      "question": "What does 'human-in-the-loop' mean for production agents?",
+      "options": [
+        "A human must write every prompt manually",
+        "The agent cannot run without a human watching the console",
+        "The agent pauses and asks for human approval before taking certain actions",
+        "Humans review agent outputs after the fact, not in real time"
+      ],
+      "answer": 2,
+      "explanation": "Human-in-the-loop means the agent checkpoints at critical decision points — like sending an email or deleting a file — and waits for explicit human confirmation before proceeding."
+    },
+    {
+      "question": "Why should you implement rate limiting for agents?",
+      "options": [
+        "To prevent runaway agents from making thousands of costly API calls",
+        "To make the agent respond more slowly for a better UX",
+        "To comply with GDPR data regulations",
+        "To ensure the agent uses only one tool at a time"
+      ],
+      "answer": 0,
+      "explanation": "Agents in loops can spiral into making rapid-fire API calls if something goes wrong. Rate limiting caps how many calls can be made per unit of time, protecting both cost and downstream services."
+    },
+    {
+      "question": "Sandboxing an agent's tools means:",
+      "options": [
+        "Running the agent on a dedicated GPU server",
+        "Encrypting tool inputs and outputs",
+        "Only allowing the agent to use one tool at a time",
+        "Restricting what the tools can access or modify in the environment"
+      ],
+      "answer": 3,
+      "explanation": "Sandboxing limits the blast radius of an agent's actions — for example, a code execution tool might run in a Docker container so it cannot affect the host filesystem."
+    }
+  ]
+}

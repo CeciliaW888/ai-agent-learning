@@ -1,0 +1,318 @@
+<section class="module" id="module-7" data-day="7">
+<div class="module-inner">
+
+  <h2>Day 7: Week 1 Review</h2>
+
+  <div class="callout-accent">
+    <span class="callout-icon">🎓</span>
+    <div class="callout-content">
+      <strong>You made it through Week 1.</strong> Today isn't about learning new things — it's about locking in what you've learned. The best way to know if you understand something is to explain it. That's exactly what today asks you to do.
+    </div>
+  </div>
+
+  <!-- Learning Objectives -->
+  <h3>🎯 Learning Objectives</h3>
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">1</span>
+      <div class="step-body">
+        <strong>Summarize all 6 core concepts in your own words</strong>
+        <p>If you can explain it simply, you understand it. If you can't, you know where to review.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">2</span>
+      <div class="step-body">
+        <strong>Pass the self-assessment quiz</strong>
+        <p>Test yourself without looking at notes first. Struggle is how memory forms.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">3</span>
+      <div class="step-body">
+        <strong>Connect the concepts into a unified mental model</strong>
+        <p>The six topics aren't isolated — they form a system. See how they fit together.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">4</span>
+      <div class="step-body">
+        <strong>Write your Week 1 summary for sharing</strong>
+        <p>Teaching others is the most powerful way to consolidate your own learning.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Week 1 Recap -->
+  <h3>📋 Week 1 Recap — One Concept Per Day</h3>
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">1</span>
+      <div class="step-body">
+        <strong>Day 1: What is an AI Agent?</strong>
+        <p>An agent is an autonomous system that perceives its environment, decides what to do, and acts — repeatedly — until a goal is achieved. The key word is <em>autonomous</em>: it keeps going without you guiding every step.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">2</span>
+      <div class="step-body">
+        <strong>Day 2: The PDA Loop</strong>
+        <p><strong>Perceive → Decide → Act → Repeat.</strong> This loop is the heartbeat of every agent system. Each iteration, the agent takes in new information, reasons about what to do next, and executes an action. The loop runs until the goal is met or a limit is hit.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">3</span>
+      <div class="step-body">
+        <strong>Day 3: Agent vs Chatbot vs RAG</strong>
+        <p>Chatbots respond once. RAG retrieves then responds once. Agents act in a loop with tools. Don't reach for an agent when a chatbot will do — start simple. Use agents when the task requires multiple steps, real-time data, or taking real actions.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">4</span>
+      <div class="step-body">
+        <strong>Day 4: Tools &amp; Function Calling</strong>
+        <p>LLMs don't execute code — they output JSON describing what they'd like to call. Your code actually calls the function and returns the result. This is a crucial architecture detail: the LLM decides, your system acts.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">5</span>
+      <div class="step-body">
+        <strong>Day 5: Memory &amp; State</strong>
+        <p>Agents have three memory types: <strong>short-term</strong> (current conversation), <strong>long-term</strong> (vector DB across sessions), and <strong>working memory</strong> (scratchpad for the current task). Memory is what turns a one-shot LLM into an agent that learns.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">6</span>
+      <div class="step-body">
+        <strong>Day 6: Planning &amp; Reasoning</strong>
+        <p><strong>CoT</strong> (think step by step), <strong>ReAct</strong> (interleave thought + tool use), <strong>ToT</strong> (explore multiple paths). Different problems call for different strategies. The secret weapon: task decomposition — break big goals into small, manageable steps.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- The Big Picture Connection -->
+  <h4>🔗 How They All Connect</h4>
+
+  <p>The six concepts from this week aren't six separate topics — they're one system:</p>
+
+  <div class="callout-info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-content">
+      <strong>The unified model:</strong> An <strong>AI Agent</strong> (Day 1) is an LLM that runs in a <strong>PDA Loop</strong> (Day 2), using <strong>Tools</strong> (Day 4) to act on the world, <strong>Memory</strong> (Day 5) to learn and persist state, and <strong>Planning</strong> (Day 6) to break complex goals into steps. This whole system only makes sense once you know <em>when</em> to reach for it — not for simple Q&amp;A (chatbot) or knowledge retrieval (RAG), but for multi-step tasks that require acting in the world (Day 3).
+    </div>
+  </div>
+
+  <!-- Simulated Review Chat -->
+  <h4>💬 Ask the Agent — Review Session</h4>
+
+  <p>Here's a simulated Q&amp;A session — the kind of review dialogue you might have with an AI tutor:</p>
+
+  <div class="chat-window" id="chat-review">
+    <div class="chat-messages">
+      <div class="chat-message" data-msg="1" data-sender="1" style="display:none;">
+        Student: "I keep mixing up CoT and ReAct. What's the actual difference?"
+      </div>
+      <div class="chat-message" data-msg="2" data-sender="2" style="display:none;">
+        Tutor: "Good question. Chain of Thought is all internal — the LLM reasons step by step using only what it already knows. No tools, no external data."
+      </div>
+      <div class="chat-message" data-msg="3" data-sender="2" style="display:none;">
+        Tutor: "ReAct interleaves thought with action. After each reasoning step, it can call a tool — search the web, read a file, run code — then observe the result before thinking again."
+      </div>
+      <div class="chat-message" data-msg="4" data-sender="1" style="display:none;">
+        Student: "So ReAct is CoT... but with tool calls in between the thoughts?"
+      </div>
+      <div class="chat-message" data-msg="5" data-sender="2" style="display:none;">
+        Tutor: "Exactly. ReAct = CoT + Tool Use, interleaved. The tool results become new observations that feed back into the next thought. That's what 'grounds' the reasoning in real data instead of hallucination."
+      </div>
+      <div class="chat-message" data-msg="6" data-sender="1" style="display:none;">
+        Student: "And what about the PDA loop — where does that fit in?"
+      </div>
+      <div class="chat-message" data-msg="7" data-sender="2" style="display:none;">
+        Tutor: "ReAct IS the PDA loop at the reasoning level. Each Thought is the 'Decide' phase. Each Action is the 'Act' phase. Each Observation is the 'Perceive' phase for the next iteration. They're the same pattern at different levels of abstraction."
+      </div>
+      <div class="chat-message" data-msg="8" data-sender="1" style="display:none;">
+        Student: "That actually just made everything click. Thank you."
+      </div>
+      <div class="chat-typing typing-indicator" style="display:none;">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="chat-controls">
+      <button class="chat-next-btn">Next →</button>
+      <button class="chat-all-btn">Show All</button>
+      <button class="chat-reset-btn">Reset</button>
+    </div>
+  </div>
+
+  <!-- Flashcard: Before vs After -->
+  <h4>🃏 Before Week 1 vs After Week 1</h4>
+
+  <div class="flashcard">
+    <div class="flashcard-inner">
+      <div class="flashcard-front">
+        <h4>😶 Before Week 1</h4>
+        <p>"AI" meant ChatGPT. You asked it questions and it answered them. Maybe you'd heard of "AI agents" but it sounded like science fiction or hype.</p>
+        <p>You might have thought: <em>ChatGPT is basically already an agent, right?</em></p>
+        <p>Tools, memory, planning loops — these weren't part of how you thought about AI systems.</p>
+        <p style="font-size:2em;margin-top:12px">😶</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted)">← Tap to see After →</p>
+      </div>
+      <div class="flashcard-back">
+        <h4>🧠 After Week 1</h4>
+        <p>You know that <em>tools + memory + planning + loop</em> are what separate an agent from a chatbot. ChatGPT without plugins is a chatbot. Claude Code is an agent.</p>
+        <p>You can explain the PDA loop, describe three types of memory, name two reasoning strategies, and tell someone exactly when <em>not</em> to use an agent.</p>
+        <p>Most importantly: you've stopped seeing AI as magic and started seeing it as <em>architecture</em>.</p>
+        <p style="font-size:2em;margin-top:12px">🧠</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted)">← Tap to see Before →</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Terminology -->
+  <h3>📖 Week 1 Terms — Full Glossary</h3>
+  <div class="term-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">AI Agent</strong><br>
+      An autonomous system that perceives, decides, and acts in a loop to achieve a goal. Requires tools, memory, and planning layered around an LLM.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">PDA Loop</strong><br>
+      Perceive → Decide → Act → Repeat. The fundamental operating cycle of every agent system. The loop runs until the goal is achieved or a safety limit is hit.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">RAG</strong><br>
+      Retrieval-Augmented Generation — retrieve relevant documents, then generate a response. Not an agent: one retrieval, one response. Best for knowledge-base Q&amp;A.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Function Calling</strong><br>
+      The mechanism where an LLM outputs a JSON description of a tool call, and your code executes the actual function. The LLM decides; your code acts.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Vector Database</strong><br>
+      A database that stores information as embeddings (numerical vectors) and retrieves by semantic similarity. The backbone of long-term agent memory.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">ReAct</strong><br>
+      Reasoning + Acting — the pattern where an agent interleaves Thought → Action → Observation steps. Grounds reasoning in real data by calling tools between each thinking step.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Chain of Thought (CoT)</strong><br>
+      Prompting the LLM to reason step by step before answering. Improves accuracy on complex problems. Unlike ReAct, CoT uses no external tools.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Task Decomposition</strong><br>
+      Breaking a complex goal into smaller, ordered sub-tasks. The core planning technique that makes large goals tractable for agents.
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <h3>📝 Self-Assessment Quiz</h3>
+
+  <div class="callout-info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-content">
+      Try answering without looking at your notes first. Productive struggle is how memory forms.
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <p class="quiz-question"><strong>Q1:</strong> Why doesn't the LLM directly execute tool calls — why does your code do it instead?</p>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="LLMs are actually capable of generating code that could execute functions — that's not the constraint. The reason is architectural and security-related.">LLMs aren't capable of generating executable code</button>
+      <button class="quiz-option" data-correct="true" data-explanation-correct="Correct! The separation is intentional: it gives you security (validate before executing), control (rate limits, logging), and flexibility (same LLM output works in any execution environment). The LLM decides, your code acts.">Security and control — your code can validate, rate-limit, and log every tool call before it executes</button>
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Cost isn't the reason. The separation is about safety and architecture, not price.">Tool execution is too expensive for the LLM to handle directly</button>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <p class="quiz-question"><strong>Q2:</strong> You're building a system to answer customer questions from a product manual. No multi-step tasks, no real-time data needed. What's the right architecture?</p>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="An agent would work, but it's massive overkill here. This is a simple retrieval problem. Using an agent adds cost, latency, and unpredictability where none is needed.">A full agent with planning and memory</button>
+      <button class="quiz-option" data-correct="true" data-explanation-correct="Exactly right. RAG is built for this: embed the manual, retrieve relevant chunks, generate a response. It's cheaper, faster, and more predictable than an agent for pure Q&amp;A.">RAG — embed the manual, retrieve relevant chunks, generate a response</button>
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="A plain chatbot without retrieval would hallucinate answers not in the manual. You need retrieval to ground the response in actual content.">A plain chatbot without any retrieval</button>
+    </div>
+  </div>
+
+  <!-- Reflection -->
+  <h3>🤔 Week 1 Reflection — Write Your Summary</h3>
+  <div class="reflection-card">
+    <p>This is the most important exercise of the week. Write your Week 1 summary as if you're going to share it publicly — a post, a message to a friend, or a personal note. Cover: <strong>(1)</strong> What AI agents actually are in your own words. <strong>(2)</strong> The concept that clicked hardest or surprised you most. <strong>(3)</strong> One thing you're still unclear on. <strong>(4)</strong> The agent you'd most want to build.</p>
+    <p style="font-size:0.85em;color:var(--color-text-muted);">Don't summarize the curriculum — write what <em>you</em> now understand that you didn't before.</p>
+    <textarea class="reflection-input" placeholder="Week 1 in my own words: AI agents are..."></textarea>
+    <button class="save-reflection">Save</button>
+  </div>
+
+  <div class="callout-warning">
+    <span class="callout-icon">⚠️</span>
+    <div class="callout-content">
+      <strong>The blank page is the point.</strong> If you struggle to write this, that's valuable information — it tells you exactly what to review before Week 2. Don't skip it.
+    </div>
+  </div>
+
+  <!-- Checklist -->
+  <h3>✅ Week 1 Complete When...</h3>
+  <div class="checklist" style="margin-top:16px;">
+    <label><input type="checkbox"> I can define "AI Agent" in one sentence without looking at notes</label>
+    <label><input type="checkbox"> I can explain the PDA loop and give an example</label>
+    <label><input type="checkbox"> I know when to use an agent vs RAG vs a chatbot</label>
+    <label><input type="checkbox"> I understand why the LLM doesn't execute tool calls directly</label>
+    <label><input type="checkbox"> I can name three types of agent memory and give an example of each</label>
+    <label><input type="checkbox"> I know the difference between CoT and ReAct</label>
+    <label><input type="checkbox"> I filled in the agent comparison table from Day 6</label>
+    <label><input type="checkbox"> I wrote my Week 1 summary in the reflection above</label>
+  </div>
+
+  <!-- Week 2 Preview -->
+  <h3>🚀 What's Coming: Week 2</h3>
+
+  <div class="callout-accent">
+    <span class="callout-icon">🔨</span>
+    <div class="callout-content">
+      <strong>Next week, you stop watching and start building.</strong> Everything from Week 1 — the PDA loop, tools, memory, planning — you'll implement it yourself. By Day 14, you'll have a working research agent with memory, custom tools, and real outputs.
+    </div>
+  </div>
+
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">8</span>
+      <div class="step-body">
+        <strong>LangChain Fundamentals</strong>
+        <p>Set up LangChain, build your first chain, understand the framework that makes agent building practical.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">9</span>
+      <div class="step-body">
+        <strong>Prompt Engineering for Agents</strong>
+        <p>System prompts, few-shot examples, and the specific techniques that make agents reliable instead of erratic.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">10</span>
+      <div class="step-body">
+        <strong>Tool Calling Deep Dive</strong>
+        <p>Build custom tools with real error handling. Your first tools will be search + summarize.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">11–14</span>
+      <div class="step-body">
+        <strong>Build a Research Agent</strong>
+        <p>A multi-day project: build an agent that researches any topic, stores findings in memory, and produces a structured report.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout-info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-content">
+      <strong>To prepare for Week 2:</strong> Make sure you have Python 3.10+ installed, an OpenAI or Anthropic API key, and you're comfortable using <code>pip</code> to install packages. That's all you need.
+    </div>
+  </div>
+
+  <p style="margin-top:24px;"><strong>Rest today.</strong> Week 2 is hands-on from Day 8 onward. Come back ready to write code.</p>
+
+  <p><a class="day-link" href="https://github.com/CeciliaW888/ai-agent-learning/blob/main/week-01/day-07-week-review.md" target="_blank" rel="noopener">📖 Read the full Day 7 study guide →</a></p>
+
+</div>
+</section>

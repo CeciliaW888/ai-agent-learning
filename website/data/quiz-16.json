@@ -1,0 +1,37 @@
+{
+  "questions": [
+    {
+      "question": "What is a 'handoff protocol' in multi-agent systems?",
+      "options": [
+        "Rules that determine when and how one agent passes control to another",
+        "A network protocol for agent-to-agent HTTP calls",
+        "A method for compressing messages between agents",
+        "A logging format for multi-agent traces"
+      ],
+      "answer": 0,
+      "explanation": "A handoff protocol defines the conditions and mechanics for transferring responsibility between agents — for example, when the research agent finishes, it hands off to the writer agent."
+    },
+    {
+      "question": "What is the advantage of shared state between agents?",
+      "options": [
+        "It eliminates the need for a supervisor",
+        "It makes each agent run faster",
+        "It reduces the total number of LLM calls needed",
+        "Agents can access and update common information without explicit message passing"
+      ],
+      "answer": 3,
+      "explanation": "Shared state (like a shared dictionary or graph state) lets agents read and write to a common data store, removing the need to serialize and pass all context in every message."
+    },
+    {
+      "question": "What is a risk of shared state in multi-agent systems?",
+      "options": [
+        "It increases context window usage",
+        "Race conditions or conflicting updates if agents write simultaneously",
+        "It prevents agents from running in parallel",
+        "It makes the system harder to monitor"
+      ],
+      "answer": 1,
+      "explanation": "When multiple agents can write to shared state concurrently, they may overwrite each other's updates or read stale data, causing incorrect behavior without proper synchronization."
+    }
+  ]
+}

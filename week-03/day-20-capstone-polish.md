@@ -39,7 +39,7 @@ Three AI agents collaborate to produce high-quality content:
 
 ```bash
 # Clone and setup
-git clone https://github.com/YOUR_USERNAME/content-pipeline.git
+git clone https://github.com/your-username/content-pipeline.git
 cd content-pipeline
 python -m venv venv
 source venv/bin/activate
@@ -209,7 +209,7 @@ git add .
 git commit -m "Initial commit: Multi-agent content pipeline"
 
 # Push to GitHub
-git remote add origin https://github.com/YOUR_USERNAME/content-pipeline.git
+git remote add origin https://github.com/your-username/content-pipeline.git
 git push -u origin main
 ```
 

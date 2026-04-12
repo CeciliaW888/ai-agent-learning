@@ -1,0 +1,37 @@
+{
+  "questions": [
+    {
+      "question": "Which LangChain setting is most useful for debugging agent behavior?",
+      "options": [
+        "temperature=0 — makes the agent deterministic",
+        "max_iterations=1 — stops after one step",
+        "verbose=True — shows the agent's thought process and tool calls",
+        "return_intermediate_steps=False — hides noise"
+      ],
+      "answer": 2,
+      "explanation": "verbose=True is the fastest way to see what an agent is actually doing — every Thought, Action, and Observation is printed to the console."
+    },
+    {
+      "question": "A good test for an agent should:",
+      "options": [
+        "Verify the agent produces correct outputs for known inputs",
+        "Only check that the agent doesn't crash",
+        "Run the agent 100 times and average the results",
+        "Test only the tools in isolation, never the agent"
+      ],
+      "answer": 0,
+      "explanation": "The most meaningful agent tests assert that for a given input, the agent produces the expected final output — ideally covering both happy paths and edge cases."
+    },
+    {
+      "question": "Why is testing agents harder than testing regular functions?",
+      "options": [
+        "Agents require expensive GPU hardware to run",
+        "Agents cannot be run locally",
+        "Agent tests always require internet access",
+        "Agents are non-deterministic — the same input can produce different tool call sequences"
+      ],
+      "answer": 3,
+      "explanation": "LLMs introduce non-determinism — even with temperature=0, subtle changes can alter which tools get called or in what order, making strict test assertions fragile."
+    }
+  ]
+}

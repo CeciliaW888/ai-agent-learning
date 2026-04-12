@@ -1,0 +1,37 @@
+{
+  "questions": [
+    {
+      "question": "What is LangChain's core abstraction for connecting LLM calls?",
+      "options": [
+        "A Plugin",
+        "A Node",
+        "A Router",
+        "A Chain"
+      ],
+      "answer": 3,
+      "explanation": "Chains are LangChain's foundational building block — they compose multiple LLM calls, prompts, and tools into a single reusable pipeline."
+    },
+    {
+      "question": "What does `pip install langchain langchain-openai` accomplish?",
+      "options": [
+        "Installs the LangChain framework and OpenAI integration",
+        "Installs only the OpenAI SDK",
+        "Installs LangChain and the Anthropic integration",
+        "Updates an existing LangChain installation"
+      ],
+      "answer": 0,
+      "explanation": "This command installs the core LangChain library alongside the langchain-openai package, which provides the ChatOpenAI model class and OpenAI-specific utilities."
+    },
+    {
+      "question": "Which LangChain component manages the agent's reasoning loop?",
+      "options": [
+        "The PromptTemplate",
+        "The AgentExecutor",
+        "The VectorStore",
+        "The OutputParser"
+      ],
+      "answer": 1,
+      "explanation": "AgentExecutor drives the loop — it feeds the agent's output to tools, collects results, and feeds them back until the agent produces a final answer."
+    }
+  ]
+}

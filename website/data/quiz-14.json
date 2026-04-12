@@ -1,0 +1,37 @@
+{
+  "questions": [
+    {
+      "question": "What is the role of the AgentExecutor in LangChain?",
+      "options": [
+        "It defines the tools available to the agent",
+        "It runs the agent's reasoning loop, calling tools and feeding results back",
+        "It manages the vector database connection",
+        "It parses the LLM's raw text output"
+      ],
+      "answer": 1,
+      "explanation": "AgentExecutor is the runtime harness — it repeatedly invokes the agent, routes tool calls to the right tools, feeds results back, and exits when the agent produces a final answer."
+    },
+    {
+      "question": "What distinguishes a 'chain' from an 'agent' in LangChain?",
+      "options": [
+        "Chains require an API key; agents do not",
+        "Chains are faster than agents",
+        "A chain follows a fixed sequence; an agent dynamically decides its steps",
+        "Agents are chains with memory added"
+      ],
+      "answer": 2,
+      "explanation": "A chain executes a predetermined sequence of steps. An agent, by contrast, uses the LLM to decide at runtime which step to take next, making it adaptive."
+    },
+    {
+      "question": "Which component connects an agent to external search engines?",
+      "options": [
+        "A search tool like Tavily or DuckDuckGo",
+        "The AgentExecutor's built-in browser",
+        "A retrieval chain with embeddings",
+        "The LLM's internal knowledge base"
+      ],
+      "answer": 0,
+      "explanation": "Search tools like TavilySearchResults or DuckDuckGoSearchRun are tool objects you give the agent, enabling it to fetch real-time web results."
+    }
+  ]
+}

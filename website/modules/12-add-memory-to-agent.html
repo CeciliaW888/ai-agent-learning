@@ -1,0 +1,345 @@
+<section class="module" id="module-12" data-day="12">
+<div class="module-inner">
+
+  <h2>Day 12: Adding Memory to Your Agent</h2>
+
+  <div class="callout-accent">
+    <span class="callout-icon">🧠</span>
+    <div class="callout-content">
+      <strong>The upgrade that changes everything:</strong> Right now your research agent starts fresh every time. It doesn't remember what you asked 5 minutes ago. Today you'll add memory — and transform a tool you use into an assistant that <em>grows with you</em>.
+    </div>
+  </div>
+
+  <!-- Learning Objectives -->
+  <h3>🎯 Learning Objectives</h3>
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">1</span>
+      <div class="step-body">
+        <strong>Add conversation memory using LangGraph's MemorySaver</strong>
+        <p>Understand thread IDs and how the same thread keeps context alive across multiple turns.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">2</span>
+      <div class="step-body">
+        <strong>Build long-term research memory with ChromaDB</strong>
+        <p>Store research findings as embeddings so the agent can recall past work across sessions — even after restarting.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">3</span>
+      <div class="step-body">
+        <strong>Create a note-taking tool for saving findings</strong>
+        <p>Give the agent a <code>save_to_memory</code> tool it can call when it completes useful research.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">4</span>
+      <div class="step-body">
+        <strong>Design a memory strategy — what to store, what to skip</strong>
+        <p>Learn why storing everything is as bad as storing nothing, and build a protocol that stays useful.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Watch -->
+  <h3>📺 Watch First (20 min)</h3>
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">🎥</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://www.deeplearning.ai/short-courses/ai-agents-in-langgraph/" target="_blank" rel="noopener">AI Agents in LangGraph — Memory Lesson — DeepLearning.AI</a></strong>
+        <p>~15 min · Andrew Ng's course covers memory in LangGraph clearly. Free. Watch the memory-specific lesson.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">📄</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://docs.trychroma.com/getting-started" target="_blank" rel="noopener">ChromaDB Getting Started — Official Docs</a></strong>
+        <p>~10 min read · Quick setup guide for the vector database you'll use for long-term memory storage.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core Concepts -->
+  <h3>📚 Core Concepts</h3>
+
+  <h4>🗂️ Three Layers of Agent Memory</h4>
+
+  <p>Memory isn't one thing — it has layers, just like human memory. Today you'll build all three:</p>
+
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">1</span>
+      <div class="step-body">
+        <strong>Conversation Memory — within a session</strong>
+        <p>"What did we just discuss?" — LangGraph's <code>MemorySaver</code> handles this automatically using a thread ID. Same thread = same conversation context.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">2</span>
+      <div class="step-body">
+        <strong>Research Memory — across sessions</strong>
+        <p>"What did I research last week?" — ChromaDB stores findings as vector embeddings on disk, searchable by meaning across restarts.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">3</span>
+      <div class="step-body">
+        <strong>User Preferences — permanent</strong>
+        <p>"I prefer concise bullet points." — A simple JSON file remembers working style and preferences that should survive forever.</p>
+      </div>
+    </div>
+  </div>
+
+  <h4>🔗 Conversation Memory with MemorySaver</h4>
+
+  <p>LangGraph's <span class="term" data-definition="A checkpointing mechanism in LangGraph that stores conversation state so the agent can continue a conversation across multiple invocations using the same thread_id">MemorySaver</span> persists the conversation state. The <code>thread_id</code> is the key — same thread means the agent remembers:</p>
+
+  <pre><code># Adding conversation memory to your agent
+from langgraph.prebuilt import create_react_agent
+from langgraph.checkpoint.memory import MemorySaver
+
+memory = MemorySaver()
+
+agent = create_react_agent(
+    llm,
+    tools,
+    checkpointer=memory  # This enables conversation memory
+)
+
+# Use the same thread_id to keep context alive
+config = {"configurable": {"thread_id": "research-session-1"}}
+
+result1 = agent.invoke(
+    {"messages": [{"role": "user", "content": "Research AI agents"}]},
+    config=config
+)
+
+# The agent remembers the first exchange
+result2 = agent.invoke(
+    {"messages": [{"role": "user", "content": "Compare that with traditional chatbots"}]},
+    config=config  # Same thread_id = same conversation
+)</code></pre>
+
+  <div class="callout-info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-content">
+      <strong>The thread_id is like a conversation ID.</strong> Same thread = agent remembers. Different thread = fresh start. You can have multiple parallel conversations by using different thread IDs.
+    </div>
+  </div>
+
+  <h4>💾 Long-Term Memory with ChromaDB</h4>
+
+  <p>Conversation memory disappears when you restart. <span class="term" data-definition="An open-source vector database that stores text as embeddings and supports semantic search — finding content by meaning, not exact keyword match">ChromaDB</span> persists research findings to disk so the agent can recall them in future sessions:</p>
+
+  <pre><code># tools/memory.py — save and recall research findings
+import chromadb
+from datetime import datetime
+from langchain_core.tools import tool
+
+# Persists to disk — survives restarts
+chroma_client = chromadb.PersistentClient(path="./memory_db")
+research_collection = chroma_client.get_or_create_collection(
+    name="research_findings"
+)
+
+@tool
+def save_to_memory(topic: str, findings: str) -> str:
+    """Save research findings to long-term memory for future reference.
+
+    Use this AFTER completing research on a topic.
+    These findings will be available in future conversations.
+
+    Args:
+        topic: The research topic (e.g., "AI agent market size 2024")
+        findings: Key findings to remember — keep concise and factual
+    """
+    research_collection.add(
+        documents=[findings],
+        metadatas=[{"topic": topic, "date": datetime.now().isoformat()}],
+        ids=[f"research_{research_collection.count()}"]
+    )
+    return f"Saved to memory: '{topic}' ({len(findings)} chars)"
+
+@tool
+def recall_research(query: str) -> str:
+    """Search memory for past research related to a query.
+
+    Call this BEFORE searching the web — you may already have the answer.
+
+    Args:
+        query: What you are looking for (e.g., "AI market size")
+    """
+    if research_collection.count() == 0:
+        return "No past research found. This is a fresh start."
+
+    results = research_collection.query(query_texts=[query], n_results=3)
+
+    if not results["documents"][0]:
+        return f"No relevant past research found for '{query}'."
+
+    memories = []
+    for doc, meta in zip(results["documents"][0], results["metadatas"][0]):
+        memories.append(
+            f"Topic: {meta.get('topic', 'Unknown')} "
+            f"({meta.get('date', '')[:10]})\n{doc[:300]}"
+        )
+    return f"Found {len(memories)} past findings:\n\n" + "\n\n".join(memories)</code></pre>
+
+  <h4>💬 Memory Across Three Conversation Turns</h4>
+
+  <p>Watch the agent use memory — checking past research before searching, then saving new findings:</p>
+
+  <div class="chat-window" id="chat-memory-demo">
+    <div class="chat-messages">
+      <div class="chat-message" data-msg="1" data-sender="1" style="display:none;">
+        Turn 1 — User: "Research the latest AI agent frameworks and save your findings."
+      </div>
+      <div class="chat-message" data-msg="2" data-sender="3" style="display:none;">
+        Agent [Action]: recall_research("AI agent frameworks") → "No past research found. Fresh start."
+      </div>
+      <div class="chat-message" data-msg="3" data-sender="3" style="display:none;">
+        Agent [Action]: search_web("top AI agent frameworks 2024 LangChain AutoGen LlamaIndex")
+      </div>
+      <div class="chat-message" data-msg="4" data-sender="3" style="display:none;">
+        Agent [Action]: save_to_memory("AI agent frameworks 2024", "LangChain: most popular, large ecosystem... AutoGen: Microsoft, multi-agent focus... LlamaIndex: data-heavy RAG...")
+      </div>
+      <div class="chat-message" data-msg="5" data-sender="1" style="display:none;">
+        Agent: "Here's a summary of the top frameworks... [structured report]. Findings saved to memory."
+      </div>
+      <div class="chat-message" data-msg="6" data-sender="1" style="display:none;">
+        Turn 2 — User: "Which of those would you recommend for a beginner building their first agent?"
+      </div>
+      <div class="chat-message" data-msg="7" data-sender="2" style="display:none;">
+        Agent [Thought]: The user is following up on the frameworks I just researched. I remember the conversation context — I don't need to search again.
+      </div>
+      <div class="chat-message" data-msg="8" data-sender="1" style="display:none;">
+        Agent: "Based on what we just covered, I'd recommend LangChain for beginners — largest community, most tutorials, and the ecosystem you've been using in this course."
+      </div>
+      <div class="chat-message" data-msg="9" data-sender="1" style="display:none;">
+        Turn 3 — (New session, next day) — User: "What do you know about AI agent frameworks?"
+      </div>
+      <div class="chat-message" data-msg="10" data-sender="3" style="display:none;">
+        Agent [Action]: recall_research("AI agent frameworks") → "Found 1 past finding: LangChain, AutoGen, LlamaIndex... [the findings saved yesterday]"
+      </div>
+      <div class="chat-message" data-msg="11" data-sender="1" style="display:none;">
+        Agent: "Based on my previous research from [date]: LangChain is most popular for beginners, AutoGen suits multi-agent orchestration, LlamaIndex excels at data-heavy RAG tasks."
+      </div>
+      <div class="chat-typing typing-indicator" style="display:none;">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="chat-controls">
+      <button class="chat-next-btn">Next →</button>
+      <button class="chat-all-btn">Show All</button>
+      <button class="chat-reset-btn">Reset</button>
+    </div>
+  </div>
+
+  <p><strong>Three types of memory at work:</strong> Turn 2 used conversation memory (same session). Turn 3 used long-term research memory (new session, ChromaDB recall).</p>
+
+  <h4>🆚 Stateless vs Stateful Agent</h4>
+
+  <div class="flashcard">
+    <div class="flashcard-inner">
+      <div class="flashcard-front">
+        <h4>📋 Stateless Agent (no memory)</h4>
+        <p>Every invocation is independent. The agent has no idea what was asked before — you have to repeat context every time.</p>
+        <p><em>"What did we discuss yesterday?"</em> → Agent: "I don't have any record of previous conversations."</p>
+        <p>Simple to build. Cheap to run. Frustrating to use for multi-step work.</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted)">← Tap to flip →</p>
+      </div>
+      <div class="flashcard-back">
+        <h4>🧠 Stateful Agent (with memory)</h4>
+        <p>Remembers the conversation, past research, and user preferences. Can build on prior work instead of starting from scratch every time.</p>
+        <p><em>"What did we discuss yesterday?"</em> → Agent: "Yesterday we researched quantum computing — here are the key findings I saved..."</p>
+        <p>More powerful. Requires thoughtful memory strategy — too much memory creates noise.</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted)">← Tap to flip →</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout-warning">
+    <span class="callout-icon">⚠️</span>
+    <div class="callout-content">
+      <strong>Don't store everything.</strong> Saving every search query creates noise that pollutes future recalls. Save key findings, decisions, and preferences — not working notes or intermediate steps. Less is more in agent memory.
+    </div>
+  </div>
+
+  <!-- Key Terms -->
+  <h3>📖 Key Terms</h3>
+  <div class="term-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">MemorySaver</strong><br>
+      LangGraph's built-in checkpointer that persists conversation state in memory. Tied to a thread_id — same ID means the agent continues the conversation rather than starting fresh.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Thread ID</strong><br>
+      A unique identifier for a conversation session. Same thread_id across multiple agent.invoke() calls = continuous conversation with shared context.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">ChromaDB</strong><br>
+      Open-source vector database that stores text as embeddings and supports semantic search. PersistentClient mode saves data to disk — findings survive restarts.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Checkpointer</strong><br>
+      LangGraph's mechanism for persisting state between agent runs. MemorySaver is the in-memory version; you can swap it for a database-backed version in production.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Memory Protocol</strong><br>
+      Rules defined in the system prompt for when to save and recall memories. Example: "Before searching, recall_research(). After completing research, save_to_memory()."
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Memory Pruning</strong><br>
+      The practice of removing outdated or irrelevant memories. Important because stale data (last year's market size) can mislead the agent just as much as no data.
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <h3>📝 Quick Check</h3>
+
+  <div class="quiz-card">
+    <p class="quiz-question"><strong>Q1:</strong> What does the <code>thread_id</code> control in LangGraph's memory system?</p>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="thread_id doesn't affect search — it identifies which conversation session to resume. Same ID = continuous conversation.">Which search results to retrieve from Tavily</button>
+      <button class="quiz-option" data-correct="true" data-explanation-correct="Correct! Same thread_id means the agent continues the same conversation with full context. A new thread_id starts fresh — the agent has no memory of previous exchanges.">Which conversation session to continue — same ID keeps context, new ID starts fresh</button>
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="thread_id is about conversation identity, not billing. It tells LangGraph which conversation state to load.">How many API credits to use per session</button>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <p class="quiz-question"><strong>Q2:</strong> Why use ChromaDB for long-term memory instead of just saving to a text file?</p>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="ChromaDB uses more disk space than a text file — that's not the advantage. The advantage is semantic search.">ChromaDB uses less disk space than text files</button>
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="ChromaDB is actually more complex to set up than a text file. The payoff is semantic retrieval — finding relevant content even when the wording differs.">ChromaDB is simpler to set up and maintain</button>
+      <button class="quiz-option" data-correct="true" data-explanation-correct="Exactly! ChromaDB stores text as embeddings, enabling semantic search — the agent can find 'AI market growth' even if you query 'artificial intelligence revenue trends'. A text file can only match exact keywords.">ChromaDB enables semantic search — finding relevant past research by meaning, not just exact keywords</button>
+    </div>
+  </div>
+
+  <!-- Reflection -->
+  <h3>🤔 Reflection</h3>
+  <div class="reflection-card">
+    <p>Think about your own memory: how do you decide what's worth writing down vs. what to leave in your head? How does that map to what you'd have an agent store vs. discard? What would a good memory pruning strategy look like for your research agent?</p>
+    <textarea class="reflection-input" placeholder="Write your thoughts here..."></textarea>
+    <button class="save-reflection">Save</button>
+  </div>
+
+  <!-- Checklist -->
+  <h3>✅ Before You Move On</h3>
+  <div class="checklist" style="margin-top:16px;">
+    <label><input type="checkbox"> MemorySaver added to agent and thread_id being passed in config</label>
+    <label><input type="checkbox"> ChromaDB installed and PersistentClient initialized</label>
+    <label><input type="checkbox"> save_to_memory and recall_research tools created and added to agent</label>
+    <label><input type="checkbox"> System prompt updated with the memory protocol (recall before searching, save after researching)</label>
+    <label><input type="checkbox"> Tested multi-turn conversation — agent remembers earlier turns</label>
+    <label><input type="checkbox"> Tested cross-session recall — started a new session and confirmed past findings were retrieved</label>
+  </div>
+
+  <p style="margin-top:24px;"><strong>Tomorrow:</strong> Day 13 — Testing and Debugging. Agents are non-deterministic and can fail silently. We'll build logging, write tests, and trace the agent's reasoning so you can trust what you've built.</p>
+
+  <p><a class="day-link" href="https://github.com/CeciliaW888/ai-agent-learning/blob/main/week-02/day-12-adding-memory.md" target="_blank" rel="noopener">📖 Read the full Day 12 study guide →</a></p>
+
+</div>
+</section>

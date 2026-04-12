@@ -1,0 +1,37 @@
+{
+  "questions": [
+    {
+      "question": "What is the minimum setup needed to run a LangChain agent with search?",
+      "options": [
+        "A vector database and embedding model",
+        "An LLM and a system prompt only",
+        "A fine-tuned model and a custom API",
+        "An LLM, at least one tool, and an AgentExecutor"
+      ],
+      "answer": 3,
+      "explanation": "At minimum you need: an LLM (the brain), at least one tool (something to do), and an AgentExecutor (the loop that drives it all)."
+    },
+    {
+      "question": "Which Python package provides Tavily search integration with LangChain?",
+      "options": [
+        "langchain-core",
+        "langchain-community or tavily-python",
+        "langchain-openai",
+        "langchain-hub"
+      ],
+      "answer": 1,
+      "explanation": "The TavilySearchResults tool lives in langchain-community, and the underlying API client is in the tavily-python package."
+    },
+    {
+      "question": "Setting verbose=True in LangChain is useful because:",
+      "options": [
+        "It speeds up the agent's responses",
+        "It disables all error messages",
+        "It shows the agent's reasoning steps and tool calls in the console",
+        "It enables multi-agent communication"
+      ],
+      "answer": 2,
+      "explanation": "verbose=True prints the agent's Thought, Action, and Observation steps to the console, making it easy to follow the reasoning chain during development."
+    }
+  ]
+}

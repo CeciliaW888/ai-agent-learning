@@ -1,0 +1,274 @@
+<section class="module" id="module-3" data-day="3">
+<div class="module-inner">
+
+  <h2>Day 3: Agent vs Chatbot vs RAG</h2>
+
+  <div class="callout-accent">
+    <span class="callout-icon">🗺️</span>
+    <div class="callout-content">
+      <strong>The builder's most important skill:</strong> Knowing when <em>not</em> to build an agent. Chatbots, RAG systems, and agents each shine in different situations — and choosing the wrong one means unnecessary cost, complexity, and slower results.
+    </div>
+  </div>
+
+  <!-- Learning Objectives -->
+  <h3>🎯 Learning Objectives</h3>
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">1</span>
+      <div class="step-body">
+        <strong>Distinguish the three architectures</strong>
+        <p>Explain what's different about a chatbot, a RAG system, and an agent — not just in words, but in how each one actually processes a request.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">2</span>
+      <div class="step-body">
+        <strong>Apply a decision framework</strong>
+        <p>Given a real use case, choose which approach fits best and explain the trade-offs in cost, speed, reliability, and complexity.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">3</span>
+      <div class="step-body">
+        <strong>Understand hybrid patterns</strong>
+        <p>See how production systems mix these approaches — including "Agentic RAG," where retrieval is just one of many tools an agent can use.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Watch -->
+  <h3>📺 Watch First (30 min)</h3>
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">🎥</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://www.youtube.com/watch?v=Fh9Xvc6Eaj4" target="_blank" rel="noopener">AI Agent vs Chatbot Explained — SystemDR</a></strong>
+        <p>12 min · Side-by-side comparison with real examples. Great starting point for this lesson.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">🎥</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://www.youtube.com/watch?v=T-D1OfcDW1M" target="_blank" rel="noopener">What is RAG? — IBM Technology</a></strong>
+        <p>8 min · Clear, visual explanation of how retrieval-augmented generation actually works under the hood.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">🎥</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://www.youtube.com/watch?v=zYGDpG-pTho" target="_blank" rel="noopener">RAG vs Fine-Tuning vs Prompt Engineering — IBM Technology</a></strong>
+        <p>10 min · Puts RAG in context with other strategies for grounding LLM output in real data.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core Concepts -->
+  <h3>📚 Core Concepts</h3>
+
+  <h4>💬 Architecture 1: Chatbot</h4>
+
+  <p>A <span class="term" data-definition="An LLM that responds to one message at a time with no external tools, no retrieval step, and no looping. It answers from its training data alone.">chatbot</span> is the simplest architecture: the user sends a message, the LLM generates a reply, done. No tools, no external data, no loops — just one API call.</p>
+
+  <p>This makes chatbots incredibly fast and cheap. But the knowledge ceiling is hard: the model only knows what it was trained on. Ask it about your company's internal docs or today's news, and it will either be wrong or admit it doesn't know.</p>
+
+  <div class="callout-info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-content">
+      <strong>Best for:</strong> Creative writing, brainstorming, general Q&amp;A, code generation, summarization of text you provide. If the answer is in the model's training data and you don't need it to <em>do</em> anything — a chatbot is the right choice.
+    </div>
+  </div>
+
+  <h4>📄 Architecture 2: RAG (Retrieval-Augmented Generation)</h4>
+
+  <p><span class="term" data-definition="Retrieval-Augmented Generation — a system that searches a knowledge base for relevant documents and injects them into the LLM's prompt before generating a response. The model answers from real data, not just training.">RAG</span> adds a retrieval step before the LLM responds. When you ask a question, the system first searches a vector database for the most relevant documents, then hands those documents to the LLM as context. The model answers using that grounded information — not imagination.</p>
+
+  <p>This is the go-to architecture for company knowledge bases, documentation Q&amp;A, and any situation where you have a specific corpus of information and want accurate, grounded answers. It dramatically reduces hallucination because the model is anchored to real documents.</p>
+
+  <div class="callout-info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-content">
+      <strong>Best for:</strong> Internal docs Q&amp;A, customer support with a specific knowledge base, legal or medical document search, research over a fixed corpus. RAG is the sweet spot between simplicity and accuracy when you have your own data.
+    </div>
+  </div>
+
+  <h4>🤖 Architecture 3: Agent</h4>
+
+  <p>An agent wraps an LLM with tools, memory, and a reasoning loop. Instead of answering in one shot, it <em>thinks</em> about what steps to take, calls tools to gather information or act in the world, observes the results, and loops until the goal is complete.</p>
+
+  <p>This power comes at a cost: agents use more LLM calls per task, run slower, and are harder to debug and test. But for complex, multi-step tasks that require real-world action — there's no substitute.</p>
+
+  <div class="callout-warning">
+    <span class="callout-icon">⚠️</span>
+    <div class="callout-content">
+      <strong>The biggest beginner mistake:</strong> Reaching for an agent when a chatbot or RAG would work fine. An agent making 8 tool calls at $0.10 each costs 100x more than a single chatbot response. Start with the simplest solution that could work. Upgrade only when you must.
+    </div>
+  </div>
+
+  <h4>💬 Same Question, Three Architectures</h4>
+
+  <p>Watch how each approach handles the same user question differently:</p>
+
+  <div class="chat-window" id="chat-three-arch">
+    <div class="chat-messages">
+      <div class="chat-message" data-msg="1" data-sender="1" style="display:none;">
+        User: "What's our company's refund policy for digital products?"
+      </div>
+      <div class="chat-message" data-msg="2" data-sender="2" style="display:none;">
+        💬 Chatbot: "Digital products are generally non-refundable, but policies vary by company. You'll need to check your specific company's terms or contact support." (❌ Generic — it doesn't know your actual policy)
+      </div>
+      <div class="chat-message" data-msg="3" data-sender="3" style="display:none;">
+        📄 RAG: [Searches company knowledge base] → Retrieved: "Section 4.2 — Digital Products: eligible for a full refund within 48 hours of purchase if the download link fails. No refund after 48 hours." → "Based on our policy: digital products can be refunded within 48 hours if the download fails." (✅ Accurate — grounded in real docs)
+      </div>
+      <div class="chat-message" data-msg="4" data-sender="4" style="display:none;">
+        🤖 Agent [Thought]: This is a policy lookup. I'll search the knowledge base, check for any recent updates, and confirm the policy is current.
+      </div>
+      <div class="chat-message" data-msg="5" data-sender="3" style="display:none;">
+        🤖 Agent [Actions]: search_docs("digital product refund policy") → search_docs("policy changes 2024") → check_date("policy last updated")
+      </div>
+      <div class="chat-message" data-msg="6" data-sender="1" style="display:none;">
+        🤖 Agent: "Our current policy (updated March 2024): digital products qualify for a full refund within 48 hours if the download fails — recently extended from 24 hours." (✅ Accurate + current — but this was overkill. RAG was enough for this question.)
+      </div>
+      <div class="chat-typing typing-indicator" style="display:none;">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="chat-controls">
+      <button class="chat-next-btn">Next →</button>
+      <button class="chat-all-btn">Show All</button>
+      <button class="chat-reset-btn">Reset</button>
+    </div>
+  </div>
+
+  <h4>⚖️ Architecture Comparison at a Glance</h4>
+
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">💬</span>
+      <div class="step-body">
+        <strong>Chatbot</strong>
+        <p>One LLM call. No retrieval, no tools, no loops. Fast and cheap. Knowledge limited to training data. High hallucination risk on specific facts.</p>
+        <p><em>Cost: Low · Speed: Fast · Reliability: High</em></p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">📄</span>
+      <div class="step-body">
+        <strong>RAG</strong>
+        <p>Retrieves relevant docs, then generates an answer grounded in them. Still single-shot — no loops, no tool use beyond retrieval. Reduces hallucination significantly.</p>
+        <p><em>Cost: Medium · Speed: Medium · Reliability: Medium-High</em></p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">🤖</span>
+      <div class="step-body">
+        <strong>Agent</strong>
+        <p>Reasons, calls tools, loops until the task is done. Handles complex multi-step tasks and can take real-world actions. More expensive and harder to predict.</p>
+        <p><em>Cost: High · Speed: Slow · Reliability: Medium-Low</em></p>
+      </div>
+    </div>
+  </div>
+
+  <h4>🔀 Hybrid Approaches: The Real World</h4>
+
+  <p>Production systems rarely use just one approach. The most common hybrid is <strong>Agentic RAG</strong> — an agent that uses document retrieval as one of its many tools. It can search the web, run calculations, <em>and</em> query a knowledge base — deciding for each task which combination of tools is needed.</p>
+
+  <p>Another common pattern is <strong>routing</strong>: an upfront classifier looks at the user's question and sends it to the cheapest system that can handle it — chatbot for simple questions, RAG for knowledge lookups, agent for complex multi-step tasks. This keeps costs reasonable while delivering full capability when it's actually needed.</p>
+
+  <!-- Flashcard -->
+  <h4>🃏 RAG vs Agent — Know the Difference</h4>
+
+  <div class="flashcard">
+    <div class="flashcard-inner">
+      <div class="flashcard-front">
+        <h4>📄 RAG System</h4>
+        <p>Retrieves relevant documents from a knowledge base, then generates a response grounded in those documents. Single-shot by design — one retrieval step, one LLM call, one answer.</p>
+        <p><em>Strength:</em> Accurate, grounded answers from your own data. Simple to build and maintain.</p>
+        <p><em>Limit:</em> Can't take actions, can't iterate, no multi-step reasoning, no real-time tools.</p>
+        <p style="font-size:2em;margin-top:12px">📄</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted)">← Tap to flip →</p>
+      </div>
+      <div class="flashcard-back">
+        <h4>🤖 Agent</h4>
+        <p>Reasons about what to do, calls tools (which can include retrieval), observes results, and loops until the task is complete. Multi-step by design.</p>
+        <p><em>Strength:</em> Handles complex tasks, takes real-world actions, adapts based on what it discovers.</p>
+        <p><em>Limit:</em> More expensive, slower, less predictable. Don't use it when RAG is enough.</p>
+        <p style="font-size:2em;margin-top:12px">🤖</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted)">← Tap to flip →</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Terms -->
+  <h3>📖 Key Terms</h3>
+  <div class="term-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">RAG</strong><br>
+      Retrieval-Augmented Generation — searches a knowledge base for relevant documents and injects them into the LLM's prompt to ground the response in real data instead of training-data guesses.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Vector Database</strong><br>
+      A database that stores and searches text as numerical vectors (embeddings). Finds documents by meaning similarity, not exact keyword match. Powers the retrieval step in RAG.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Embedding</strong><br>
+      A numerical representation of text that captures its meaning. Similar texts get similar embeddings — which is how a vector database can find relevant documents even without matching exact words.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Grounding</strong><br>
+      Connecting an LLM's output to real, verifiable data to reduce hallucination. RAG is a grounding technique — the model answers from retrieved documents, not from what it "thinks" is true.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Agentic RAG</strong><br>
+      A hybrid pattern where an agent uses document retrieval as one tool among many. It can query your knowledge base AND search the web AND run code — whatever the task requires.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Routing</strong><br>
+      Directing incoming queries to the simplest system that can handle them — chatbot for simple Q&amp;A, RAG for knowledge lookups, agent for complex multi-step tasks. Keeps costs low without sacrificing capability.
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <h3>📝 Quick Check</h3>
+
+  <div class="quiz-card">
+    <p class="quiz-question"><strong>Q1:</strong> A company wants to build a bot that answers customer questions using their 500-page product manual. Which architecture fits best?</p>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="A chatbot only knows what it was trained on — it wouldn't have access to a specific product manual and would likely hallucinate answers.">Chatbot — it's simpler and cheaper to build</button>
+      <button class="quiz-option" data-correct="true" data-explanation-correct="Correct! RAG retrieves the right sections of the manual and generates accurate, grounded answers. It's simpler than an agent and perfect for this knowledge-lookup use case.">RAG — retrieves from the manual and answers accurately</button>
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="An agent could do this, but it's overkill — the task is a simple Q&amp;A lookup, not a multi-step workflow that needs tools or planning.">Agent — it's the most capable option so it must be best</button>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <p class="quiz-question"><strong>Q2:</strong> What is "Agentic RAG"?</p>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Using a better embedding model improves retrieval quality, but it doesn't change the architecture into an agent — it's still just RAG.">A RAG system that uses a higher-quality embedding model</button>
+      <button class="quiz-option" data-correct="true" data-explanation-correct="Exactly right! Agentic RAG is when an agent has document retrieval as one tool among many. It can retrieve docs AND search the web AND run code — choosing whichever tool fits the task.">An agent that uses document retrieval as one of its many tools</button>
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Running multiple retrieval steps is a RAG variation, but it still doesn't give the system the multi-step reasoning, tool use, and autonomy that define an agent.">A RAG system that runs multiple retrieval steps before answering</button>
+    </div>
+  </div>
+
+  <!-- Reflection -->
+  <h3>🤔 Reflection</h3>
+  <div class="reflection-card">
+    <p>Think of an AI product you've used or heard about (Perplexity, Notion AI, a customer support bot, Claude, etc.). Based on today's lesson — is it a chatbot, RAG, agent, or hybrid? What clues gave it away?</p>
+    <textarea class="reflection-input" placeholder="Write your thoughts here..."></textarea>
+    <button class="save-reflection">Save</button>
+  </div>
+
+  <!-- Checklist -->
+  <h3>✅ Before You Move On</h3>
+  <div class="checklist" style="margin-top:16px;">
+    <label><input type="checkbox"> I can explain the difference between chatbot, RAG, and agent in one sentence each</label>
+    <label><input type="checkbox"> I understand when each architecture is the right choice</label>
+    <label><input type="checkbox"> I understand what "grounding" means and why RAG reduces hallucination</label>
+    <label><input type="checkbox"> I can describe what Agentic RAG is and why it's useful</label>
+    <label><input type="checkbox"> I completed the reflection above</label>
+  </div>
+
+  <p style="margin-top:24px;"><strong>Tomorrow:</strong> Day 4 — Tools &amp; Function Calling. We go deep on the mechanism that gives agents their superpowers: how LLMs decide to call external functions, what a tool schema looks like, and the complete request-response cycle.</p>
+
+  <p><a class="day-link" href="https://github.com/CeciliaW888/ai-agent-learning/blob/main/week-01/day-03-agent-vs-chatbot-vs-rag.md" target="_blank" rel="noopener">📖 Read the full Day 3 study guide →</a></p>
+
+</div>
+</section>

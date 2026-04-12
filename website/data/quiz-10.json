@@ -1,0 +1,37 @@
+{
+  "questions": [
+    {
+      "question": "In LangChain, what decorator marks a Python function as an agent tool?",
+      "options": [
+        "@agent",
+        "@tool",
+        "@function",
+        "@skill"
+      ],
+      "answer": 1,
+      "explanation": "The @tool decorator from langchain.tools wraps a Python function with a name and description so the LLM can discover and invoke it."
+    },
+    {
+      "question": "Which tool would you give an agent that needs to search the internet?",
+      "options": [
+        "A SQL database connector",
+        "A file reader tool",
+        "Tavily Search or similar web search API",
+        "A PDF parser"
+      ],
+      "answer": 2,
+      "explanation": "Tavily Search (or alternatives like SerpAPI or DuckDuckGo) provides real-time web search results that the agent can query during task execution."
+    },
+    {
+      "question": "How does an agent signal it has finished its task?",
+      "options": [
+        "It produces a final answer instead of calling another tool",
+        "It calls a special 'done' tool",
+        "It returns an empty string",
+        "It raises a StopIteration exception"
+      ],
+      "answer": 0,
+      "explanation": "When the agent determines it has enough information, it stops calling tools and instead writes a final answer directly to the user."
+    }
+  ]
+}

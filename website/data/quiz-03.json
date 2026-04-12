@@ -1,0 +1,37 @@
+{
+  "questions": [
+    {
+      "question": "What does RAG stand for?",
+      "options": [
+        "Retrieval-Augmented Generation",
+        "Recursive Agent Graph",
+        "Randomized Answer Generation",
+        "Rule-based Autonomous Gateway"
+      ],
+      "answer": 0,
+      "explanation": "RAG stands for Retrieval-Augmented Generation — a technique that fetches relevant documents and feeds them into the LLM's context before generating a response."
+    },
+    {
+      "question": "Which system type has the highest level of autonomy?",
+      "options": [
+        "A basic chatbot",
+        "A RAG system",
+        "A search engine",
+        "AI Agent"
+      ],
+      "answer": 3,
+      "explanation": "AI Agents have the highest autonomy — they can plan, use tools, and take actions dynamically, unlike chatbots or RAG systems which follow more fixed patterns."
+    },
+    {
+      "question": "What is the main limitation of a basic chatbot compared to an agent?",
+      "options": [
+        "It uses too much memory",
+        "It cannot use tools or plan multi-step tasks",
+        "It can only speak one language",
+        "It requires a special API key"
+      ],
+      "answer": 1,
+      "explanation": "Basic chatbots respond to messages but cannot invoke tools, make decisions, or chain together a series of actions to complete a goal."
+    }
+  ]
+}

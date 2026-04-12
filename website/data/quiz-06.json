@@ -1,0 +1,37 @@
+{
+  "questions": [
+    {
+      "question": "What is BabyAGI primarily known for?",
+      "options": [
+        "Generating images from text",
+        "Fine-tuning small language models",
+        "Providing a simple chat interface",
+        "Its task decomposition and prioritization loop"
+      ],
+      "answer": 3,
+      "explanation": "BabyAGI introduced a loop where the agent creates tasks, prioritizes them, executes the top task, and generates new tasks based on results — a foundational agentic pattern."
+    },
+    {
+      "question": "AutoGPT is best described as:",
+      "options": [
+        "A tool for auto-completing code",
+        "An autonomous agent that breaks goals into tasks and executes them",
+        "A fine-tuned GPT model for automation",
+        "A browser extension for ChatGPT"
+      ],
+      "answer": 1,
+      "explanation": "AutoGPT is one of the first public autonomous agent projects — it takes a high-level goal, breaks it into subtasks, and works through them using tools like web search and file I/O."
+    },
+    {
+      "question": "Claude Code (the tool you're using) is an example of:",
+      "options": [
+        "A retrieval-augmented search tool",
+        "A basic single-turn chatbot",
+        "A coding agent that can read, write, and run code",
+        "A fine-tuned model for Python only"
+      ],
+      "answer": 2,
+      "explanation": "Claude Code is an agentic coding assistant — it can browse files, edit code, run terminal commands, and complete multi-step programming tasks autonomously."
+    }
+  ]
+}

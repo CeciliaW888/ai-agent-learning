@@ -1,0 +1,37 @@
+{
+  "questions": [
+    {
+      "question": "What does ConversationBufferMemory store?",
+      "options": [
+        "The full history of the current conversation",
+        "Only the last user message",
+        "Summaries of past conversations",
+        "Tool call results only"
+      ],
+      "answer": 0,
+      "explanation": "ConversationBufferMemory keeps every message from the current session verbatim, giving the agent full conversational context."
+    },
+    {
+      "question": "What happens when the conversation exceeds the context window?",
+      "options": [
+        "The agent starts a new session automatically",
+        "The agent asks the user to repeat their question",
+        "The LLM generates an error and stops",
+        "Older messages get truncated or summarized"
+      ],
+      "answer": 3,
+      "explanation": "Since LLMs have a fixed context window, strategies like truncation or summarization are used to keep the conversation within limits when it grows too long."
+    },
+    {
+      "question": "To give an agent memory across sessions, you would use:",
+      "options": [
+        "A larger context window model",
+        "A persistent store like a vector database or file",
+        "ConversationBufferMemory with a high token limit",
+        "A second LLM instance running in parallel"
+      ],
+      "answer": 1,
+      "explanation": "In-memory stores like ConversationBufferMemory are lost when the process ends. For cross-session memory, you need a persistent store such as a vector DB, Redis, or a file."
+    }
+  ]
+}

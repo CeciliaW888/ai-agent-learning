@@ -1,0 +1,292 @@
+<section class="module" id="module-6" data-day="6">
+<div class="module-inner">
+
+  <h2>Day 6: Explore Existing Agents</h2>
+
+  <div class="callout-accent">
+    <span class="callout-icon">🔍</span>
+    <div class="callout-content">
+      <strong>Seeing is believing:</strong> You've learned the theory — now it's time to see real agents in the wild. AutoGPT, BabyAGI, and Claude Code all solve the same fundamental problem in surprisingly different ways. Today you'll look under the hood.
+    </div>
+  </div>
+
+  <!-- Learning Objectives -->
+  <h3>🎯 Learning Objectives</h3>
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">1</span>
+      <div class="step-body">
+        <strong>Understand AutoGPT's architecture</strong>
+        <p>Trace how AutoGPT uses a task manager and execution loop to break down and pursue open-ended goals.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">2</span>
+      <div class="step-body">
+        <strong>Understand BabyAGI's task queue</strong>
+        <p>See how BabyAGI's elegantly simple loop — create tasks, prioritize, execute, repeat — produces complex behavior.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">3</span>
+      <div class="step-body">
+        <strong>Recognize Claude Code as an agent</strong>
+        <p>Realize that the tool you're using right now is itself an agent — with tools, memory, and a planning loop.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">4</span>
+      <div class="step-body">
+        <strong>Compare architectures critically</strong>
+        <p>Fill in the comparison table and articulate what design choices each system made — and why.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Today's Activity -->
+  <h3>🛠️ Today's Activity (60 min)</h3>
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">1</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://github.com/Significant-Gravitas/AutoGPT" target="_blank" rel="noopener">AutoGPT — Read the Architecture (20 min)</a></strong>
+        <p>Visit the AutoGPT GitHub. Read the architecture overview and skim a demo video. Answer: what is its core loop? What tools does it have? How does it manage memory?</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">2</span>
+      <div class="step-body">
+        <strong><a class="day-link" href="https://github.com/yoheinakajima/babyagi" target="_blank" rel="noopener">BabyAGI — Read the README (15 min)</a></strong>
+        <p>The BabyAGI README is surprisingly short — read all of it. Understand the task creation → prioritization → execution loop. How is it different from AutoGPT?</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">3</span>
+      <div class="step-body">
+        <strong>Claude Code — Analyze What You're Already Using (15 min)</strong>
+        <p>Think about how Claude Code works. What tools does it have (file read/write, terminal, search)? When does it loop? What makes it an agent rather than a chatbot?</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">4</span>
+      <div class="step-body">
+        <strong>Write Your Comparison (10 min)</strong>
+        <p>Fill in the comparison table below. Save it as <code>week-01/agent-comparison.md</code>. One row per agent, columns for core loop, tools, memory, planning, and best use case.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core Concepts -->
+  <h3>📚 Core Concepts</h3>
+
+  <h4>🤖 AutoGPT: The Pioneer</h4>
+
+  <p><span class="term" data-definition="An early autonomous AI agent that uses GPT-4 as its brain and wraps it with tools, memory, and a goal-driven execution loop">AutoGPT</span> was one of the first systems to demonstrate that you could give an LLM an open-ended goal and let it figure out the steps itself. When it launched in early 2023, it became the fastest-growing GitHub repository in history.</p>
+
+  <p>AutoGPT works in two parts. First, a <strong>task manager</strong> breaks a high-level goal (like "research and write a report on electric vehicles") into a queue of sub-tasks. Then an <strong>execution loop</strong> picks up each task, decides what tool to call, calls it, observes the result, and updates the task queue.</p>
+
+  <div class="callout-info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-content">
+      <strong>AutoGPT's tools include:</strong> web search, web browsing, file read/write, code execution, and the ability to spawn sub-agents. The agent decides which tool to use at each step of the loop.
+    </div>
+  </div>
+
+  <p>AutoGPT stores memory in two ways: <strong>short-term</strong> (the current conversation context) and <strong>long-term</strong> (a vector database that persists information across the task). This lets it remember what it found in step 3 when it gets to step 12.</p>
+
+  <div class="callout-warning">
+    <span class="callout-icon">⚠️</span>
+    <div class="callout-content">
+      <strong>AutoGPT's main limitation:</strong> It can drift. With an open-ended goal and many loops, the agent sometimes pursues increasingly irrelevant sub-tasks and never finishes. Unbounded autonomy is powerful — and unpredictable.
+    </div>
+  </div>
+
+  <h4>🧠 BabyAGI: Elegant Simplicity</h4>
+
+  <p><span class="term" data-definition="A minimal AI agent that uses a task queue, an LLM planner, and a vector database to pursue goals through a simple create-prioritize-execute loop">BabyAGI</span> was built as a thought experiment: what is the <em>minimum</em> architecture needed for an autonomous agent? The original codebase was under 200 lines of Python.</p>
+
+  <p>BabyAGI's loop has three agents running in sequence:</p>
+
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">1</span>
+      <div class="step-body">
+        <strong>Execution Agent</strong>
+        <p>Takes the top task from the queue and completes it using the LLM and a search tool. Stores the result in a vector DB.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">2</span>
+      <div class="step-body">
+        <strong>Task Creation Agent</strong>
+        <p>Looks at the result and the original goal, then generates new tasks to move closer to the goal. Adds them to the queue.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">3</span>
+      <div class="step-body">
+        <strong>Prioritization Agent</strong>
+        <p>Re-ranks the task queue so the most useful tasks come next. Removes tasks that are no longer relevant.</p>
+      </div>
+    </div>
+  </div>
+
+  <p>The loop runs indefinitely (until you stop it or it runs out of budget). Each iteration makes the task list smarter. It's a beautiful example of emergent intelligence from simple rules.</p>
+
+  <h4>⚡ Claude Code: The Agent You're Already Using</h4>
+
+  <p>Here's something worth stopping to appreciate: <strong>Claude Code — the tool you're using right now — is an AI agent.</strong> It's not a chatbot. It doesn't just answer questions. It reads files, runs commands, edits code, searches your codebase, and loops until the task is done.</p>
+
+  <p>Claude Code's tools include: <code>Read</code> (read files), <code>Write</code> (write/create files), <code>Edit</code> (surgical edits), <code>Bash</code> (run terminal commands), <code>Grep</code> (search content), <code>Glob</code> (find files), and more.</p>
+
+  <div class="callout-info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-content">
+      <strong>The key difference from AutoGPT and BabyAGI:</strong> Claude Code is a <em>tool-using agent in your terminal</em>. It operates on your local files and environment. AutoGPT and BabyAGI are goal-pursuing agents that run on their own. Claude Code is designed to assist — you guide the high-level direction, it handles the execution.
+    </div>
+  </div>
+
+  <h4>💬 Inside an Agent's Inner Monologue</h4>
+
+  <p>Here's a simulated AutoGPT inner monologue working on a real task. This is close to what actually happens inside the system prompt + response loop:</p>
+
+  <div class="chat-window" id="chat-autogpt">
+    <div class="chat-messages">
+      <div class="chat-message" data-msg="1" data-sender="1" style="display:none;">
+        Goal: "Research the top 3 EV manufacturers by market share in 2024 and write a 500-word summary."
+      </div>
+      <div class="chat-message" data-msg="2" data-sender="2" style="display:none;">
+        AutoGPT [Plan]: To complete this goal I need to: 1) Search for EV market share data, 2) Identify top 3 manufacturers, 3) Gather details on each, 4) Write the summary. Starting with step 1.
+      </div>
+      <div class="chat-message" data-msg="3" data-sender="3" style="display:none;">
+        AutoGPT [Action]: search_web("EV manufacturer market share 2024 global")
+      </div>
+      <div class="chat-message" data-msg="4" data-sender="4" style="display:none;">
+        Tool Result: "BYD leads global EV market in 2024 with ~35% share, followed by Tesla ~18%, then SAIC ~9%..."
+      </div>
+      <div class="chat-message" data-msg="5" data-sender="2" style="display:none;">
+        AutoGPT [Thought]: Good. Top 3 are BYD, Tesla, SAIC. Now I need more detail on each. I'll search for each company specifically.
+      </div>
+      <div class="chat-message" data-msg="6" data-sender="3" style="display:none;">
+        AutoGPT [Action]: search_web("BYD EV sales 2024 annual report highlights")
+      </div>
+      <div class="chat-message" data-msg="7" data-sender="4" style="display:none;">
+        Tool Result: "BYD sold 1.76 million EVs in 2024, expanding aggressively in Europe and Southeast Asia..."
+      </div>
+      <div class="chat-message" data-msg="8" data-sender="2" style="display:none;">
+        AutoGPT [Thought]: I have enough data for BYD. Repeat for Tesla and SAIC, then write the summary. Adding those tasks to the queue.
+      </div>
+      <div class="chat-message" data-msg="9" data-sender="3" style="display:none;">
+        AutoGPT [Action]: write_file("ev-summary.md", "[synthesized 500-word summary of all findings]")
+      </div>
+      <div class="chat-message" data-msg="10" data-sender="1" style="display:none;">
+        AutoGPT [Done]: Goal complete. Summary written to ev-summary.md. 4 web searches, 1 file written, 6 loop iterations.
+      </div>
+      <div class="chat-typing typing-indicator" style="display:none;">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="chat-controls">
+      <button class="chat-next-btn">Next →</button>
+      <button class="chat-all-btn">Show All</button>
+      <button class="chat-reset-btn">Reset</button>
+    </div>
+  </div>
+
+  <p><strong>Notice the pattern:</strong> Plan → Search → Observe → Update plan → Search → Observe → Write. This is the PDA loop you learned in Day 2, running autonomously across many iterations.</p>
+
+  <h4>⚖️ Architecture Comparison</h4>
+
+  <div class="flashcard">
+    <div class="flashcard-inner">
+      <div class="flashcard-front">
+        <h4>🤖 AutoGPT</h4>
+        <p><strong>Core loop:</strong> Task manager creates sub-tasks → Execution loop picks tasks → Tool calls → Results stored in vector DB → Loop repeats</p>
+        <p><strong>Key traits:</strong> Goal-oriented, many tools, vector memory, can spawn sub-agents, tends to drift on vague goals</p>
+        <p><strong>Best for:</strong> Long research or execution tasks where you give a high-level goal and walk away</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted);margin-top:12px">← Tap to flip to BabyAGI →</p>
+      </div>
+      <div class="flashcard-back">
+        <h4>🧠 BabyAGI</h4>
+        <p><strong>Core loop:</strong> Execute top task → Create new tasks based on result → Prioritize task queue → Repeat</p>
+        <p><strong>Key traits:</strong> Minimal code, three specialized sub-agents, emergent behavior, self-generating task list, runs indefinitely</p>
+        <p><strong>Best for:</strong> Understanding agent architecture fundamentals — it's nearly a textbook implementation of the PDA loop</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted);margin-top:12px">← Tap to flip to AutoGPT →</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Terminology -->
+  <h3>📖 Key Terms</h3>
+  <div class="term-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">AutoGPT</strong><br>
+      One of the first popular autonomous agents. Uses GPT-4, a task manager, and an execution loop to pursue open-ended goals with tools and vector memory.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">BabyAGI</strong><br>
+      A minimal agent architecture using three sub-agents: execution, task creation, and prioritization. Famous for being under 200 lines of code yet genuinely autonomous.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Task Queue</strong><br>
+      A list of pending sub-tasks the agent works through in order. BabyAGI's task queue is dynamic — tasks are added and reprioritized as the agent learns.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Execution Loop</strong><br>
+      The core agent cycle: pick a task, decide on an action, execute the action (tool call or LLM call), observe the result, update state, repeat.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Tool-Using Agent</strong><br>
+      An agent defined by the tools it can call — web search, code execution, file access, APIs. The tools determine what the agent can actually do in the world.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Agent Drift</strong><br>
+      When an autonomous agent wanders away from the original goal, pursuing increasingly irrelevant sub-tasks. A key failure mode of open-ended agents like AutoGPT.
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <h3>📝 Quick Check</h3>
+
+  <div class="quiz-card">
+    <p class="quiz-question"><strong>Q1:</strong> What is the key architectural difference between AutoGPT and BabyAGI?</p>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Both use LLMs as their reasoning engine — that's not what sets them apart.">AutoGPT uses an LLM; BabyAGI uses rule-based logic</button>
+      <button class="quiz-option" data-correct="true" data-explanation-correct="Correct! AutoGPT uses a task manager that plans upfront and an execution loop with many tools. BabyAGI uses three specialized sub-agents in a minimal loop: execute, create tasks, prioritize.">AutoGPT uses a task manager + rich tool set; BabyAGI uses three minimal sub-agents in a self-generating task loop</button>
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="BabyAGI also uses a vector database for storing results. That's not the main distinction.">AutoGPT stores memory in a vector DB; BabyAGI has no memory</button>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <p class="quiz-question"><strong>Q2:</strong> What makes Claude Code an "agent" rather than just a chatbot?</p>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Many chatbots are also very smart. Intelligence alone doesn't make something an agent.">It uses a smarter AI model than regular chatbots</button>
+      <button class="quiz-option" data-correct="false" data-explanation-wrong="Claude Code runs in a terminal, yes — but that's a deployment detail, not what makes it an agent.">It runs in your terminal instead of a browser</button>
+      <button class="quiz-option" data-correct="true" data-explanation-correct="Exactly! Claude Code has tools (Read, Write, Bash, Grep, etc.), uses them in a loop to complete multi-step tasks, and takes autonomous actions rather than just generating one response.">It uses tools in a loop — reading files, running code, searching — to take autonomous actions until the task is done</button>
+    </div>
+  </div>
+
+  <!-- Reflection -->
+  <h3>🤔 Reflection</h3>
+  <div class="reflection-card">
+    <p>After exploring all three agents: which architecture surprised you most, and why? If you were building a personal assistant agent, which design principles from AutoGPT, BabyAGI, or Claude Code would you borrow — and what would you leave out?</p>
+    <textarea class="reflection-input" placeholder="Write your thoughts here..."></textarea>
+    <button class="save-reflection">Save</button>
+  </div>
+
+  <!-- Checklist -->
+  <h3>✅ Before You Move On</h3>
+  <div class="checklist" style="margin-top:16px;">
+    <label><input type="checkbox"> I read the AutoGPT architecture overview and watched a demo</label>
+    <label><input type="checkbox"> I read the BabyAGI README and understand its three-agent loop</label>
+    <label><input type="checkbox"> I can explain what makes Claude Code an agent (not a chatbot)</label>
+    <label><input type="checkbox"> I filled in the comparison table and saved it to <code>week-01/agent-comparison.md</code></label>
+    <label><input type="checkbox"> I completed the reflection above</label>
+  </div>
+
+  <p style="margin-top:24px;"><strong>Tomorrow:</strong> Day 7 — Week 1 Review. We'll consolidate all 6 concepts from this week, test your understanding, and prepare you to start <em>building</em> in Week 2.</p>
+
+  <p><a class="day-link" href="https://github.com/CeciliaW888/ai-agent-learning/blob/main/week-01/day-06-planning-reasoning.md" target="_blank" rel="noopener">📖 Read the full Day 6 study guide →</a></p>
+
+</div>
+</section>

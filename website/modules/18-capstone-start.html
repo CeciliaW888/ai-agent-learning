@@ -1,0 +1,275 @@
+<section class="module" id="module-18" data-day="18">
+<div class="module-inner">
+
+  <h2>Day 18: Capstone Project Start — Multi-Agent Content Pipeline</h2>
+
+  <div class="callout-accent">
+    <span class="callout-icon">🏗️</span>
+    <div class="callout-content">
+      <strong>Project day!</strong> Everything you've learned leads to this. Today you start building a multi-agent content pipeline — a system where a Coordinator, Researcher, Writer, and Editor collaborate to produce polished articles on any topic you choose.
+    </div>
+  </div>
+
+  <!-- Today's Build Goals -->
+  <h3>🎯 Today's Build Goals</h3>
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">1</span>
+      <div class="step-body">
+        <strong>Design the system architecture</strong>
+        <p>Map out all four agents — Coordinator, Researcher, Writer, Editor — and define exactly how data flows between them before writing a single line of code.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">2</span>
+      <div class="step-body">
+        <strong>Set up the project structure</strong>
+        <p>Create the <code>content-pipeline/</code> folder with proper separation: <code>agents/</code>, <code>tools/</code>, <code>prompts/</code>, and <code>output/</code>. Install all dependencies.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">3</span>
+      <div class="step-body">
+        <strong>Define the shared pipeline state</strong>
+        <p>Create the <code>PipelineState</code> TypedDict that all agents read from and write to. This is the "contract" between agents — design it carefully before building anything else.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">4</span>
+      <div class="step-body">
+        <strong>Implement all three sub-agents</strong>
+        <p>Build <code>research_node</code>, <code>writer_node</code>, and <code>editor_node</code> — each in its own file with a focused system prompt.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">5</span>
+      <div class="step-body">
+        <strong>Wire the Coordinator and run a test</strong>
+        <p>Build the LangGraph pipeline with the conditional revision edge. Run the pipeline on a real topic and confirm each agent hands off to the next correctly.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core Concepts -->
+  <h3>📚 Core Concepts</h3>
+
+  <h4>🗺️ The System Architecture</h4>
+
+  <p>The pipeline has four specialized roles. Each agent does one thing well and passes its output to the next through a shared state object.</p>
+
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">🎯</span>
+      <div class="step-body">
+        <strong>Coordinator</strong>
+        <p>Receives the user's topic, initializes the shared state, orchestrates the full flow, and delivers the final output. The Coordinator doesn't write content — it manages the process and makes routing decisions at each step.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">🔍</span>
+      <div class="step-body">
+        <strong>Research Agent</strong>
+        <p>Searches the web with 2–3 targeted queries, reads the most promising articles, extracts key facts and statistics, and produces a structured research brief with source citations. Max 3 searches to control API costs.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">✍️</span>
+      <div class="step-body">
+        <strong>Writer Agent</strong>
+        <p>Receives the research brief and produces an 800–1200 word article: hook, clear headers, concrete examples, a strong conclusion. On revision rounds, it receives the editor's feedback and must address all of it explicitly.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">📋</span>
+      <div class="step-body">
+        <strong>Editor Agent</strong>
+        <p>Reviews the draft for accuracy, clarity, structure, and engagement. Scores it 1–10. If the overall score is 8 or above it approves. Below 8 it sends specific, actionable feedback back to the Writer. Auto-approves after 2 revision rounds.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout-info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-content">
+      <strong>The revision loop:</strong> After the Editor reviews, LangGraph evaluates a conditional edge — approved or needs revision? If revision, control flows back to the Writer (not to Research — that would waste API calls and time). Maximum 2 revision rounds, then auto-approve.
+    </div>
+  </div>
+
+  <h4>💬 The Coordinator in Action</h4>
+
+  <p>Here's how the Coordinator routes work between sub-agents and tracks the pipeline through to completion:</p>
+
+  <div class="chat-window" id="chat-coordinator">
+    <div class="chat-messages">
+      <div class="chat-message" data-msg="1" data-sender="1" style="display:none;">
+        User: "Write a blog post about AI agents in healthcare."
+      </div>
+      <div class="chat-message" data-msg="2" data-sender="2" style="display:none;">
+        Coordinator [Plan]: Topic received. Initializing pipeline state. Dispatching to Research Agent with topic + requirements.
+      </div>
+      <div class="chat-message" data-msg="3" data-sender="3" style="display:none;">
+        Research Agent [Working]: Searching "AI agents healthcare 2024"... reading top 3 articles... extracting key facts and statistics...
+      </div>
+      <div class="chat-message" data-msg="4" data-sender="4" style="display:none;">
+        Research Agent [Handoff]: Brief ready — 12 key facts, 4 statistics, 6 source URLs. Writing to pipeline state. Passing to Writer.
+      </div>
+      <div class="chat-message" data-msg="5" data-sender="3" style="display:none;">
+        Writer Agent [Working]: Crafting article from research brief... hook about misdiagnosis rates... 4 sections... conclusion... 1,050 words.
+      </div>
+      <div class="chat-message" data-msg="6" data-sender="4" style="display:none;">
+        Writer Agent [Handoff]: Draft complete. 1,050 words. Sending to Editor for review.
+      </div>
+      <div class="chat-message" data-msg="7" data-sender="3" style="display:none;">
+        Editor Agent [Reviewing]: Accuracy 9/10, Clarity 8/10, Structure 8/10, Engagement 8/10. Overall: 8/10. Verdict: APPROVED.
+      </div>
+      <div class="chat-message" data-msg="8" data-sender="2" style="display:none;">
+        Coordinator [Done]: Pipeline complete. 1,050 words | 6 sources | 0 revisions needed | Saved to output/ai-agents-in-healthcare.md
+      </div>
+      <div class="chat-typing typing-indicator" style="display:none;">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="chat-controls">
+      <button class="chat-next-btn">Next →</button>
+      <button class="chat-all-btn">Show All</button>
+      <button class="chat-reset-btn">Reset</button>
+    </div>
+  </div>
+
+  <h4>📁 Project Structure</h4>
+
+  <p>Proper separation of concerns makes each piece independently testable and replaceable. Here's what you're building today:</p>
+
+  <div class="step-cards">
+    <div class="step-card">
+      <span class="step-num">📄</span>
+      <div class="step-body">
+        <strong><code>pipeline.py</code> — The wiring</strong>
+        <p>Defines <code>PipelineState</code>, all LangGraph nodes, edges, and the conditional routing logic. The Coordinator lives here — but as graph structure, not an agent.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">📂</span>
+      <div class="step-body">
+        <strong><code>agents/</code> — The workers</strong>
+        <p><code>researcher.py</code>, <code>writer.py</code>, <code>editor.py</code> — each exports one node function. No agent imports from another agent. They only read and write shared state.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">🔧</span>
+      <div class="step-body">
+        <strong><code>tools/</code> — The capabilities</strong>
+        <p><code>search.py</code>, <code>reader.py</code>, <code>file_ops.py</code> — shared tools any agent can use. Keeping tools separate means you can swap Tavily for a different search provider without touching any agent code.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">💬</span>
+      <div class="step-body">
+        <strong><code>prompts/</code> — The instructions</strong>
+        <p>System prompts stored as separate Python strings. This lets you tune agent behavior — making the Editor stricter or the Writer more concise — without touching any logic code.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout-warning">
+    <span class="callout-icon">⚠️</span>
+    <div class="callout-content">
+      <strong>Design the state before writing agents.</strong> The <code>PipelineState</code> TypedDict is the contract between your agents. If you don't define it clearly first, you'll spend hours debugging mismatched dictionary keys between nodes. State first, agents second.
+    </div>
+  </div>
+
+  <!-- Flashcard -->
+  <h4>🔄 Single Agent vs. Multi-Agent Pipeline</h4>
+
+  <div class="flashcard">
+    <div class="flashcard-inner">
+      <div class="flashcard-front">
+        <h4>🔍 Week 2: Single Research Agent</h4>
+        <p>One agent does everything — searches, reads, synthesizes, and writes. Simple to build and debug. Works well for focused research summaries.</p>
+        <p><strong>The limitation:</strong> When you ask it to research thoroughly <em>and</em> write engagingly <em>and</em> fact-check itself, quality drops across all three. One prompt can't optimize for everything at once.</p>
+        <p style="font-size:2em;margin-top:12px">🤖</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted)">← Tap to flip →</p>
+      </div>
+      <div class="flashcard-back">
+        <h4>🏭 Week 3: Multi-Agent Pipeline</h4>
+        <p>Each agent is a specialist with its own focused prompt. The Researcher only researches. The Writer only writes. The Editor only edits. Each is independently tunable.</p>
+        <p><strong>The advantage:</strong> Specialization + quality gates. The Editor catches what the Writer missed. Revision loops create an improvement cycle. Much harder to build — but output quality jumps significantly for complex tasks.</p>
+        <p style="font-size:2em;margin-top:12px">🏭</p>
+        <p style="font-size:0.8em;color:var(--color-text-muted)">← Tap to flip →</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Terms -->
+  <h3>📖 Key Terms</h3>
+  <div class="term-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Coordinator / Supervisor</strong><br>
+      The orchestrating agent that doesn't do content work itself — it routes tasks, manages state, and decides what happens next based on what sub-agents return.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Pipeline State</strong><br>
+      A shared TypedDict all agents read from and write to. Contains everything: topic, research brief, draft, editor feedback, revision count, and final article.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Conditional Edge</strong><br>
+      A LangGraph routing decision. After the Editor node, a function reads the <code>approved</code> field and routes to either "finalize" or back to "write" for a revision round.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Revision Loop</strong><br>
+      When the Editor rejects a draft, the pipeline cycles back to the Writer (not Research). Each cycle increments <code>revision_count</code>. A max revision limit prevents infinite loops.
+    </div>
+    <div style="background:var(--color-accent-muted,#fdf3ee);padding:16px;border-radius:8px;border-left:3px solid var(--color-accent,#c4825a);">
+      <strong style="color:var(--color-accent,#c4825a);">Separation of Concerns</strong><br>
+      Each file does exactly one thing. Agents don't import from other agents. Tools are shared libraries. Prompts are separate from logic. This makes every piece independently testable.
+    </div>
+  </div>
+
+  <!-- Project Plan Checklist -->
+  <h3>📋 Project Plan — Day 18</h3>
+
+  <div class="callout-info">
+    <span class="callout-icon">📌</span>
+    <div class="callout-content">
+      Check off each item as you complete it. By the end of today your pipeline should be running at least one topic end-to-end — even if output isn't perfect yet.
+    </div>
+  </div>
+
+  <div class="checklist" style="margin-top:16px;">
+    <label><input type="checkbox"> Created <code>content-pipeline/</code> with a venv and activated it</label>
+    <label><input type="checkbox"> Installed: langchain, langchain-openai, langgraph, tavily-python, python-dotenv, beautifulsoup4</label>
+    <label><input type="checkbox"> Created folder structure: <code>agents/</code>, <code>tools/</code>, <code>prompts/</code>, <code>output/</code></label>
+    <label><input type="checkbox"> Added <code>agents/__init__.py</code> and <code>tools/__init__.py</code></label>
+    <label><input type="checkbox"> Created <code>.env</code> with OPENAI_API_KEY and TAVILY_API_KEY</label>
+    <label><input type="checkbox"> Defined <code>PipelineState</code> TypedDict in <code>pipeline.py</code> (all fields: topic, research, sources, draft, feedback, approved, revision_count, final_article, metadata)</label>
+    <label><input type="checkbox"> Built <code>research_node()</code> in <code>agents/researcher.py</code> with focused system prompt</label>
+    <label><input type="checkbox"> Built <code>writer_node()</code> in <code>agents/writer.py</code> that handles both first drafts and revision rounds</label>
+    <label><input type="checkbox"> Built <code>editor_node()</code> in <code>agents/editor.py</code> that scores and approves or rejects</label>
+    <label><input type="checkbox"> Wired the LangGraph pipeline in <code>pipeline.py</code> with the conditional edge after the edit node</label>
+    <label><input type="checkbox"> Built <code>main.py</code> entry point with topic input and output saving</label>
+    <label><input type="checkbox"> Ran the pipeline end-to-end with at least one real topic and saw all agents fire in sequence</label>
+  </div>
+
+  <!-- Reflection -->
+  <h3>🤔 Reflection</h3>
+  <div class="reflection-card">
+    <p>Before you start coding: sketch the pipeline on paper. What does each agent receive? What does it return? Where in the state does each piece of data live? Thinking this through now will save hours of debugging later.</p>
+    <textarea class="reflection-input" placeholder="Write out each agent's inputs and outputs — and any edge cases you're already anticipating..."></textarea>
+    <button class="save-reflection">Save</button>
+  </div>
+
+  <!-- Next Steps -->
+  <h3>✅ Before You Move On</h3>
+  <div class="checklist" style="margin-top:16px;">
+    <label><input type="checkbox"> I can explain why the Coordinator doesn't write content — just routes it</label>
+    <label><input type="checkbox"> I understand what PipelineState is and why all agents share it</label>
+    <label><input type="checkbox"> I understand how a conditional edge creates the revision loop without infinite cycles</label>
+    <label><input type="checkbox"> My pipeline ran at least one topic end-to-end without crashing</label>
+  </div>
+
+  <p style="margin-top:24px;"><strong>Tomorrow:</strong> Day 19 — Build &amp; Integrate. We add error handling, cost tracking, and a robust CLI — then stress-test the pipeline with multiple topics.</p>
+
+  <p><a class="day-link" href="https://github.com/CeciliaW888/ai-agent-learning/blob/main/week-03/day-18-capstone-start.md" target="_blank" rel="noopener">📖 Read the full Day 18 study guide →</a></p>
+
+</div>
+</section>
